@@ -27,29 +27,40 @@ order: 0
 
 ## Статус (2026-05-01)
 
-- 🟢 **Phase 0 — SDD-каркас инициализирован.**
+- ✅ **Phase 0 — SDD-каркас завершён (2026-05-01).**
   - `CLAUDE.md` создан с видением, redaction policy, workflow.
   - `.claude/skills/` — 7 базовых скиллов (session-log, git-workflow, redaction,
     docs-writing, knowledge-graph, multi-audience-docs, snapshot).
   - `.claude/agents/` — `docs-sync` и `adr-drafter`.
   - `docs/` по Johnny Decimal — все 17 разделов с README.
   - Бриф проекта и аудит as-is занесены.
-  - `git init` ждёт.
-- ⏳ **Phase 1 — Architecture decisions (next).** Готовим ADR-001 (PocketBase),
-  ADR-002 (Next.js 15), ADR-003 (Элис как раздел внутри istokmebel.by, не отдельный
-  сайт), ADR-004 (хостинг).
+- ✅ **Phase 1 — ADR-каркас завершён (2026-05-01).** 7 ADR принято (proposed);
+  ADR-001 superseded ADR-005 ещё до начала имплементации.
+- ⏳ **Phase 1 — Имплементация стартует.** Следующий шаг: создание `web/` через
+  `bunx create-next-app`, перенос fundament из moreminsk, реализация
+  `content/schema.ts`.
 - 🟡 **Tilda продолжает работать на `istokmebel.by`.** Не трогаем до cutover'а.
 
-### ADR-номера в работе
+### ADR landscape (2026-05-01)
 
-- (нет зарезервированных — фаза ADR ещё не началась)
+| ADR | Название | Статус |
+|---|---|---|
+| ADR-001 | PocketBase as Backend | superseded by ADR-005 |
+| ADR-002 | Next.js 15 as Frontend | proposed |
+| ADR-003 | Brand Architecture: One Site Two Brands | proposed |
+| ADR-004 | SCSS Modules as Style Layer | proposed |
+| ADR-005 | Content-as-Code Phase 1 No Backend | proposed |
+| ADR-006 | Self-hosted Docker VPS Hosting | proposed |
+| ADR-007 | Flat Repo Structure No Monorepo | proposed |
 
 ## Текущий приоритет
 
-🟢 **SDD-каркас готов локально.** Все скиллы, агенты, шаблоны, дашборды на месте.
+✅ **Phase 0 SDD-каркас и Phase 1 ADR-каркас готовы.**
 
-🟡 **Следующее действие — ADR-001 (PocketBase as backend).** Решение принято в чате
-2026-05-01, нужно зафиксировать формально.
+⏳ **Следующее действие — Phase 1 имплементация:**
+1. `bunx create-next-app` → создать `web/` с App Router, TypeScript strict.
+2. Перенести fundament (SCSS-переменные, reset, tokens) из `~/Documents/moreminsk/`.
+3. Реализовать `content/schema.ts` — Zod-схемы для продуктов всех трёх направлений.
 
 ## Ключевые документы
 
@@ -57,12 +68,10 @@ order: 0
 - [[Архитектура знаний]] — карта слоёв.
 - `~/Documents/istok/CLAUDE.md` — видение, стек, redaction.
 
-**Active scope (Phase 0):**
+**Active scope (Phase 1 имплементация):**
 - [[Бриф проекта]] — бренд-архитектура, 3 направления, каталог Элис.
 - [[Сайт as-is]] — что есть на Tilda, что отсутствует.
-
-**Будущее (Phase 1):**
-- `docs/40 - Architecture/42 - ADR/` — пока пусто, скоро ADR-001 ... ADR-004.
+- `docs/40 - Architecture/42 - ADR/` — ADR-001..007 приняты 2026-05-01.
 
 ## Логи сессий
 

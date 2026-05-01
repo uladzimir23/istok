@@ -6,11 +6,15 @@
 
 ## Текущее состояние проекта (2026-05-01)
 
-- **Phase 0 — SDD-каркас (init).** Создание `CLAUDE.md`, `.claude/` (skills + agents),
-  `docs/` по Johnny Decimal, заведение брифа и аудита as-is. Никакого кода ещё нет.
-- **Tilda продолжает работать на `istokmebel.by`.** Не трогаем до cutover'а.
-- **Следующий фокус — Phase 1: ADR-каркас и решения.** PocketBase vs custom backend,
-  стек фронтенда, бренд-архитектура (Исток + ELIS как раздел), AI-пайплайн рендеров.
+- **Phase 0 — SDD-каркас (init) — готово.** `CLAUDE.md`, `.claude/` (skills + agents),
+  `docs/` по Johnny Decimal, бриф и аудит as-is занесены, первый коммит сделан.
+- **Phase 1 ADR-каркас — готово (proposed).** Зафиксированы ADR-001..007:
+  Next.js 15, SCSS modules, бренд-архитектура (один сайт, два бренда), content-as-code
+  (PocketBase отложен в Phase 2 по триггерам), self-host Docker на VPS, плоская структура.
+- **Phase 1 имплементация — стартует.** Создание `web/` (Next.js 15), `content/` со
+  схемами и сидингом каталога Элис из PDF, базовая дизайн-система с темами Исток/ELIS,
+  CI deploy-pipeline, провижионинг VPS, cutover DNS со старого Tilda.
+- **Tilda продолжает работать на `istokmebel.by`.** Не трогаем до готовности нового сайта.
 
 ## Видение
 
@@ -66,21 +70,25 @@
 
 ## Tech Stack
 
-> Стек **ещё не зафиксирован ADR-ами**. Текущие предпочтения после обсуждения 2026-05-01:
+> Зафиксирован серией ADR (2026-05-01). См. `docs/40 - Architecture/42 - ADR/`.
 
-| Слой | Предпочтение | Статус |
+| Слой | Решение | Источник |
 | --- | --- | --- |
-| Backend / Admin | **PocketBase** (single binary, SQLite, built-in admin) | одобрено пользователем, ADR pending |
-| Frontend | **Next.js 15** (App Router, TypeScript strict) | предпочтение, ADR pending |
-| Стили | **Tailwind + shadcn/ui** или **SCSS modules** (как в moreminsk) | развилка, ADR pending |
-| Хостинг | self-host Docker на VPS либо Vercel | развилка, ADR pending |
-| Аналитика | **Яндекс.Метрика + GA4** + пиксели | базис |
-| Формы | **react-hook-form + zod** | базис |
-| AI-пайплайн | Gemini + Krea (уже используются клиентом) | формализуем как playbook, не заменяем |
-
-Финальный стек фиксируется в ADR-002+ после Phase 1.
+| Frontend | **Next.js 15** (App Router, TypeScript strict, FSD-lite) | [[ADR-002]] |
+| Стили | **SCSS modules + cascade layers + token-система** (паттерн moreminsk) | [[ADR-004]] |
+| Контент Phase 1 | **Content-as-code** — MDX/TS в `content/` + Zod-валидация на билде | [[ADR-005]] |
+| Backend Phase 1 | **Нет.** Заявки → API route → Telegram + email (Resend) | [[ADR-005]] |
+| Backend Phase 2 | **PocketBase** при наступлении trigger-условий (см. ADR-005) | [[ADR-001]] (superseded), [[ADR-005]] |
+| Бренд-архитектура | Один сайт `istokmebel.by`, ELIS — раздел `/krovatki` со своей темой | [[ADR-003]] |
+| Хостинг | **Self-hosted Docker на VPS** (паттерн comforthotel ADR-024) | [[ADR-006]] |
+| Структура репо | Плоская (`web/` + `content/` + `nginx/`), без монорепо | [[ADR-007]] |
+| Аналитика | **Яндекс.Метрика + GA4** + пиксели | базис, отдельный ADR |
+| Формы | **react-hook-form + zod**, submit через `Promise.allSettled` | паттерн comforthotel ADR-014 |
+| AI-пайплайн | Gemini + Krea (формализуем как playbook позже, отдельный ADR Phase 2+) | отложено |
 
 ## Структура репо
+
+Плоская (зафиксировано в [[ADR-007]]). Финальная структура после старта Phase 1:
 
 ```
 istok/
@@ -89,32 +97,45 @@ istok/
 │   ├── 10 - Brief & Requirements/   #   Бриф проекта, доступы
 │   ├── 20 - Audit/                  #   Сайт as-is, контент-инвентаризация
 │   ├── 30 - SEO/
-│   ├── 40 - Architecture/
-│   │   └── 42 - ADR/                #   Architecture Decision Records
-│   ├── 45 - Engineering Workflow/   #   Branching, commits, PR, release
+│   ├── 40 - Architecture/42 - ADR/  #   Architecture Decision Records
+│   ├── 45 - Engineering Workflow/   #   Branching, commits, PR, release, server runbook
 │   ├── 50 - Roadmap/                #   Phase planы
 │   ├── 60 - Content/                #   тексты, описания
-│   ├── 65 - Brand/                  #   логотипы, палитра, типографика
-│   ├── 67 - SMM/                    #   контент-план, посты
+│   ├── 65 - Brand/istok|elis/       #   бренд-гайды двух брендов
+│   ├── 67 - SMM/
 │   ├── 70 - Meetings & Logs/        #   session logs + snapshots
-│   ├── 80 - Templates/              #   adr.md, session-log.md, dept-dashboard.md
+│   ├── 80 - Templates/
 │   ├── 90 - Ideas & Backlog/
-│   ├── 95 - Attachments/            #   PDF-каталог, скрины, фото
+│   ├── 95 - Attachments/
 │   └── 97 - Reports/
+├── web/                             # Next.js 15 application (ADR-002, ADR-007)
+│   ├── src/{app,widgets,features,entities,shared}/   # FSD-lite
+│   ├── public/
+│   ├── package.json
+│   ├── next.config.ts
+│   └── tsconfig.json
+├── content/                         # MDX/TS контент-as-code (ADR-005)
+│   ├── products/{chairs,cabinets,cribs}/
+│   ├── projects/                    # портфолио госзаказа
+│   ├── categories.ts
+│   └── schema.ts                    # Zod-схемы
+├── nginx/                           # nginx config (ADR-006)
+├── .github/workflows/               # CI: deploy-prod.yml
 ├── .claude/
-│   ├── settings.local.json          # локальные permissions (gitignored)
+│   ├── settings.local.json
 │   ├── agents/                      # docs-sync, adr-drafter
-│   └── skills/                      # session-log, git-workflow, redaction, docs-writing,
-│                                    # knowledge-graph, multi-audience-docs, snapshot
-├── .vault-private/                  # НЕ в git — реальные секреты
-├── scripts/                         # check-secrets.sh и пр.
+│   └── skills/
+├── .vault-private/                  # НЕ в git
+├── scripts/                         # check-secrets.sh, deploy-helpers
+├── docker-compose.yml               # web + nginx
+├── Dockerfile                       # multi-stage для web
 ├── CLAUDE.md
 ├── README.md
 └── .gitignore
 ```
 
-Когда появится код — добавятся `apps/web/`, `pocketbase/`, `packages/` (или плоская
-структура — решит ADR).
+В Phase 2 при активации PocketBase (по триггерам [[ADR-005]]) добавляется `pocketbase/`
+как отдельный сервис в `docker-compose.yml` без перехода в монорепо.
 
 ## Ветки
 
@@ -131,12 +152,12 @@ istok/
 - `CLAUDE.md` (этот файл) — стек, видение, redaction policy.
 - `docs/00 - Indexes/Архитектура знаний.md` — карта слоёв документации.
 
-**Active scope (Phase 0 / Phase 1):**
+**Active scope (Phase 1 имплементация):**
 - `docs/10 - Brief & Requirements/Бриф проекта.md` — бренд-архитектура, направления,
   каталог Элис, клиентские реалии.
 - `docs/20 - Audit/Сайт as-is.md` — что есть на Tilda, что отсутствует.
-- `docs/40 - Architecture/42 - ADR/` — пока пусто, скоро ADR-001 (PocketBase),
-  ADR-002 (Next.js 15), ADR-003 (бренд-архитектура — раздел Элис vs отдельный сайт).
+- `docs/40 - Architecture/42 - ADR/` — ADR-001 (superseded), ADR-002..007 (proposed):
+  Next.js 15, бренд-архитектура, SCSS modules, content-as-code, self-host Docker, плоский репо.
 
 ## Workflow
 
