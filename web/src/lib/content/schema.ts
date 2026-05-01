@@ -27,18 +27,26 @@ export type Brand = z.infer<typeof Brand>;
 
 /* ----- Атомарные структуры ----- */
 
-export const Dimensions = z.object({
+/** Размер спального места (только длина × ширина — высоты у спального места нет). */
+export const BedDimensions = z.object({
+  length: z.number().int().positive(), // мм
+  width: z.number().int().positive(),  // мм
+});
+export type BedDimensions = z.infer<typeof BedDimensions>;
+
+/** Габариты товара (длина × ширина × высота). */
+export const TotalDimensions = z.object({
   length: z.number().int().positive(), // мм
   width: z.number().int().positive(),  // мм
   height: z.number().int().positive(), // мм
 });
-export type Dimensions = z.infer<typeof Dimensions>;
+export type TotalDimensions = z.infer<typeof TotalDimensions>;
 
 export const ProductSize = z.object({
   /** Slug варианта размера, например `1600x800`. */
   slug: z.string().regex(/^[a-z0-9-]+$/),
-  bedDimensions: Dimensions.optional(), // размер спального места (для кроваток)
-  totalDimensions: Dimensions, // габариты товара
+  bedDimensions: BedDimensions.optional(), // размер спального места (для кроваток)
+  totalDimensions: TotalDimensions, // габариты товара
 });
 export type ProductSize = z.infer<typeof ProductSize>;
 

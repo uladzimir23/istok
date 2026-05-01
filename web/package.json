@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "seed:tilda": "bun scripts/seed-from-tilda.ts",
+    "validate:content": "bun scripts/validate-content.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -19,12 +21,15 @@
     "zod": "^4.4.1"
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "^25.6.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cheerio": "^1.2.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
-    "typescript": "^5"
+    "gray-matter": "^4.0.3",
+    "typescript": "^5",
+    "yaml": "^2.8.3"
   },
   "ignoreScripts": [
     "sharp",
