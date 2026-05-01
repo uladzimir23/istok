@@ -1,0 +1,83 @@
+.root {
+  position: fixed;
+  inset-block-start: var(--space-md);
+  inset-inline-end: var(--space-md);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.6rem;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-md);
+  z-index: 100;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+}
+
+.label {
+  color: var(--color-text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  padding-inline: 0.3rem 0.5rem;
+  border-inline-end: 1px solid var(--color-line);
+}
+
+.swatches {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.swatch {
+  display: grid;
+  place-items: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background: var(--swatch-color);
+  transition: transform var(--duration-fast) var(--ease-out),
+              border-color var(--duration-base) var(--ease-out);
+
+  &:hover {
+    transform: scale(1.08);
+  }
+
+  &[aria-pressed="true"] {
+    border-color: var(--color-text-strong);
+  }
+}
+
+.swatchTooltip {
+  position: absolute;
+  inset-block-start: calc(100% + 0.4rem);
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  background: var(--color-text-strong);
+  color: var(--color-bg-primary);
+  font-size: 0.7rem;
+  white-space: nowrap;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-base) var(--ease-out);
+
+  .swatch:hover & {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .root {
+    inset-block-start: auto;
+    inset-block-end: var(--space-md);
+    inset-inline-start: var(--space-md);
+    inset-inline-end: auto;
+  }
+
+  .label {
+    display: none;
+  }
+}

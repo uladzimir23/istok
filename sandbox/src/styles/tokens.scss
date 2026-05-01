@@ -1,0 +1,176 @@
+/* Brand tokens — палитра и типографика, извлечённые из старого Tilda-сайта.
+   Источник: docs/55 - Design System/Tilda reference.md
+   Источник: docs/55 - Design System/Design tokens decision.md
+
+   Тематический акцент переключается через [data-theme] на <html>.
+   См. components/ThemeSwitcher/. */
+
+:root {
+  /* Палитра — Истоковский (B2B, default) */
+  --color-bg-primary: #FFFFFF;
+  --color-bg-section: #F8F8F8;
+
+  --color-text-primary: #292929;
+  --color-text-strong: #000000;
+  --color-text-muted: #777777;
+  --color-text-on-accent: #FFFFFF;
+
+  --color-line: #DDDDDD;
+  --color-line-strong: #BDBDBD;
+
+  /* Акцент — coral (как на текущем Tilda-сайте, default) */
+  --color-accent: #FF8562;
+  --color-accent-hover: #E66B47;
+
+  /* Шрифты */
+  --font-display: "Montserrat Variable", system-ui, sans-serif;
+  --font-body: "Montserrat Variable", system-ui, sans-serif;
+  --font-accent: "Comfortaa Variable", "Montserrat Variable", system-ui, sans-serif;
+
+  /* Density-scale — переключается через [data-density] */
+  --density-scale: 1;
+
+  /* Spacing — fluid clamp() × density-scale */
+  --space-2xs: calc(clamp(0.25rem, 0.2rem + 0.25vi, 0.5rem) * var(--density-scale));
+  --space-xs:  calc(clamp(0.5rem, 0.4rem + 0.5vi, 0.75rem) * var(--density-scale));
+  --space-sm:  calc(clamp(0.75rem, 0.6rem + 0.75vi, 1rem) * var(--density-scale));
+  --space-md:  calc(clamp(1rem, 0.8rem + 1vi, 1.5rem) * var(--density-scale));
+  --space-lg:  calc(clamp(1.5rem, 1.2rem + 1.5vi, 2.5rem) * var(--density-scale));
+  --space-xl:  calc(clamp(2rem, 1.6rem + 2vi, 4rem) * var(--density-scale));
+  --space-2xl: calc(clamp(3rem, 2.4rem + 3vi, 6rem) * var(--density-scale));
+  --space-3xl: calc(clamp(4rem, 3.2rem + 4vi, 8rem) * var(--density-scale));
+
+  /* Типография — fluid */
+  --text-sm:   clamp(0.8rem, 0.78rem + 0.1vi, 0.9rem);
+  --text-base: clamp(1rem, 0.95rem + 0.25vi, 1.125rem);
+  --text-lg:   clamp(1.125rem, 1.05rem + 0.4vi, 1.375rem);
+  --text-xl:   clamp(1.5rem, 1.3rem + 1vi, 2rem);
+  --text-2xl:  clamp(2rem, 1.6rem + 2vi, 3rem);
+  --text-3xl:  clamp(2.5rem, 2rem + 2.5vi, 4rem);
+  --text-display: clamp(2.75rem, 2.2rem + 3vi, 5rem);
+
+  /* Радиусы — soft (default) */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-pill: 999px;
+
+  /* Тени */
+  --shadow-sm: 0 1px 2px rgba(41, 41, 41, 0.04);
+  --shadow-md: 0 4px 12px rgba(41, 41, 41, 0.08);
+  --shadow-lg: 0 12px 32px rgba(41, 41, 41, 0.12);
+
+  /* Motion */
+  --duration-fast: 120ms;
+  --duration-base: 220ms;
+  --duration-slow: 380ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* Layout */
+  --content-max: 1200px;
+  --content-narrow: 720px;
+}
+
+/* ===== Тематические акценты — переключаются через [data-theme] на <html> ===== */
+
+/* Терракота — мебельная классика, тёплая, серьёзнее коралла. */
+[data-theme="terracotta"] {
+  --color-accent: #B5563E;
+  --color-accent-hover: #9A4632;
+}
+
+/* Орех / тёплое древо — прямая связь с материалом производства. */
+[data-theme="walnut"] {
+  --color-accent: #8B5A2B;
+  --color-accent-hover: #704624;
+}
+
+/* Бордо — отсылка к театральным креслам (бархат залов). */
+[data-theme="bordo"] {
+  --color-accent: #7A2E2E;
+  --color-accent-hover: #5C2222;
+}
+
+/* Без яркого акцента — чистый монохром, фото делают всю работу. */
+[data-theme="mono"] {
+  --color-accent: #292929;
+  --color-accent-hover: #000000;
+}
+
+/* ===== Шрифтовые пары — переключаются через [data-font] на <html> ===== */
+
+/* default = tilda (Montserrat + Comfortaa) уже в :root выше */
+
+[data-font="manrope-lora"] {
+  --font-display: "Manrope Variable", system-ui, sans-serif;
+  --font-body: "Manrope Variable", system-ui, sans-serif;
+  --font-accent: "Lora Variable", "Manrope Variable", serif;
+}
+
+[data-font="inter-cormorant"] {
+  --font-display: "Inter Variable", system-ui, sans-serif;
+  --font-body: "Inter Variable", system-ui, sans-serif;
+  --font-accent: "Cormorant Variable", "Inter Variable", serif;
+}
+
+[data-font="pt"] {
+  --font-display: "PT Sans", system-ui, sans-serif;
+  --font-body: "PT Sans", system-ui, sans-serif;
+  --font-accent: "PT Serif", "PT Sans", serif;
+}
+
+/* ===== Surface (фон страницы) — переключается через [data-surface] ===== */
+
+/* default = white */
+
+[data-surface="cream"] {
+  --color-bg-primary: #FBF7EB;
+  --color-bg-section: #F1EDE0;
+  --color-line: #E5DFCD;
+  --color-line-strong: #C8C0A9;
+}
+
+[data-surface="warm-grey"] {
+  --color-bg-primary: #F7F4EE;
+  --color-bg-section: #EDE9DF;
+  --color-line: #DCD7CB;
+  --color-line-strong: #C2BBAA;
+}
+
+[data-surface="cool-grey"] {
+  --color-bg-primary: #F8F9FA;
+  --color-bg-section: #EFF1F3;
+  --color-line: #E0E2E5;
+  --color-line-strong: #C0C4C9;
+}
+
+/* ===== Density (плотность интерфейса) — переключается через [data-density] ===== */
+
+/* default --density-scale: 1 */
+
+[data-density="compact"] {
+  --density-scale: 0.75;
+}
+
+[data-density="spacious"] {
+  --density-scale: 1.25;
+}
+
+/* ===== Radius (радиусы) — переключаются через [data-radius] ===== */
+
+/* default = soft (значения в :root выше) */
+
+[data-radius="sharp"] {
+  --radius-sm: 0;
+  --radius-md: 2px;
+  --radius-lg: 4px;
+  --radius-pill: 4px;
+}
+
+[data-radius="pillow"] {
+  --radius-sm: 0.5rem;
+  --radius-md: 1rem;
+  --radius-lg: 2rem;
+  --radius-pill: 999px;
+}

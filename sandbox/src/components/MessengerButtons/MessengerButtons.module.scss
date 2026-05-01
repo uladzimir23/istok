@@ -1,0 +1,37 @@
+.root {
+  position: fixed;
+  inset-block-end: var(--space-md);
+  inset-inline-end: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  z-index: 50;
+}
+
+.button {
+  inline-size: 3rem;
+  block-size: 3rem;
+  display: grid;
+  place-items: center;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-pill);
+  color: var(--color-text-strong);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-base) var(--ease-out),
+              border-color var(--duration-base) var(--ease-out),
+              color var(--duration-base) var(--ease-out);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+}
+
+.button svg {
+  inline-size: 1.4rem;
+  block-size: 1.4rem;
+}
