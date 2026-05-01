@@ -18,9 +18,12 @@
     "@fontsource-variable/montserrat": "^5.2.8",
     "@fontsource/pt-sans": "^5.2.8",
     "@fontsource/pt-serif": "^5.2.8",
+    "@hookform/resolvers": "^5.2.2",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
-    "sass": "^1.99.0"
+    "react-hook-form": "^7.74.0",
+    "sass": "^1.99.0",
+    "zod": "^4.4.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

@@ -1,0 +1,100 @@
+.root {
+  padding-block: var(--space-2xl);
+  background: var(--color-bg-section);
+}
+
+.header {
+  margin-block-end: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  max-inline-size: 42rem;
+}
+
+.eyebrow {
+  font-family: var(--font-accent);
+  font-size: var(--text-sm);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.title {
+  font-size: var(--text-2xl);
+  color: var(--color-text-strong);
+  letter-spacing: -0.02em;
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-md);
+  grid-template-columns: 1fr;
+
+  @media (min-width: 600px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1000px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  text-decoration: none;
+  color: var(--color-text-primary);
+  transition: border-color var(--duration-base) var(--ease-out),
+              box-shadow var(--duration-base) var(--ease-out);
+
+  &:hover {
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-sm);
+  }
+}
+
+.placeholder {
+  aspect-ratio: 4 / 3;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--color-bg-section) 0%, var(--color-line) 100%);
+  color: var(--color-text-muted);
+  font-family: var(--font-accent);
+  font-size: var(--text-sm);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.body {
+  padding: var(--space-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.object {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-text-strong);
+}
+
+.meta {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.year {
+  margin-inline-start: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.note {
+  margin-block-start: var(--space-md);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  font-style: italic;
+}

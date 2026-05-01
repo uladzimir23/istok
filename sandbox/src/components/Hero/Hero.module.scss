@@ -1,6 +1,12 @@
+/* Hero — 4 layout-варианта, переключаются через [data-hero] на <html>.
+   Default = stacked-left (текущий).
+
+   JSX рендерит фиксированный набор обёрток; через CSS показываем/прячем нужные. */
+
 .root {
-  padding-block: var(--space-3xl) var(--space-2xl);
+  position: relative;
   background: var(--color-bg-primary);
+  padding-block: var(--space-3xl) var(--space-2xl);
 }
 
 .inner {
@@ -24,6 +30,7 @@
   letter-spacing: -0.02em;
   color: var(--color-text-strong);
   text-wrap: balance;
+  margin: 0;
 }
 
 .titleAccent {
@@ -57,13 +64,8 @@
               color var(--duration-base) var(--ease-out),
               transform var(--duration-fast) var(--ease-out);
 
-  &:hover {
-    transform: translateY(-1px);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
+  &:hover { transform: translateY(-1px); }
+  &:active { transform: translateY(0); }
 }
 
 .ctaPrimary {
@@ -84,5 +86,116 @@
   &:hover {
     background: var(--color-bg-section);
     color: var(--color-text-strong);
+  }
+}
+
+/* default — split / media спрятана */
+.split {
+  /* контейнер для split-варианта (grid 50/50) — по умолчанию контент течёт как блок */
+}
+
+.media {
+  display: none; /* появляется только в split */
+  background: var(--side-img) center/cover no-repeat;
+  min-block-size: 24rem;
+}
+
+/* ===== B. centered + image-bg ===== */
+:global(html[data-hero="centered"]) .root {
+  text-align: center;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, var(--color-bg-primary) 80%),
+    var(--bg-img) center/cover no-repeat;
+  min-block-size: 80vh;
+  display: grid;
+  place-items: center;
+}
+
+:global(html[data-hero="centered"]) .inner {
+  max-inline-size: 48rem;
+  margin-inline: auto;
+  justify-items: center;
+}
+
+:global(html[data-hero="centered"]) .lead {
+  margin-inline: auto;
+}
+
+:global(html[data-hero="centered"]) .ctas {
+  justify-content: center;
+}
+
+/* ===== C. split 50/50 ===== */
+:global(html[data-hero="split"]) .root {
+  padding: 0;
+}
+
+:global(html[data-hero="split"]) .container {
+  max-inline-size: none;
+  inline-size: 100%;
+  padding: 0;
+}
+
+:global(html[data-hero="split"]) .split {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: stretch;
+  min-block-size: 70vh;
+
+  @media (min-width: 880px) {
+    grid-template-columns: 1.05fr 1fr;
+  }
+}
+
+:global(html[data-hero="split"]) .textPane {
+  padding: var(--space-2xl) var(--space-lg);
+  display: flex;
+  align-items: center;
+}
+
+:global(html[data-hero="split"]) .inner {
+  max-inline-size: 32rem;
+}
+
+:global(html[data-hero="split"]) .media {
+  display: block;
+  align-self: stretch;
+}
+
+/* ===== D. overlay ===== */
+:global(html[data-hero="overlay"]) .root {
+  padding: 0;
+  color: #FFFFFF;
+  min-block-size: 78vh;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.65) 100%),
+    var(--bg-img) center/cover no-repeat;
+  display: flex;
+  align-items: end;
+}
+
+:global(html[data-hero="overlay"]) .container {
+  padding-block: var(--space-3xl);
+}
+
+:global(html[data-hero="overlay"]) .eyebrow {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+:global(html[data-hero="overlay"]) .title {
+  color: #FFFFFF;
+}
+
+:global(html[data-hero="overlay"]) .lead {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+:global(html[data-hero="overlay"]) .ctaSecondary {
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.6);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #FFFFFF;
   }
 }

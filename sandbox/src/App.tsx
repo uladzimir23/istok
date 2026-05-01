@@ -1,6 +1,12 @@
 import styles from "./App.module.scss";
+import { Header } from "./components/Header/Header";
 import { Hero } from "./components/Hero/Hero";
 import { DirectionCard } from "./components/DirectionCard/DirectionCard";
+import { ProductsPreview } from "./components/ProductsPreview/ProductsPreview";
+import { Services } from "./components/Services/Services";
+import { Portfolio } from "./components/Portfolio/Portfolio";
+import { FAQ } from "./components/FAQ/FAQ";
+import { ContactForm } from "./components/ContactForm/ContactForm";
 import { TrustBlock } from "./components/TrustBlock/TrustBlock";
 import { MessengerButtons } from "./components/MessengerButtons/MessengerButtons";
 import { Footer } from "./components/Footer/Footer";
@@ -9,6 +15,8 @@ import { FontSwitcher } from "./components/FontSwitcher/FontSwitcher";
 import { SurfaceSwitcher } from "./components/SurfaceSwitcher/SurfaceSwitcher";
 import { DensitySwitcher } from "./components/DensitySwitcher/DensitySwitcher";
 import { RadiusSwitcher } from "./components/RadiusSwitcher/RadiusSwitcher";
+import { HeroSwitcher } from "./components/HeroSwitcher/HeroSwitcher";
+import { CardSwitcher } from "./components/CardSwitcher/CardSwitcher";
 
 import kreslaImg from "./assets/kresla.png";
 import korpusnayaImg from "./assets/korpusnaya.png";
@@ -17,6 +25,8 @@ import krovatkiImg from "./assets/krovatki.png";
 export default function App() {
   return (
     <div className={styles.root}>
+      <Header />
+
       <main>
         <Hero />
 
@@ -65,7 +75,12 @@ export default function App() {
           </div>
         </section>
 
+        <ProductsPreview />
+        <Services />
+        <Portfolio />
         <TrustBlock />
+        <FAQ />
+        <ContactForm />
       </main>
 
       <Footer />
@@ -75,6 +90,8 @@ export default function App() {
       <SurfaceSwitcher />
       <DensitySwitcher />
       <RadiusSwitcher />
+      <HeroSwitcher />
+      <CardSwitcher />
     </div>
   );
 }
