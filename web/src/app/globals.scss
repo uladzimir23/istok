@@ -1,0 +1,56 @@
+/* Phase 1 placeholder.
+   Полная design-system (tokens / mixins / base / themes) будет перенесена из
+   ~/Documents/comforthotel/landing/src/shared/design-system/ — см. ADR-004
+   и .claude/skills/scss-modules.md.
+
+   Сейчас — минимальный reset + базовые семантические токены, чтобы стартовая
+   страница выглядела опрятно. */
+
+:root {
+  --color-bg-primary: #FAFAF7;       /* Истоковский тёплый-белый, см. docs/65 - Brand/istok */
+  --color-bg-secondary: #F1EDE0;     /* секция / акцент */
+  --color-text-primary: #1F1B17;
+  --color-text-secondary: #5B5046;
+  --color-text-muted: #877C73;
+  --color-line: #E8E2D5;
+  --font-sans: var(--font-manrope, system-ui, sans-serif);
+  --font-mono: ui-monospace, "SF Mono", monospace;
+}
+
+/* Тема ELIS — раздел /krovatki, см. ADR-003 + docs/65 - Brand/elis */
+.theme-elis {
+  --color-bg-primary: #F1EDE0;
+  --color-bg-secondary: #DBD7CC;
+  --color-text-primary: #271910;
+  --color-text-secondary: #5B5046;
+  --color-text-muted: #877C73;
+  --color-line: #C5BDB6;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img, picture, svg, video {
+  display: block;
+  max-inline-size: 100%;
+}
