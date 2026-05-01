@@ -1,0 +1,40 @@
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+
+# Editors
+.vscode/
+.idea/
+.obsidian/workspace*
+
+# Secrets — НИКОГДА в git
+.vault-private/
+.env
+.env.*
+!.env.example
+
+# Claude Code local
+.claude/settings.local.json
+.claude/hooks/*.local.*
+.claude/scheduled_tasks.lock
+
+# Node / future code stack
+node_modules/
+.next/
+.turbo/
+dist/
+build/
+out/
+coverage/
+*.log
+
+# PocketBase data (когда появится)
+pb_data/
+pocketbase
+
+# Raw input (большие исходники клиента, не для git)
+# Перенести в docs/95 - Attachments/ под латинскими именами, когда дойдут руки
+/Мебель/
+/Фотографии кроваток 2/
+/Компания Исток - Вектор.svg
