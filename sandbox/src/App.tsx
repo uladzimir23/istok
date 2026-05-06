@@ -17,6 +17,10 @@ import { DensitySwitcher } from "./components/DensitySwitcher/DensitySwitcher";
 import { RadiusSwitcher } from "./components/RadiusSwitcher/RadiusSwitcher";
 import { HeroSwitcher } from "./components/HeroSwitcher/HeroSwitcher";
 import { CardSwitcher } from "./components/CardSwitcher/CardSwitcher";
+import { ContainerSwitcher } from "./components/ContainerSwitcher/ContainerSwitcher";
+import { HeaderSwitcher } from "./components/HeaderSwitcher/HeaderSwitcher";
+import { CtaSwitcher } from "./components/CtaSwitcher/CtaSwitcher";
+import { ControlsPanel } from "./components/ControlsPanel/ControlsPanel";
 
 import kreslaImg from "./assets/kresla.png";
 import korpusnayaImg from "./assets/korpusnaya.png";
@@ -85,13 +89,19 @@ export default function App() {
 
       <Footer />
       <MessengerButtons />
-      <ThemeSwitcher />
-      <FontSwitcher />
-      <SurfaceSwitcher />
-      <DensitySwitcher />
-      <RadiusSwitcher />
-      <HeroSwitcher />
-      <CardSwitcher />
+
+      <ControlsPanel count={10}>
+        <ThemeSwitcher />
+        <FontSwitcher />
+        <SurfaceSwitcher />
+        <DensitySwitcher />
+        <RadiusSwitcher />
+        <ContainerSwitcher />
+        <HeroSwitcher />
+        <CardSwitcher />
+        <HeaderSwitcher />
+        <CtaSwitcher />
+      </ControlsPanel>
     </div>
   );
 }

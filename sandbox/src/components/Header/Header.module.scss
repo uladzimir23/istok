@@ -14,6 +14,26 @@
   block-size: 4rem;
 }
 
+.hamburger {
+  display: none;
+  inline-size: 2.4rem;
+  block-size: 2.4rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  color: var(--color-text-strong);
+  padding: 0;
+
+  &:hover {
+    background: var(--color-bg-section);
+    color: var(--color-accent);
+  }
+
+  svg {
+    inline-size: 1.2rem;
+    block-size: 1.2rem;
+  }
+}
+
 .logo {
   font-family: var(--font-accent);
   font-size: var(--text-base);
@@ -84,15 +104,87 @@
 
 .cta {
   padding: 0.55rem 1rem;
-  border-radius: var(--radius-pill);
+  border-radius: var(--cta-radius);
   background: var(--color-accent);
   color: var(--color-text-on-accent);
+  border: 1px solid var(--color-accent);
   font-weight: 600;
   font-size: var(--text-sm);
-  transition: background var(--duration-base) var(--ease-out);
+  transition: background var(--duration-base) var(--ease-out),
+              color var(--duration-base) var(--ease-out),
+              border-color var(--duration-base) var(--ease-out);
 
   &:hover {
     background: var(--color-accent-hover);
+    border-color: var(--color-accent-hover);
     color: var(--color-text-on-accent);
   }
+}
+
+/* Ghost — header CTA становится outline */
+:global(html[data-cta="ghost"]) .cta {
+  background: transparent;
+  color: var(--color-accent);
+
+  &:hover {
+    background: var(--color-accent);
+    color: var(--color-text-on-accent);
+  }
+}
+
+/* ===== Header layouts — [data-header] ===== */
+
+/* default = split (логотип слева, nav посередине, actions справа) */
+
+/* B. centered — лого по центру первой строки, nav второй строкой */
+:global(html[data-header="centered"]) .inner {
+  display: grid;
+  grid-template-rows: auto auto;
+  grid-template-columns: 1fr auto 1fr;
+  block-size: auto;
+  padding-block: 0.75rem;
+  row-gap: 0.5rem;
+}
+
+:global(html[data-header="centered"]) .logo {
+  grid-row: 1;
+  grid-column: 2;
+  justify-self: center;
+}
+
+:global(html[data-header="centered"]) .actions {
+  grid-row: 1;
+  grid-column: 3;
+  margin-inline-start: 0;
+  justify-self: end;
+}
+
+:global(html[data-header="centered"]) .nav {
+  display: flex;
+  grid-row: 2;
+  grid-column: 1 / -1;
+  margin-inline-start: 0;
+  justify-content: center;
+  border-block-start: 1px solid var(--color-line);
+  padding-block-start: 0.5rem;
+
+  ul {
+    gap: var(--space-md);
+  }
+}
+
+/* C. compact — гамбургер вместо nav, CTA остаётся видимым */
+:global(html[data-header="compact"]) .nav {
+  display: none;
+}
+
+:global(html[data-header="compact"]) .hamburger {
+  display: grid;
+  place-items: center;
+  margin-inline-start: 0;
+  margin-inline-end: 0;
+}
+
+:global(html[data-header="compact"]) .actions {
+  margin-inline-start: auto;
 }

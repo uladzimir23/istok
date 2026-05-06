@@ -56,12 +56,13 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.85rem 1.6rem;
-  border-radius: var(--radius-pill);
+  padding: var(--cta-padding-y) var(--cta-padding-x);
+  border-radius: var(--cta-radius);
   font-weight: 600;
   font-size: var(--text-base);
   transition: background var(--duration-base) var(--ease-out),
               color var(--duration-base) var(--ease-out),
+              border-color var(--duration-base) var(--ease-out),
               transform var(--duration-fast) var(--ease-out);
 
   &:hover { transform: translateY(-1px); }
@@ -71,9 +72,11 @@
 .ctaPrimary {
   background: var(--color-accent);
   color: var(--color-text-on-accent);
+  border: 1px solid var(--color-accent);
 
   &:hover {
     background: var(--color-accent-hover);
+    border-color: var(--color-accent-hover);
     color: var(--color-text-on-accent);
   }
 }
@@ -86,6 +89,18 @@
   &:hover {
     background: var(--color-bg-section);
     color: var(--color-text-strong);
+  }
+}
+
+/* Ghost — primary становится outline accent */
+:global(html[data-cta="ghost"]) .ctaPrimary {
+  background: transparent;
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+
+  &:hover {
+    background: var(--color-accent);
+    color: var(--color-text-on-accent);
   }
 }
 

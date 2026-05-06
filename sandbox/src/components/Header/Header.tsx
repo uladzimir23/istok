@@ -8,6 +8,13 @@ export function Header() {
           <span className={styles.logoMark} />
           ИСТОК-МЕБЕЛЬ
         </a>
+        <button type="button" className={styles.hamburger} aria-label="Меню">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
         <nav className={styles.nav} aria-label="Главное меню">
           <ul>
             <li><a href="#kresla">Театральные кресла</a></li>

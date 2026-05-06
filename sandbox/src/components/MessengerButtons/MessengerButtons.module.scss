@@ -1,7 +1,7 @@
 .root {
   position: fixed;
   inset-block-end: var(--space-md);
-  inset-inline-end: var(--space-md);
+  inset-inline-start: var(--space-md);
   display: flex;
   flex-direction: column;
   gap: var(--space-2xs);

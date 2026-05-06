@@ -70,6 +70,12 @@
   /* Layout */
   --content-max: 1200px;
   --content-narrow: 720px;
+
+  /* CTA — переопределяется через [data-cta] */
+  --cta-radius: var(--radius-pill);
+  --cta-border-width: 0;
+  --cta-padding-y: 0.85rem;
+  --cta-padding-x: 1.6rem;
 }
 
 /* ===== Тематические акценты — переключаются через [data-theme] на <html> ===== */
@@ -173,4 +179,37 @@
   --radius-md: 1rem;
   --radius-lg: 2rem;
   --radius-pill: 999px;
+}
+
+/* ===== Container width — [data-container] ===== */
+
+/* default --content-max: 1200px */
+
+[data-container="narrow"] {
+  --content-max: 880px;
+}
+
+[data-container="wide"] {
+  --content-max: 1440px;
+}
+
+[data-container="fluid"] {
+  --content-max: none;
+}
+
+/* ===== CTA-стиль — [data-cta] ===== */
+
+/* default — pill (значения в :root выше) */
+
+[data-cta="rounded"] {
+  --cta-radius: var(--radius-md);
+}
+
+[data-cta="sharp"] {
+  --cta-radius: 0;
+}
+
+[data-cta="ghost"] {
+  --cta-radius: var(--radius-pill);
+  /* в ghost primary становится outline, обрабатывается в самих кнопках */
 }

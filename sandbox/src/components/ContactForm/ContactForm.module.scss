@@ -113,23 +113,38 @@
 
 .submit {
   margin-block-start: var(--space-2xs);
-  padding: 0.85rem 1.6rem;
-  border-radius: var(--radius-pill);
+  padding: var(--cta-padding-y) var(--cta-padding-x);
+  border-radius: var(--cta-radius);
   background: var(--color-accent);
   color: var(--color-text-on-accent);
+  border: 1px solid var(--color-accent);
   font-weight: 600;
   font-size: var(--text-base);
   transition: background var(--duration-base) var(--ease-out),
+              color var(--duration-base) var(--ease-out),
+              border-color var(--duration-base) var(--ease-out),
               transform var(--duration-fast) var(--ease-out);
 
   &:hover:not(:disabled) {
     background: var(--color-accent-hover);
+    border-color: var(--color-accent-hover);
     transform: translateY(-1px);
   }
 
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+  }
+}
+
+/* Ghost — submit становится outline accent */
+:global(html[data-cta="ghost"]) .submit {
+  background: transparent;
+  color: var(--color-accent);
+
+  &:hover:not(:disabled) {
+    background: var(--color-accent);
+    color: var(--color-text-on-accent);
   }
 }
 
