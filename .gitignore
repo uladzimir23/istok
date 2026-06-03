@@ -29,6 +29,16 @@ out/
 coverage/
 *.log
 
+# iCloud duplicates (папки с " 2" суффиксом — артефакты iCloud sync)
+* 2/
+*.* 2
+
+# Старая попытка web-стека до текущего web/
+web-legacy/
+
+# Next.js export output
+web/out/
+
 # PocketBase data (когда появится)
 pb_data/
 pocketbase

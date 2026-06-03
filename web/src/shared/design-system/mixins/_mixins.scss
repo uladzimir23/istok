@@ -1,0 +1,768 @@
+// ─── Mixins ────────────────────────────────────────────────────────────────
+// Ported from flex-glass@a33fc70.
+@use "sass:map";
+@use "../tokens/variables" as *;
+
+// ── Responsive ────────────────────────────────────────────────────────────
+// Usage: @include respond-to('md') { ... }
+@mixin respond-to($breakpoint) {
+  $value: map.get($breakpoints, $breakpoint);
+  @if $value == null {
+    @error "Unknown breakpoint: `#{$breakpoint}`. Available: #{map.keys($breakpoints)}";
+  }
+  @media screen and (min-width: $value) {
+    @content;
+  }
+}
+
+// ── Respond below ─────────────────────────────────────────────────────────
+// Usage: @include respond-below('md') { ... }
+// NOTE: prefer container queries (see `container-query` mixin) for component
+// adaptivity. Use media queries only for root-level concerns.
+@mixin respond-below($breakpoint) {
+  $value: map.get($breakpoints, $breakpoint);
+  @if $value == null {
+    @error "Unknown breakpoint: `#{$breakpoint}`.";
+  }
+  // 0.00125rem = 0.02px at 16px base — prevents overlap with min-width rule
+  @media screen and (max-width: #{$value - 0.00125rem}) {
+    @content;
+  }
+}
+
+// ── Container query ───────────────────────────────────────────────────────
+// Usage: @include container-query('md') { ... }
+//        @include container-query('md', $name: 'sidebar') { ... }
+// Parent must declare `container-type: inline-size` (or use container-root mixin).
+@mixin container-query($breakpoint, $name: null) {
+  $value: map.get($breakpoints, $breakpoint);
+  @if $value == null {
+    @error "Unknown breakpoint: `#{$breakpoint}`.";
+  }
+  @if $name {
+    @container #{$name} (min-width: #{$value}) {
+      @content;
+    }
+  } @else {
+    @container (min-width: #{$value}) {
+      @content;
+    }
+  }
+}
+
+// ── Container root ────────────────────────────────────────────────────────
+// Mark an element as a container query boundary.
+// Usage: @include container-root('sidebar'); // then @include container-query
+@mixin container-root($name: null, $type: inline-size) {
+  container-type: $type;
+  @if $name {
+    container-name: $name;
+  }
+}
+
+// ── Render optimized (content-visibility) ─────────────────────────────────
+// For long off-screen sections. Browser skips layout/paint until near viewport.
+// $height — estimated intrinsic size (prevents scrollbar jank).
+// Usage: @include render-optimized(500px); on section-renderer > *
+@mixin render-optimized($height: 500px) {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 $height;
+}
+
+// ── Contain paint (layer isolation) ───────────────────────────────────────
+// Prevents child repaints from invalidating parent. Use on large animated
+// regions (editor canvas, virtualized lists).
+@mixin contain-paint {
+  contain: paint;
+}
+
+// ── GPU promote ───────────────────────────────────────────────────────────
+// Forces compositor layer for smoother transforms. Don't overuse — each layer
+// consumes memory. Apply on hot-path animated elements only.
+@mixin gpu-promote {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+// ── Isolate (create stacking context) ─────────────────────────────────────
+// Cheap way to isolate z-index scope without positioning.
+@mixin isolate {
+  isolation: isolate;
+}
+
+// ── A11y: prefers-reduced-motion ──────────────────────────────────────────
+// Usage: @include reduced-motion { transition: none; }
+@mixin reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+}
+
+// ── A11y: prefers-contrast ────────────────────────────────────────────────
+@mixin high-contrast {
+  @media (prefers-contrast: more) {
+    @content;
+  }
+}
+
+// ── A11y: forced-colors (Windows high-contrast) ───────────────────────────
+@mixin forced-colors {
+  @media (forced-colors: active) {
+    @content;
+  }
+}
+
+// ── Dark-mode scope helper ────────────────────────────────────────────────
+// Usage inside any selector:
+//   &:hover { @include dark-mode { background: ... } }
+// Class `.dark-theme` applied to <html> + <body> via ThemeProvider (ADR-006).
+@mixin dark-mode {
+  :where(.dark-theme) & {
+    @content;
+  }
+}
+
+// ── Safari/iOS: safe-area insets (notch / dynamic island / home bar) ──────
+// Adds env(safe-area-inset-*) to the given axis. Use on app shell, navbar,
+// bottom sheets. Pair with <meta name="viewport" content="viewport-fit=cover">.
+@mixin safe-area-padding($axis: "all") {
+  @if $axis == "all" or $axis == "block" {
+    padding-block-start: max(var(--space-md), env(safe-area-inset-top));
+    padding-block-end: max(var(--space-md), env(safe-area-inset-bottom));
+  }
+  @if $axis == "all" or $axis == "inline" {
+    padding-inline-start: max(var(--space-md), env(safe-area-inset-left));
+    padding-inline-end: max(var(--space-md), env(safe-area-inset-right));
+  }
+}
+
+// ── Safari/iOS: full viewport with dynamic address bar ────────────────────
+// Shortcut for mobile Safari-safe full-height panels (modals, drawers).
+@mixin viewport-fit {
+  block-size: 100vh;
+  block-size: 100dvh;
+}
+
+// ── Overscroll behavior ───────────────────────────────────────────────────
+// Prevents scroll-chaining (parent scrolls when child reaches edge). Critical
+// for modals, drawers, editor canvas. Safari 16+.
+@mixin isolate-scroll {
+  overscroll-behavior: contain;
+}
+
+// ── Hardware-accelerated smooth scroll on old iOS ─────────────────────────
+// iOS 13+ scrolls smoothly by default, but this helps 12 and below.
+// Plus `scroll-behavior: smooth` for anchor-jumps everywhere supporting it.
+@mixin smooth-scroll {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  @include reduced-motion {
+    scroll-behavior: auto;
+  }
+}
+
+// ── Typography: balance & pretty wrapping ─────────────────────────────────
+// text-wrap: balance — evens out short multi-line titles (headings).
+// text-wrap: pretty — avoids widows/orphans on body copy.
+@mixin text-balance {
+  text-wrap: balance;
+}
+@mixin text-pretty {
+  text-wrap: pretty;
+}
+
+// ── Flex center ────────────────────────────────────────────────────────────
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// ── Flex between ──────────────────────────────────────────────────────────
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+// ── Absolute fill ─────────────────────────────────────────────────────────
+@mixin absolute-fill {
+  position: absolute;
+  inset: 0;
+}
+
+// ── Glass effect ──────────────────────────────────────────────────────────
+// $opacity as percentage (e.g. 8%); blur in rem (scales with font-size).
+@mixin glass-effect($blur: 0.75rem, $opacity: 8%) {
+  // Standard only — Lightning CSS autoprefixes `-webkit-`. Writing both made
+  // its dedup keep only the prefixed alias (Chrome then drops the blur).
+  backdrop-filter: blur($blur);
+  background-color: color-mix(in oklch, white #{$opacity}, transparent);
+  border: 1px solid color-mix(in oklch, white calc(#{$opacity} * 1.5), transparent);
+}
+
+// ── Glass card (dark) ─────────────────────────────────────────────────────
+// Uses tokens — adapts on theme switch.
+@mixin glass-card-dark($blur: 1rem) {
+  // Standard only — Lightning CSS autoprefixes `-webkit-` (see glass-effect).
+  backdrop-filter: blur($blur);
+  background: color-mix(in oklch, var(--primitive-color-slate-900) 70%, transparent);
+  border: 1px solid color-mix(in oklch, white 8%, transparent);
+  overflow: hidden;
+  position: relative;
+
+  &::after {
+    content: "";
+    @include absolute-fill;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklch, white 4%, transparent),
+      transparent
+    );
+    transform: translateX(-100%) skewX(-12deg);
+    pointer-events: none;
+  }
+
+  &:hover::after {
+    animation: mm-shimmer 0.7s ease forwards;
+  }
+
+  @include reduced-motion {
+    &:hover::after {
+      animation: none;
+    }
+  }
+}
+
+// ── Media glass (ADR-011) ─────────────────────────────────────────────────
+// Dark glass for nav/overlay chrome over photos/video. Degrades gracefully:
+// browsers without backdrop-filter (older/embedded WebViews, blur disabled by
+// a privacy setting) get a near-opaque fallback so content never bleeds
+// through unblurred. When blur IS supported, the fill drops to $glass so the
+// scene shows through. $base is a dark token; $glass/$opaque are % of it.
+@mixin media-glass($blur: var(--blur-glass), $glass: 82%, $opaque: 96%, $base: var(--media-bg)) {
+  background: color-mix(in srgb, #{$base} #{$opaque}, transparent);
+
+  @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    background: color-mix(in srgb, #{$base} #{$glass}, transparent);
+    // Standard property only — Turbopack's Lightning CSS autoprefixes the
+    // `-webkit-` alias from this. Hand-writing both made its dedup pass keep
+    // ONLY `-webkit-backdrop-filter`, which Chrome ignores here (the unprefixed
+    // property is the one Chrome honours) → no blur. See ADR-011 / glass note.
+    backdrop-filter: blur(#{$blur}) saturate(1.4);
+  }
+}
+
+// ── Hover lift ────────────────────────────────────────────────────────────
+@mixin hover-lift($distance: -0.125rem, $shadow: true) {
+  transition:
+    transform var(--duration-base) var(--ease-spring),
+    box-shadow var(--duration-base) var(--ease-out);
+
+  &:hover {
+    transform: translateY($distance);
+    @if $shadow {
+      box-shadow: var(--shadow-lg);
+    }
+  }
+
+  @include reduced-motion {
+    transition: none;
+    &:hover {
+      transform: none;
+    }
+  }
+}
+
+// ── Focus ring ────────────────────────────────────────────────────────────
+@mixin focus-ring($color: var(--color-ring), $offset: 0.125rem, $width: 0.125rem) {
+  &:focus-visible {
+    outline: $width solid $color;
+    outline-offset: $offset;
+  }
+  @include forced-colors {
+    &:focus-visible {
+      outline-color: Highlight;
+    }
+  }
+}
+
+// ── Button press ──────────────────────────────────────────────────────────
+// Tactile compress on tap/click + a keyboard focus ring — the shared base for
+// every button across the app. Compose with each button's own hover; :active
+// overrides the hover transform, so a lift- or scale-on-hover still reads as a
+// press. The button must transition `transform` for the press to animate (add
+// `transform var(--duration-fast) var(--ease-spring)` to its transition).
+@mixin btn-press($scale: 0.96) {
+  &:active {
+    transform: scale($scale);
+  }
+  @include focus-ring;
+  @include reduced-motion {
+    &:active {
+      transform: none;
+    }
+  }
+}
+
+// ── Icon control — one consistent hit-area + hover for header/menu icons ─────
+// Square hit-area ($size) with a centred icon ($icon). Hover: colour → accent +
+// a faint square highlight (the «affordance» that shows the tappable area).
+// Colour inherits (rides --hdr-fg / --on-media). Pair with no extra per-icon
+// effects so every icon control reads identically.
+@mixin icon-btn($size: 2.5rem, $icon: 1.25rem) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  inline-size: $size;
+  block-size: $size;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition:
+    color var(--duration-base) var(--ease-out),
+    transform var(--duration-fast) var(--ease-spring);
+  @include btn-press(0.9);
+
+  // Unobtrusive: no container fill — just accent colour + a soft glow behind the
+  // icon glyph (drop-shadow, so it hugs the shape rather than a box).
+  &:hover,
+  &:focus-visible {
+    color: var(--color-accent);
+  }
+  &:hover svg,
+  &:focus-visible svg {
+    filter: drop-shadow(
+      0 0.0625rem 0.375rem color-mix(in srgb, var(--color-accent) 55%, transparent)
+    );
+  }
+
+  svg {
+    inline-size: $icon;
+    block-size: $icon;
+    transition: filter var(--duration-base) var(--ease-out);
+  }
+}
+
+@property --cta-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes mm-cta-comet {
+  to {
+    --cta-angle: 360deg;
+  }
+}
+
+// ── Primary CTA — «Signature · settle» ───────────────────────────────────────
+// Rest: a Running-light comet orbits the 1px edge (masked ::before). Hover: the
+// comet settles (pauses), a cursor-tracked spotlight lights the edge (::after),
+// the button grows + tilts in 3D toward the pointer, and the icon flies in a loop.
+// Tilt + spotlight need the pointer vars (--mx/--my/--rx/--ry) — fed site-wide by
+// <KitPointer/>, which finds these buttons via the `--is-cta: 1` marker below.
+// Compose with btn-press.
+@mixin btn-cta {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 0;
+  background-color: var(--color-accent);
+  // Our new Figma mark (white sails + scarlet + wave) sails along the bottom
+  // edge on hover — echoes the «Яхты» pill. Parked off the left edge at rest;
+  // a hover TRANSITION (not an animation) carries it across once, then it
+  // resets instantly on leave. Must not use `animation` here: that would
+  // override a consumer's entrance animation and make it replay on hover-out.
+  // Sails baked to white (#fff) since the button bg is the accent fill — same
+  // as the «dark» Figma variant (matches what LogoMark renders via currentColor
+  // on a dark/over-hero context).
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20204%20178'%3E%3Cpath%20d='M102%200C122.264%2050.7705%20125%2086%20104.5%20131.5C136.5%20128.5%20152%20134%20189.5%20158C184.356%2075.5767%20173.997%2038.4837%20102%200Z'%20fill='%23ffffff'/%3E%3Cpath%20d='M100.5%2014C90.3569%2064.6305%2068.567%20119.035%2028%20158.5C60.1184%20144.352%2069.9999%20139.5%2096.5%20132C116%2094%20114.274%2050.7681%20100.5%2014Z'%20fill='%23ff2400'/%3E%3Cpath%20d='M100%20140.631C69.3245%20146.131%2069.0808%20152.534%200%20177.131C72.8409%20174.537%2073.572%20159.56%20108.5%20157.5C143.428%20155.44%20153.676%20177.131%20203.5%20177.131C151.5%20142.631%20130.676%20135.131%20100%20140.631Z'%20fill='%23ffffff'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 1.1rem auto;
+  background-position: -2rem bottom;
+  color: var(--color-on-accent);
+  --is-cta: 1; // marker read by <KitPointer/> to feed --mx/--my/--rx/--ry
+  box-shadow: 0 0 1.25rem -0.375rem color-mix(in srgb, var(--color-accent) 55%, transparent);
+  transition:
+    background-color var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out),
+    transform var(--duration-base) var(--ease-spring),
+    background-position 0s; // instant reset on leave → no reverse-sail
+
+  // Rest: Running-light comet on the edge ring. Settles (pauses) on hover.
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    padding: 0.0625rem;
+    background:
+      conic-gradient(
+        from var(--cta-angle),
+        transparent 0 66%,
+        var(--color-accent) 80%,
+        #fff 88%,
+        var(--color-accent-2) 95%,
+        transparent 100%
+      ),
+      color-mix(in srgb, var(--color-accent) 30%, transparent);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+    animation: mm-cta-comet 4s linear infinite;
+  }
+
+  // Hover: cursor-tracked spotlight on the edge (same palette).
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border-radius: inherit;
+    padding: 0.0625rem;
+    background: radial-gradient(
+      4.5rem 4.5rem at var(--mx, 50%) var(--my, 50%),
+      #fff,
+      var(--color-accent) 30%,
+      color-mix(in srgb, var(--color-accent-2) 80%, transparent) 52%,
+      transparent 72%
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity var(--duration-base) var(--ease-out);
+    pointer-events: none;
+  }
+
+  svg {
+    transition: transform var(--duration-base) var(--ease-spring);
+  }
+
+  &:hover,
+  &:focus-visible {
+    background-color: var(--color-accent-hover);
+    background-position: calc(100% + 2rem) bottom; // logo sails across the bottom
+    transform: perspective(30rem) rotateX(calc(var(--rx, 0deg) * 0.9))
+      rotateY(calc(var(--ry, 0deg) * 0.9)) scale(1.04);
+    box-shadow:
+      0 0.5rem 1.6rem -0.5rem color-mix(in srgb, var(--color-accent) 70%, transparent),
+      0 0 1.75rem -0.5rem color-mix(in srgb, var(--color-accent-2) 50%, transparent);
+    transition:
+      background-color var(--duration-base) var(--ease-out),
+      box-shadow var(--duration-base) var(--ease-out),
+      transform var(--duration-base) var(--ease-spring),
+      background-position 1.4s linear;
+  }
+  &:hover::before,
+  &:focus-visible::before {
+    animation-play-state: paused; // comet settles
+  }
+  &:hover::after,
+  &:focus-visible::after {
+    opacity: 1;
+  }
+  &:hover svg,
+  &:focus-visible svg {
+    animation: mm-chevron-fly-next 0.7s var(--ease-out) infinite; // icon flies
+  }
+
+  @include reduced-motion {
+    &::before {
+      animation: none;
+    }
+    &:hover,
+    &:focus-visible {
+      transform: none;
+      background-position: -2rem bottom; // keep the sail parked (no motion)
+    }
+    &:hover svg,
+    &:focus-visible svg {
+      animation: none;
+    }
+  }
+}
+@keyframes btn-glint {
+  0%,
+  60% {
+    transform: translateX(-130%);
+  }
+  78%,
+  100% {
+    transform: translateX(130%);
+  }
+}
+
+// ── Button hover: «прилив» (tide) ─────────────────────────────────────────
+// Primary accent CTAs. On hover the darker accent-hover floods UP from the
+// bottom like rising water (no lift). The button keeps its base accent fill;
+// a ::before of accent-hover scales up from the bottom edge, behind the label.
+// Compose with btn-press. Pair with removing any translateY lift on :hover.
+@mixin btn-tide {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--color-accent-hover);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform var(--duration-medium) var(--ease-spring);
+  }
+  &:hover::before,
+  &:focus-visible::before {
+    transform: scaleY(1);
+  }
+  @include reduced-motion {
+    &::before {
+      transition: none;
+    }
+  }
+}
+
+// ── Button hover: «заливка» (fill wipe) ────────────────────────────────────
+// Ghost / glass / outlined buttons. On hover accent wipes in from the left and
+// the label flips to on-accent (no lift). A ::before of accent scales in from
+// the inline-start edge, behind the label.
+@mixin btn-fill {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition:
+    color var(--duration-base) var(--ease-out),
+    border-color var(--duration-base) var(--ease-out),
+    transform var(--duration-fast) var(--ease-spring);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--color-accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--duration-medium) var(--ease-spring);
+  }
+  &:hover,
+  &:focus-visible {
+    color: var(--color-on-accent);
+    border-color: var(--color-accent);
+  }
+  &:hover::before,
+  &:focus-visible::before {
+    transform: scaleX(1);
+  }
+  @include reduced-motion {
+    &::before {
+      transition: none;
+    }
+  }
+}
+
+// ── Button hover: «перелёт шеврона» (chevron fly) ──────────────────────────
+// Icon arrow buttons (carousel prev/next). On hover the chevron darts out the
+// edge it points to and re-enters from the opposite edge, looping — a single
+// icon "wrapping around". Apply to the icon (svg); the button must clip
+// (overflow: hidden). $dir: "next" (points right) or "prev" (points left).
+@keyframes mm-chevron-fly-next {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  40% {
+    transform: translateX(0.85rem);
+    opacity: 0;
+  }
+  41% {
+    transform: translateX(-0.85rem);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes mm-chevron-fly-prev {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  40% {
+    transform: translateX(-0.85rem);
+    opacity: 0;
+  }
+  41% {
+    transform: translateX(0.85rem);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@mixin chevron-fly($dir: "next") {
+  animation: mm-chevron-fly-#{$dir} 0.7s var(--ease-out) infinite;
+  @include reduced-motion {
+    animation: none;
+  }
+}
+
+// ── Nav arrow (carousel prev/next) ──────────────────────────────────────────
+// THE site's icon-arrow style — reuse for every photo carousel / pager. SQUARE
+// (no border-radius — matches our square-CTA geometry), glass chip with a
+// hairline that turns accent on hover, on-media chevron, clips for chevron-fly.
+// Pair with @include chevron-fly($dir) on the inner <svg> + an inline chevron
+// path. Don't hand-roll arrow buttons (no ad-hoc round ones).
+@mixin nav-arrow($size: 2.5rem) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: $size;
+  block-size: $size;
+  padding: 0;
+  border: 0.0625rem solid var(--media-hairline-strong);
+  border-radius: 0;
+  background: var(--media-glass-bg);
+  color: var(--on-media);
+  cursor: pointer;
+  overflow: hidden; // clip the chevron as it flies out one edge
+  transition:
+    border-color var(--duration-base) var(--ease-out),
+    background-color var(--duration-base) var(--ease-out),
+    transform var(--duration-fast) var(--ease-spring);
+  @include btn-press(0.9);
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--color-accent);
+    background: var(--media-glass-bg-hover);
+  }
+  svg {
+    inline-size: 1.125rem;
+    block-size: 1.125rem;
+  }
+}
+
+// ── Text gradient ─────────────────────────────────────────────────────────
+// $fallback — solid color used where background-clip: text is unsupported.
+@mixin text-gradient($from, $to, $dir: to right, $fallback: null) {
+  // fallback so text never invisible where background-clip: text is unsupported
+  @if $fallback {
+    color: $fallback;
+  } @else {
+    color: $from;
+  }
+  background: linear-gradient($dir, $from, $to);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+// ── Truncate ──────────────────────────────────────────────────────────────
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// ── Truncate multiline ────────────────────────────────────────────────────
+@mixin truncate-lines($lines: 2) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// ── Scrollbar custom ──────────────────────────────────────────────────────
+@mixin scrollbar($size: 0.375rem) {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+
+  &::-webkit-scrollbar {
+    inline-size: $size;
+    block-size: $size;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: var(--radius-full);
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--color-border-strong);
+  }
+}
+
+// ── Container ─────────────────────────────────────────────────────────────
+@mixin container($max-width: "2xl") {
+  $value: map.get($container-max-widths, $max-width);
+  inline-size: 100%;
+  max-inline-size: $value;
+  margin-inline: auto;
+  padding-inline: var(--space-lg);
+
+  @include respond-to("md") {
+    padding-inline: var(--space-xl);
+  }
+}
+
+// ── Visually hidden ───────────────────────────────────────────────────────
+@mixin sr-only {
+  position: absolute;
+  inline-size: 0.0625rem; // 1px — sub-pixel hack for screen-reader-only pattern
+  block-size: 0.0625rem;
+  padding: 0;
+  margin: -0.0625rem;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+// ── Z-index from map ──────────────────────────────────────────────────────
+@function z($layer) {
+  @return map.get($z-layers, $layer);
+}
+
+// ── Section soft edges (feather only) ────────────────────────────────────
+// Mask на саму `.section` — простой top/bottom feather (transparent → opaque
+// → transparent). Без волны. Секция плавно растворяется в соседние сверху
+// и снизу.
+@mixin section-soft-edges($feather: 6rem) {
+  mask-image: linear-gradient(
+    180deg,
+    transparent 0,
+    black #{$feather},
+    black calc(100% - #{$feather}),
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    transparent 0,
+    black #{$feather},
+    black calc(100% - #{$feather}),
+    transparent 100%
+  );
+}

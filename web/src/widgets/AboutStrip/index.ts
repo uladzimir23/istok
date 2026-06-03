@@ -1,0 +1,1 @@
+export { AboutStrip } from "./AboutStrip";

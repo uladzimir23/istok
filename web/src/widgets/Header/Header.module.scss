@@ -1,0 +1,273 @@
+// Истоковский header — fixed top bar. Transparent над hero, frosted-glass
+// после scroll. Никаких wave-underline / conic-ring / sailing-yacht — наши
+// акценты собраны вокруг: тонкая прямая accent-полоса + corner-arrow icon.
+
+@use "@/shared/design-system/mixins" as *;
+
+.header {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: 999;
+
+  --hdr-fg: var(--on-image);
+  --hdr-fg-strong: var(--on-image-strong);
+  --hdr-fg-muted: var(--on-image-muted);
+
+  color: var(--hdr-fg);
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    backdrop-filter 0.3s ease,
+    opacity 0.2s ease,
+    transform 0.25s ease;
+  border-block-end: 1px solid transparent;
+}
+
+:global(body[data-overlay]) .header {
+  opacity: 0;
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+
+.scrolled {
+  --hdr-fg: var(--on-media);
+  --hdr-fg-strong: var(--on-media-strong);
+  --hdr-fg-muted: var(--on-media-muted);
+
+  border-block-end-color: var(--media-hairline);
+  @include media-glass($glass: 82%);
+}
+
+// Open-menu state — header chrome адаптируется под светлый sheet overlay'я.
+.header:has([aria-expanded="true"]) {
+  --hdr-fg: var(--on-media);
+  --hdr-fg-strong: var(--on-media-strong);
+  --hdr-fg-muted: var(--on-media-muted);
+
+  .nav,
+  .catalogBtn {
+    display: none;
+  }
+}
+
+.bar {
+  padding: 1.125rem clamp(1.25rem, 1vw, 5rem);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1.5rem;
+  transition: padding 0.3s ease;
+
+  .scrolled & {
+    padding-block: 0.5rem;
+  }
+}
+
+.brand {
+  position: relative;
+  z-index: 305;
+  color: var(--hdr-fg);
+  text-decoration: none;
+}
+
+// ── Desktop nav ──────────────────────────────────────────────────────────
+.nav {
+  display: none;
+
+  @include respond-to("lg") {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 1.5vw, 1.75rem);
+    margin-inline-start: 1.25rem;
+  }
+}
+
+// Каждая ссылка — mono uppercase с тонкой прямой accent-полосой
+// под ней. Полоса растёт ИЗ ЦЕНТРА (clip-path inset слева-справа → 0).
+.link {
+  position: relative;
+  color: var(--hdr-fg-muted);
+  text-decoration: none;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding-block: 0.25rem;
+  transition: color 0.2s ease;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset-block-end: -0.25rem;
+    inset-inline-start: 50%;
+    inline-size: 0;
+    block-size: 2px;
+    background: var(--color-accent);
+    transform: translateX(-50%);
+    transition: inline-size 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  &:hover,
+  &:focus-visible {
+    color: var(--hdr-fg);
+    outline: none;
+  }
+
+  &:hover::after,
+  &:focus-visible::after {
+    inline-size: 100%;
+  }
+}
+
+// ── Actions ──────────────────────────────────────────────────────────────
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-inline-start: auto;
+}
+
+.socials {
+  display: none;
+
+  @include respond-to("xl") {
+    display: flex;
+    align-items: center;
+    gap: 0.125rem;
+    color: var(--hdr-fg-muted);
+  }
+}
+
+.phone {
+  display: none;
+  color: var(--hdr-fg-strong);
+  text-decoration: none;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  font-feature-settings: "tnum", "lnum";
+  white-space: nowrap;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--color-accent);
+  }
+
+  @include respond-to("xl") {
+    display: inline-flex;
+  }
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  text-decoration: none;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.22s var(--ease-out), color 0.22s var(--ease-out);
+
+  &:hover {
+    background: var(--color-accent-hover);
+  }
+
+  @media (max-width: 30rem) {
+    display: none;
+  }
+}
+
+// ── Catalog pill ────────────────────────────────────────────────────────
+// Простая капсула с 1px текущей-цвет границей. На hover заливается accent'ом,
+// текст инвертится, corner-arrow внутри съезжает по диагонали наружу.
+.catalogBtn {
+  position: relative;
+  z-index: 305;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.95rem;
+  border: 1px solid color-mix(in srgb, currentColor 50%, transparent);
+  background: transparent;
+  color: var(--hdr-fg);
+  text-decoration: none;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    background 0.22s var(--ease-out),
+    color 0.22s var(--ease-out),
+    border-color 0.22s var(--ease-out);
+
+  // Slide-in accent fill: акцент заходит слева на 100%, текст инвертируется.
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--color-accent);
+    transform: translateX(-101%);
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  &:hover,
+  &:focus-visible {
+    color: var(--color-on-accent);
+    border-color: var(--color-accent);
+    outline: none;
+  }
+
+  &:hover::before,
+  &:focus-visible::before {
+    transform: translateX(0);
+  }
+}
+
+// Brand-monogram dot слева перед лейблом — маленький cropped corner.
+.catalogDot {
+  inline-size: 0.45rem;
+  block-size: 0.45rem;
+  background: var(--color-accent);
+  border-radius: 50%;
+  flex: 0 0 auto;
+  transition: background 0.22s var(--ease-out);
+
+  .catalogBtn:hover &,
+  .catalogBtn:focus-visible & {
+    background: var(--color-on-accent);
+  }
+}
+
+.catalogArrow {
+  inline-size: 0.75em;
+  block-size: 0.75em;
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.catalogBtn:hover .catalogArrow,
+.catalogBtn:focus-visible .catalogArrow {
+  // Уголок ↗ — едет в свой угол вверх-вправо, как «выход из границы».
+  transform: translate(0.2rem, -0.2rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link::after,
+  .catalogBtn::before,
+  .catalogArrow { transition: none !important; }
+}

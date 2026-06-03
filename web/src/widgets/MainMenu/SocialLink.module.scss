@@ -1,0 +1,33 @@
+@use "@/shared/design-system/mixins" as *;
+
+// Same hit-area as the other icon controls; the hover affordance is a colour
+// shift to the platform brand colour (--brand) — same glyph, no shape change.
+.link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  color: inherit;
+  cursor: pointer;
+  transition: color var(--duration-base) var(--ease-out);
+  @include btn-press(0.9);
+
+  &:hover,
+  &:focus-visible {
+    color: var(--brand, var(--color-accent));
+  }
+}
+
+.icon {
+  display: inline-flex;
+
+  // Glyphs sit in a 205 viewBox with padding → render larger so they read at
+  // the same optical size as the other ~1.25rem icon controls.
+  svg {
+    inline-size: 1.9rem;
+    block-size: 1.9rem;
+    display: block;
+  }
+}

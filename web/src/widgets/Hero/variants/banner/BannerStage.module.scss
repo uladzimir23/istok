@@ -1,0 +1,63 @@
+.stage {
+  position: relative;
+  inline-size: 100%;
+  background: #000;
+  overflow: hidden;
+  isolation: isolate;
+  color: #fff;
+}
+
+.ratio-fullscreen {
+  // На всю высоту вьюпорта (учитывает мобильный dynamic viewport).
+  block-size: 100vh;
+  block-size: 100dvh;
+  inline-size: 100%;
+}
+
+.ratio-ultrawide {
+  aspect-ratio: 21 / 9;
+  min-block-size: 480px;
+}
+.ratio-cinema {
+  aspect-ratio: 16 / 9;
+  min-block-size: 520px;
+}
+.ratio-tall {
+  aspect-ratio: 5 / 7;
+  min-block-size: 600px;
+
+  @media (min-width: 720px) {
+    aspect-ratio: 5 / 3;
+    min-block-size: 520px;
+  }
+}
+
+.media {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.scrim-soft {
+  background: linear-gradient(180deg, rgb(0 0 0 / 0.45) 0%, rgb(0 0 0 / 0.05) 40%, rgb(0 0 0 / 0.55) 100%);
+}
+
+.scrim-heavy {
+  background: linear-gradient(180deg, rgb(0 0 0 / 0.65) 0%, rgb(0 0 0 / 0.25) 35%, rgb(0 0 0 / 0.85) 100%);
+}
+
+.overlay {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  display: grid;
+}

@@ -1,0 +1,177 @@
+.hero {
+  background: var(--color-surface);
+  padding-block: var(--space-md);
+}
+
+.frame {
+  position: relative;
+  padding: var(--space-xl);
+  border: 1px solid var(--color-foreground);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xl);
+  min-block-size: 85dvh;
+  margin-inline: var(--space-xl);
+
+  // crosshairs at corners — magazine bleed marks
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    inline-size: 16px;
+    block-size: 16px;
+    border: 1px solid var(--color-accent);
+  }
+  &::before { inset-block-start: -1px; inset-inline-start: -1px; border-inline-end: 0; border-block-end: 0; }
+  &::after { inset-block-end: -1px; inset-inline-end: -1px; border-inline-start: 0; border-block-start: 0; }
+}
+
+.masthead {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  font-size: var(--text-xs);
+  font-weight: var(--primitive-weight-semibold);
+  padding-block-end: var(--space-md);
+  border-block-end: 1px solid var(--color-border-hairline);
+}
+
+.meta { color: var(--color-foreground-muted); }
+.metaSep { color: var(--color-foreground-subtle); }
+
+.content {
+  display: grid;
+  gap: var(--space-2xl);
+  flex: 1;
+  align-content: center;
+
+  @media (min-width: 960px) {
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    gap: var(--space-4xl);
+    align-items: center;
+  }
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(3rem, 1.5rem + 8vw, 9rem);
+  font-weight: var(--primitive-weight-bold);
+  line-height: 0.88;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.titleLine { display: block; }
+
+.italic {
+  font-style: italic;
+  font-weight: var(--primitive-weight-semibold);
+  color: var(--color-accent);
+  letter-spacing: -0.02em;
+  text-transform: lowercase;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  padding-block-start: var(--space-md);
+  border-block-start: 1px solid var(--color-border-hairline);
+  align-self: end;
+
+  @media (min-width: 960px) {
+    border-block-start: 0;
+    border-inline-start: 1px solid var(--color-border-hairline);
+    padding-inline-start: var(--space-xl);
+    padding-block-start: 0;
+  }
+}
+
+.lede {
+  margin: 0;
+  font-size: var(--text-base);
+  line-height: 1.6;
+  color: var(--color-foreground);
+  // first-line dropcap-ish styling via small caps eyebrow handled separately if needed
+}
+
+.byline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: var(--text-xs);
+  font-weight: var(--primitive-weight-semibold);
+  color: var(--color-foreground-muted);
+
+  strong {
+    font-weight: var(--primitive-weight-bold);
+    color: var(--color-foreground);
+  }
+}
+
+.rail {
+  display: grid;
+  gap: var(--space-md);
+  align-items: end;
+  padding-block-start: var(--space-md);
+  border-block-start: 1px solid var(--color-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: var(--text-xs);
+  font-weight: var(--primitive-weight-semibold);
+
+  @media (min-width: 720px) {
+    grid-template-columns: 1fr 1fr auto;
+  }
+}
+
+.railSection {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.railLabel { color: var(--color-foreground-muted); }
+
+.railLink {
+  text-decoration: none;
+  color: var(--color-foreground);
+  border-block-end: 1px solid transparent;
+  padding-block-end: 1px;
+
+  &:hover { border-color: var(--color-accent); color: var(--color-accent); }
+}
+
+.pageNum {
+  font-size: var(--text-base);
+  letter-spacing: 0.08em;
+  color: var(--color-foreground);
+}
+
+.pageOf { color: var(--color-foreground-muted); }
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  block-size: 2.5rem;
+  padding-inline: 1rem;
+  background: var(--color-foreground);
+  color: var(--color-surface);
+  text-decoration: none;
+  letter-spacing: 0.18em;
+  font-weight: var(--primitive-weight-semibold);
+  font-size: var(--text-xs);
+
+  &:hover { background: var(--color-accent); color: var(--color-on-accent); }
+}

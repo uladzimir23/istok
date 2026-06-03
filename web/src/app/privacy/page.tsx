@@ -1,0 +1,58 @@
+import { PageShell } from "@/shared/ui/PageShell";
+import { PageHero } from "@/shared/ui/PageHero";
+
+export const metadata = {
+  title: "Политика конфиденциальности",
+  description: "Как фабрика «Исток-мебель» обрабатывает персональные данные посетителей.",
+};
+
+export default function PrivacyPage() {
+  return (
+    <PageShell>
+      <PageHero
+        eyebrow="Юридическое"
+        title="Политика конфиденциальности"
+      />
+      <article
+        className="container"
+        style={{
+          padding: "var(--space-2xl) 0",
+          maxInlineSize: "65ch",
+          fontSize: "var(--text-base)",
+          lineHeight: "var(--primitive-leading-relaxed)",
+        }}
+      >
+        <p>
+          Настоящая Политика конфиденциальности определяет порядок обработки и
+          защиты персональных данных физических лиц, оставляющих заявки через сайт
+          istokmebel.by.
+        </p>
+
+        <h2>Какие данные собираем</h2>
+        <ul>
+          <li>Имя</li>
+          <li>Телефон</li>
+          <li>Email (опционально)</li>
+          <li>Текст заявки</li>
+        </ul>
+
+        <h2>Зачем</h2>
+        <p>
+          Чтобы связаться с вами по вашей заявке, выставить счёт и согласовать
+          условия поставки.
+        </p>
+
+        <h2>Хранение</h2>
+        <p>
+          Данные хранятся в системах учёта компании и не передаются третьим лицам,
+          кроме случаев, предусмотренных законодательством Республики Беларусь.
+        </p>
+
+        <h2>Контакт</h2>
+        <p>
+          По вопросам обработки персональных данных — istok-mebel@mail.ru.
+        </p>
+      </article>
+    </PageShell>
+  );
+}

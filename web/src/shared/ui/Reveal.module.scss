@@ -1,0 +1,20 @@
+.wrap {
+  opacity: 0;
+  transition:
+    opacity 700ms var(--ease-out, cubic-bezier(0.4, 0, 0.2, 1)),
+    transform 700ms var(--ease-out, cubic-bezier(0.4, 0, 0.2, 1));
+  will-change: opacity, transform;
+}
+
+.fade-up { transform: translate3d(0, 1.5rem, 0); }
+.fade    { transform: none; }
+.slide-right { transform: translate3d(-1.25rem, 0, 0); }
+
+.in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wrap { opacity: 1 !important; transform: none !important; }
+}

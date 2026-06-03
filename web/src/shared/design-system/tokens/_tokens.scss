@@ -1,0 +1,712 @@
+// ─── Design Tokens — Primitive → Semantic → Component ─────────────────────
+// All values live here as CSS custom properties. Zero hardcode elsewhere.
+//
+// Architecture ported from flex-glass@a33fc70. Theme classes
+// (.light-theme / .dark-theme) and motion ladder — per ADR-006 §2-§4 (still valid).
+// Palette + radii — per ADR-009 (Editorial Minimalism + Sky-500 accent, 2026-05-23).
+//
+// Palette migration policy: sea-*/sunset-*/sand-* primitive tokens are kept as
+// DEPRECATED below — semantic slots no longer point at them, but components that
+// still hardcode --primitive-color-sea-500 etc. won't break until they're swept.
+//
+// Unit policy:
+//   • Primitive layer — static rem (1rem = 16px, based on html { font-size: 100% }).
+//   • Semantic spacing & large headings — fluid via clamp() between 320px and 1280px viewport.
+//   • Radius / duration / z-index / colors — static.
+// Do NOT change html font-size; rem respects user browser accessibility settings.
+
+// ── Cascade Layers — fixed specificity order for the whole app ────────────
+// Declaration must appear before any layered rules. Order: low → high priority.
+@layer reset, tokens, brand-themes, base, primitives, components, utilities, overrides;
+
+// ── Registered animatable custom properties ───────────────────────────────
+// @property enables transitions on CSS variables (theme switches, glow, gradients).
+// Must be declared before :root assignments for initial-value to register.
+@property --color-primary {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #0a0a0a;
+}
+@property --color-accent {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #0ea5e9;
+}
+@property --color-background {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #ffffff;
+}
+@property --color-foreground {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #0a0a0a;
+}
+@property --gradient-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 135deg;
+}
+
+@layer tokens {
+  :where(html) {
+    font-size: 100%;
+  }
+
+  // ── Primitive: shared across all themes ──────────────────────────────────
+  :root {
+    --primitive-color-white: #ffffff;
+    --primitive-color-black: #000000;
+
+    // ── Active palette (ADR-009 — Editorial Minimalism + Sky-500) ──────────
+
+    // Sky — single cool accent. Tailwind sky scale.
+    --primitive-color-sky-50: #f0f9ff;
+    --primitive-color-sky-100: #e0f2fe;
+    --primitive-color-sky-200: #bae6fd;
+    --primitive-color-sky-300: #7dd3fc;
+    --primitive-color-sky-400: #38bdf8;
+    --primitive-color-sky-500: #0ea5e9; // ★ accent / CTA (light theme)
+    --primitive-color-sky-600: #0284c7; // for inline text (AA 4.6:1 on white)
+    --primitive-color-sky-700: #0369a1;
+    --primitive-color-sky-800: #075985;
+    --primitive-color-sky-900: #0c4a6e;
+
+    // Slate / neutral — cool gray-near-black scale for text + surfaces.
+    --primitive-color-slate-50: #fafafa;
+    --primitive-color-slate-100: #f5f5f5;
+    --primitive-color-slate-200: #e5e5e5; // hairline border (light)
+    --primitive-color-slate-300: #d4d4d4;
+    --primitive-color-slate-400: #a3a3a3;
+    --primitive-color-slate-500: #737373;
+    --primitive-color-slate-600: #525252; // muted body text (light)
+    --primitive-color-slate-700: #404040;
+    --primitive-color-slate-800: #262626;
+    --primitive-color-slate-900: #171717; // dark theme surface
+    --primitive-color-slate-950: #0a0a0a; // ★ foreground (light) / background (dark)
+
+    // ── DEPRECATED legacy palette (ADR-006 navy + coral) ───────────────────
+    // Kept until all components are swept off direct primitive-token references.
+    // No semantic slot points here anymore — see :where(.light-theme) below.
+    --primitive-color-sea-50: #eff5f9;
+    --primitive-color-sea-100: #d6e4ef;
+    --primitive-color-sea-200: #a8c4d8;
+    --primitive-color-sea-300: #6ea0be;
+    --primitive-color-sea-400: #3f7da1;
+    --primitive-color-sea-500: #0a4d7a;
+    --primitive-color-sea-600: #084064;
+    --primitive-color-sea-700: #06324f;
+    --primitive-color-sea-800: #04253b;
+    --primitive-color-sea-900: #0e1620;
+    --primitive-color-sunset-50: #fbf1ea;
+    --primitive-color-sunset-100: #f5dcc9;
+    --primitive-color-sunset-300: #ecb593;
+    --primitive-color-sunset-500: #e2956a;
+    --primitive-color-sunset-600: #c47a51;
+    --primitive-color-sunset-700: #a26240;
+    --primitive-color-sand-50: #faf7f2;
+    --primitive-color-sand-100: #f1ece3;
+    --primitive-color-sand-200: #e4dfd5;
+    --primitive-color-sand-700: #5c6270;
+    --primitive-color-sand-900: #1b2230;
+
+    // Status
+    --primitive-color-success: #4a7c59;
+    --primitive-color-warning: #d4a84b;
+    --primitive-color-error: #b24c4c;
+
+    // ── Primitive: Spacing Scale (static rem) ──────────────────────────────
+    --primitive-space-0: 0;
+    --primitive-space-1: 0.25rem;
+    --primitive-space-2: 0.5rem;
+    --primitive-space-3: 0.75rem;
+    --primitive-space-4: 1rem;
+    --primitive-space-5: 1.25rem;
+    --primitive-space-6: 1.5rem;
+    --primitive-space-8: 2rem;
+    --primitive-space-10: 2.5rem;
+    --primitive-space-12: 3rem;
+    --primitive-space-16: 4rem;
+    --primitive-space-20: 5rem;
+    --primitive-space-24: 6rem;
+    --primitive-space-32: 8rem;
+
+    // ── Primitive: Typography ──────────────────────────────────────────────
+    // Manrope + Lora are wired via next/font in app/layout.tsx — task #28 (ADR-008).
+    --primitive-font-sans:
+      var(--font-manrope, "Manrope"), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+      "Helvetica Neue", Arial, sans-serif;
+    --primitive-font-accent: var(--font-lora, "Lora"), Georgia, "Times New Roman", ui-serif, serif;
+    --primitive-font-mono:
+      ui-monospace, "SF Mono", Menlo, Monaco, "Cascadia Mono", Consolas, "JetBrains Mono",
+      "Fira Code", monospace;
+
+    --primitive-text-xs: 0.75rem;
+    --primitive-text-sm: 0.875rem;
+    --primitive-text-base: 1rem;
+    --primitive-text-lg: 1.125rem;
+    --primitive-text-xl: 1.25rem;
+    --primitive-text-2xl: 1.5rem;
+    --primitive-text-3xl: 1.875rem;
+    --primitive-text-4xl: 2.25rem;
+    --primitive-text-5xl: 3rem;
+    --primitive-text-6xl: 3.75rem;
+    --primitive-text-7xl: 4.5rem;
+
+    --primitive-leading-none: 1;
+    --primitive-leading-tight: 1.25;
+    --primitive-leading-snug: 1.375;
+    --primitive-leading-normal: 1.5;
+    --primitive-leading-relaxed: 1.625;
+
+    --primitive-weight-light: 300;
+    --primitive-weight-regular: 400;
+    --primitive-weight-medium: 500;
+    --primitive-weight-semibold: 600;
+    --primitive-weight-bold: 700;
+    --primitive-weight-extrabold: 800;
+
+    --primitive-tracking-tight: -0.025em;
+    --primitive-tracking-normal: 0em;
+    --primitive-tracking-wide: 0.025em;
+
+    // ── Primitive: Border Radius (static rem) ──────────────────────────────
+    --primitive-radius-none: 0;
+    --primitive-radius-sm: 0.25rem;
+    --primitive-radius-md: 0.5rem;
+    --primitive-radius-lg: 0.75rem;
+    --primitive-radius-xl: 1rem;
+    --primitive-radius-2xl: 1.5rem;
+    --primitive-radius-3xl: 2rem;
+    --primitive-radius-full: 9999px;
+
+    // ── Primitive: Shadows ─────────────────────────────────────────────────
+    --primitive-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --primitive-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --primitive-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --primitive-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --primitive-shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+
+    // ── Primitive: Motion (ADR-006 ladder) ────────────────────────────────
+    --primitive-duration-instant: 50ms;
+    --primitive-duration-fast: 150ms;
+    --primitive-duration-base: 200ms;
+    --primitive-duration-medium: 300ms;
+    --primitive-duration-slow: 500ms;
+    --primitive-duration-slower: 800ms;
+
+    --primitive-ease-linear: linear;
+    --primitive-ease-in: cubic-bezier(0.4, 0, 1, 1);
+    --primitive-ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --primitive-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --primitive-ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+    --primitive-ease-sheet: cubic-bezier(0.32, 0.72, 0, 1);
+    --primitive-ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    // ── Primitive: Aspect Ratios ──────────────────────────────────────────
+    --primitive-ratio-square: 1 / 1;
+    --primitive-ratio-video: 16 / 9;
+    --primitive-ratio-cinema: 21 / 9;
+    --primitive-ratio-portrait: 3 / 4;
+    --primitive-ratio-landscape: 4 / 3;
+    --primitive-ratio-golden: 1.618 / 1;
+
+    // ── Primitive: Opacity Scale ──────────────────────────────────────────
+    --primitive-opacity-0: 0;
+    --primitive-opacity-10: 0.1;
+    --primitive-opacity-20: 0.2;
+    --primitive-opacity-40: 0.4;
+    --primitive-opacity-60: 0.6;
+    --primitive-opacity-80: 0.8;
+    --primitive-opacity-100: 1;
+
+    // ── Primitive: Z-index ─────────────────────────────────────────────────
+    --primitive-z-below: -1;
+    --primitive-z-base: 0;
+    --primitive-z-raised: 10;
+    --primitive-z-dropdown: 100;
+    --primitive-z-sticky: 200;
+    --primitive-z-overlay: 300;
+    --primitive-z-modal: 400;
+    --primitive-z-popover: 500;
+    --primitive-z-toast: 600;
+
+    // ── Semantic: static (theme-independent) ──────────────────────────────
+    --font-body: var(--primitive-font-sans);
+    --font-heading: var(--primitive-font-sans);
+    --font-accent: var(--primitive-font-accent);
+    --font-mono: var(--primitive-font-mono);
+
+    --text-xs: var(--primitive-text-xs);
+    --text-sm: var(--primitive-text-sm);
+    --text-base: var(--primitive-text-base);
+    --text-lg: var(--primitive-text-lg);
+    --text-xl: var(--primitive-text-xl);
+    --text-2xl: var(--primitive-text-2xl);
+    --text-3xl: var(--primitive-text-3xl);
+    // Editorial scale (ADR-009) — H1 reaches further than ADR-008 default to
+    // carry the «крупный заголовок на белом» editorial weight.
+    --text-4xl: clamp(1.875rem, 1.75rem + 0.625vw, 2.5rem);
+    --text-5xl: clamp(2.25rem, 1.875rem + 1.875vw, 3.5rem);
+    --text-6xl: clamp(2.75rem, 2.125rem + 3.125vw, 4.75rem);
+    --text-7xl: clamp(3.25rem, 2.25rem + 5vw, 6rem);
+
+    --space-xs: var(--primitive-space-1);
+    --space-sm: var(--primitive-space-2);
+    --space-md: clamp(0.75rem, 0.667rem + 0.417vw, 1rem);
+    --space-lg: clamp(1rem, 0.833rem + 0.833vw, 1.5rem);
+    --space-xl: clamp(1.5rem, 1.333rem + 0.833vw, 2rem);
+    --space-2xl: clamp(2rem, 1.667rem + 1.667vw, 3rem);
+    --space-3xl: clamp(3rem, 2.667rem + 1.667vw, 4rem);
+    --space-4xl: clamp(4rem, 3.667rem + 1.667vw, 5rem);
+    // Editorial section gap (ADR-009) — пуще воздуха между секциями.
+    --space-section: clamp(6rem, 4.5rem + 4.5vw, 9rem);
+
+    --radius-sm: var(--primitive-radius-sm);
+    --radius-md: var(--primitive-radius-md);
+    --radius-lg: var(--primitive-radius-lg);
+    --radius-xl: var(--primitive-radius-xl);
+    --radius-2xl: var(--primitive-radius-2xl);
+    --radius-3xl: var(--primitive-radius-3xl);
+    --radius-full: var(--primitive-radius-full);
+    --radius: var(--radius-lg);
+
+    --shadow-sm: var(--primitive-shadow-sm);
+    --shadow-md: var(--primitive-shadow-md);
+    --shadow-lg: var(--primitive-shadow-lg);
+
+    // Motion aliases — the ones typical CSS consumers reach for (ADR-006 table).
+    --duration-instant: var(--primitive-duration-instant);
+    --duration-fast: var(--primitive-duration-fast);
+    --duration-base: var(--primitive-duration-base);
+    --duration-medium: var(--primitive-duration-medium);
+    --duration-slow: var(--primitive-duration-slow);
+    --duration-slower: var(--primitive-duration-slower);
+    --ease-linear: var(--primitive-ease-linear);
+    --ease-out: var(--primitive-ease-out);
+    --ease-spring: var(--primitive-ease-spring);
+    --ease-sheet: var(--primitive-ease-sheet);
+    --ease-bounce: var(--primitive-ease-bounce);
+
+    --ratio-square: var(--primitive-ratio-square);
+    --ratio-video: var(--primitive-ratio-video);
+    --ratio-cinema: var(--primitive-ratio-cinema);
+    --ratio-portrait: var(--primitive-ratio-portrait);
+    --ratio-landscape: var(--primitive-ratio-landscape);
+    --ratio-golden: var(--primitive-ratio-golden);
+
+    --opacity-disabled: var(--primitive-opacity-40);
+    --opacity-muted: var(--primitive-opacity-60);
+    --opacity-subtle: var(--primitive-opacity-80);
+
+    // Component slots — theme-independent structure, colors pulled from theme slots.
+    --navbar-height: 3.5rem;
+    --sidebar-width: 15rem;
+
+    // (ADR-004 appbar/bottomnav токены сняты — оба виджета убраны как dead code,
+    // см. memory/design-mobile-nav-abandoned.)
+
+    // Editorial geometry (ADR-009) — sharp rectangles, no capsule.
+    --btn-height-sm: 2.25rem;
+    --btn-height-md: 2.75rem;
+    --btn-height-lg: 3.25rem;
+    --btn-padding-x-sm: var(--primitive-space-4);
+    --btn-padding-x-md: var(--primitive-space-6);
+    --btn-padding-x-lg: var(--primitive-space-8);
+    --btn-radius: var(--primitive-radius-none); // 0 — rectangular per ADR-009 §1
+    --btn-font-weight: var(--primitive-weight-medium);
+
+    --input-height-sm: 2.25rem;
+    --input-height-md: 2.75rem;
+    --input-height-lg: 3.25rem;
+    --input-padding-x: var(--primitive-space-4);
+    --input-radius: var(--primitive-radius-sm); // 4px — minimal radius for tactile feel
+
+    --card-padding: var(--primitive-space-8);
+    --card-radius: var(--primitive-radius-sm); // 4px — editorial, was 24px in ADR-005
+
+    // Photo cards (service posters, fleet thumbs, gallery tiles) — the fleet
+    // photos are a uniform ~3:4 portrait, so the card hugs that one ratio
+    // everywhere instead of each surface inventing its own banner crop.
+    --photo-card-aspect: 3 / 4;
+
+    // ── On-image layer (ADR-011 rev) ───────────────────────────────────────
+    // Text & scrim that sit DIRECTLY over photos / the hero video. A photo
+    // doesn't change with the theme, so its overlay content stays a white
+    // scale on a dark scrim in BOTH light and dark themes — these are
+    // theme-INDEPENDENT. The theme-aware «paper» counterparts (--media-bg,
+    // --on-media*, --media-hairline*, --media-glass-*, --on-media-accent) live
+    // in the light/dark blocks below and flip with the theme.
+    --on-image: #ffffff; // primary text over a photo/video
+    --on-image-strong: rgb(255 255 255 / 0.92);
+    --on-image-muted: rgb(255 255 255 / 0.7); // body / secondary
+    --on-image-subtle: rgb(255 255 255 / 0.5); // captions / meta
+    --on-image-faint: rgb(255 255 255 / 0.4);
+
+    --image-hairline: rgb(255 255 255 / 0.12); // dividers over a photo
+    --image-hairline-strong: rgb(255 255 255 / 0.3);
+
+    // Accent tuned for legibility over dark imagery (brighter than on paper).
+    --on-image-accent: color-mix(in srgb, var(--primitive-color-sky-400) 80%, white);
+
+    // Always-dark canvas behind a photo/video — section fallbacks before the
+    // image paints, video letterbox, story players. Theme-independent: these
+    // sit UNDER imagery, so they never flip (the paper --media-bg* do).
+    --image-bg: #0a0f16;
+    --image-bg-deep: #0a0a0a;
+    --image-bg-elevated: #0c1620;
+
+    // Blur ladder for ambient/glass/edge effects.
+    --blur-ambient: 48px; // section backdrop photo (heavy wash — 48 ≈ 70 visually, cheaper)
+    --blur-frame: 40px; // letterbox / per-card backdrop
+    --blur-glass: 12px; // glass chrome (header, tiles)
+    --blur-edge: 5px; // edge-fade softening
+
+    // Dark overlay washes layered over ambient photos (keep content legible).
+    --media-scrim: linear-gradient(
+      180deg,
+      rgb(0 0 0 / 0.55) 0%,
+      rgb(0 0 0 / 0.3) 45%,
+      rgb(0 0 0 / 0.6) 100%
+    );
+
+    // Editorial eyebrow (mono, wide-tracked label «NN · Раздел»).
+    --eyebrow-size: 0.6875rem; // 11px
+    --eyebrow-tracking: 0.28em;
+    --eyebrow-weight: var(--primitive-weight-semibold);
+
+    // Section vertical rhythm for the landing.
+    --section-pad-block: clamp(5rem, 4rem + 5vw, 8.75rem);
+    --section-gutter: clamp(1.5rem, 0.5rem + 5vw, 5rem); // matches 24→80px
+    --section-max: 90rem; // 1440px content cap
+  }
+
+  // ── Semantic: Light Theme (ADR-009 — Editorial Minimalism + Sky-500) ─────
+  // :root sets defaults, .light-theme is the explicit sync-pattern selector
+  // applied to <html> + <body>. Either path yields identical palette.
+  //
+  // Roles:
+  //   --color-primary   = near-black (text, navigation, primary button fill)
+  //   --color-accent    = sky-500    (CTA fill, focus ring, active states)
+  //   --color-accent-text = sky-600  (inline links — needs 4.5:1 contrast)
+  :root,
+  :where(.light-theme) {
+    color-scheme: light;
+
+    --color-background: #ffffff;
+    --color-surface: #ffffff;
+    --color-surface-alt: var(--primitive-color-slate-50);
+    --color-foreground: var(--primitive-color-slate-950); // #0a0a0a
+    --color-foreground-muted: var(--primitive-color-slate-600); // #525252
+    --color-foreground-subtle: color-mix(in oklch, var(--color-foreground) 40%, transparent);
+
+    --color-primary: var(--primitive-color-slate-950); // near-black, was sea-500 navy
+    --color-primary-hover: var(--primitive-color-slate-800);
+    --color-primary-active: var(--primitive-color-slate-700);
+    --color-primary-soft: var(--primitive-color-slate-50);
+    --color-on-primary: #ffffff;
+
+    // Primary brand accent — deep royal blue. Drives CTAs/buttons, links, dots,
+    // eyebrows, focus ring.
+    --color-accent: #246ed1;
+    --color-accent-hover: #1f5fb8;
+    --color-accent-active: #1a4f9c;
+    --color-accent-soft: #eef4fc;
+    --color-accent-text: #1f5fb8; // ≥4.5:1 on white
+    --color-on-accent: #ffffff;
+
+    // Second accent — scarlet («алые паруса»). Used sparingly: Lora-italic
+    // accent words. Bright variant is theme-independent (italic over the hero).
+    --color-accent-2: #e01e2b;
+    --color-accent-2-bright: #ff3b47;
+
+    // Brand mark («light» Figma вариант): indigo-navy ink + hand-drawn outline
+    // вокруг парусов. Драйвят --logo-ink / --logo-stroke в frosted-хедере и
+    // футере (см. landing-header/footer.module.scss). Темный вариант не нужен
+    // — в dark-теме мерк рисуется белым через currentColor (= наследует фон).
+    --color-brand-mark-ink: #0d005d;
+    --color-brand-mark-stroke: #dfdfdf;
+
+    // Brand gradient — bright Apple-ish sweep: scarlet → hot pink → violet →
+    // electric blue. Drives glowing borders + glints.
+    --gradient-brand: linear-gradient(110deg, #ff2638 0%, #ff2d8f 34%, #8b3bff 68%, #2b7bff 100%);
+
+    // Aurora — bright flag-palette (scarlet · white · blue) as soft overlapping
+    // colour blobs over a base sweep. The consuming element animates each layer's
+    // background-position at its own pace, so the colours drift and recombine
+    // organically (never a repeating stripe). Used on accent text.
+    --gradient-flag:
+      radial-gradient(60% 150% at 18% 22%, #ff2440 0%, transparent 60%),
+      radial-gradient(55% 140% at 84% 30%, #2f8bff 0%, transparent 60%),
+      radial-gradient(48% 130% at 52% 92%, #ffffff 0%, transparent 55%),
+      linear-gradient(100deg, #ff2440 0%, #246ed1 100%);
+
+    --color-success: var(--primitive-color-success);
+    --color-warning: var(--primitive-color-warning);
+    --color-destructive: var(--primitive-color-error);
+    --color-on-status: #ffffff;
+
+    --color-border: var(--primitive-color-slate-200);
+    --color-border-hairline: var(--primitive-color-slate-200); // crisp 1px, not color-mix
+    --color-border-strong: var(--primitive-color-slate-400);
+    --color-ring: var(--color-accent); // primary blue
+
+    --color-card: var(--color-surface);
+    --color-card-foreground: var(--color-foreground);
+    --color-card-border: var(--color-border-hairline);
+    --color-card-shadow: none; // editorial = плоско, no resting shadow on light
+
+    --color-input-background: var(--color-surface);
+    --color-input-foreground: var(--color-foreground);
+    --color-input-placeholder: var(--color-foreground-subtle);
+    --color-input-border: var(--color-border);
+    --color-input-border-focus: var(--color-ring);
+
+    --color-overlay: color-mix(in oklch, var(--primitive-color-slate-950) 35%, transparent);
+
+    // Materials — solid fills (frosted glass removed per ADR-009 §2).
+    // Compat: appbar/bottomnav/sheet still read these tokens; they now resolve
+    // to opaque surfaces with no backdrop-filter required at the consumer.
+    --material-thin-bg: var(--color-surface);
+    --material-regular-bg: var(--color-surface);
+    --material-thick-bg: var(--color-surface);
+
+    // Gradients — kept for legacy hero accents; sky-driven now.
+    --gradient-primary: linear-gradient(
+      var(--gradient-angle),
+      var(--primitive-color-slate-950) 0%,
+      var(--primitive-color-slate-800) 100%
+    );
+    --gradient-accent: linear-gradient(
+      var(--gradient-angle),
+      var(--primitive-color-sky-400) 0%,
+      var(--primitive-color-sky-700) 100%
+    );
+    --gradient-sunset: linear-gradient(
+      var(--gradient-angle),
+      var(--primitive-color-sky-300) 0%,
+      var(--primitive-color-sky-600) 100%
+    );
+
+    // Compat aliases for flex-glass-ported base/mixins/typography files.
+    --color-background-subtle: var(--color-surface);
+    --color-background-muted: var(--color-surface-alt);
+    --color-primary-foreground: var(--color-on-primary);
+
+    // ── Media «paper» (light theme) — theme-aware counterpart of the on-image
+    // layer. Editorial sections, cards and frosted chrome (header/menu/tabs)
+    // become light surfaces with dark text; the .dark-theme block mirrors
+    // these as deep ink + a white scale. Text over actual photos uses the
+    // on-image layer instead and stays white in both themes.
+    --media-bg: #ffffff; // section canvas / frosted-glass base
+    --media-bg-deep: var(--primitive-color-slate-100); // deepest (fallbacks)
+    --media-bg-elevated: var(--primitive-color-slate-50); // slightly lifted
+
+    --on-media: var(--color-foreground); // primary text on paper
+    --on-media-strong: color-mix(in srgb, var(--color-foreground) 92%, transparent);
+    --on-media-muted: var(--color-foreground-muted); // body / secondary
+    --on-media-subtle: var(--color-foreground-subtle); // captions / meta
+    --on-media-faint: color-mix(in srgb, var(--color-foreground) 40%, transparent);
+
+    --media-hairline: rgb(0 0 0 / 0.1); // dividers on light
+    --media-hairline-strong: rgb(0 0 0 / 0.2);
+
+    --media-glass-bg: rgb(0 0 0 / 0.04); // glass tiles/cards on light
+    --media-glass-bg-hover: rgb(0 0 0 / 0.07);
+    --media-glass-border: rgb(0 0 0 / 0.12);
+
+    --on-media-accent: var(--color-accent-text); // sky-600 — ≥4.5:1 on light
+  }
+
+  // ── Semantic: Dark Theme (ADR-009 — Editorial Minimalism on near-black) ──
+  :where(.dark-theme) {
+    color-scheme: dark;
+
+    --color-background: var(--primitive-color-slate-950); // #0a0a0a, was navy sea-900
+    --color-surface: var(--primitive-color-slate-900); // #171717
+    --color-surface-alt: var(--primitive-color-slate-800); // #262626
+    --color-foreground: var(--primitive-color-slate-50); // #fafafa
+    --color-foreground-muted: var(--primitive-color-slate-400); // #a3a3a3
+    --color-foreground-subtle: color-mix(in oklch, var(--color-foreground) 35%, transparent);
+
+    --color-primary: var(--primitive-color-slate-50); // near-white text/CTA
+    --color-primary-hover: var(--primitive-color-slate-200);
+    --color-primary-active: var(--primitive-color-slate-300);
+    --color-primary-soft: color-mix(in oklch, var(--color-primary) 12%, transparent);
+    --color-on-primary: var(--primitive-color-slate-950);
+
+    // Same accent as light + light text on it → buttons are theme-independent
+    // (identical fill/hover/label in both themes).
+    --color-accent: #246ed1;
+    --color-accent-hover: #1f5fb8;
+    --color-accent-active: #1a4f9c;
+    --color-accent-soft: color-mix(in oklch, var(--color-accent) 18%, transparent);
+    --color-accent-text: #6a9bff; // brighter for ≥4.5:1 on near-black (inline links)
+    --color-on-accent: #ffffff; // light label on the blue button
+
+    --color-accent-2: #ff4a55; // brighter scarlet on dark
+    // --color-accent-2-bright + --gradient-brand cascade from the light block.
+
+    --color-success: color-mix(in oklch, var(--primitive-color-success) 70%, white);
+    --color-warning: color-mix(in oklch, var(--primitive-color-warning) 80%, white);
+    --color-destructive: color-mix(in oklch, var(--primitive-color-error) 70%, white);
+
+    --color-border: var(--primitive-color-slate-800);
+    --color-border-hairline: var(--primitive-color-slate-800);
+    --color-border-strong: var(--primitive-color-slate-700);
+    --color-ring: var(--color-accent); // primary blue (dark)
+
+    // Dark mode keeps subtle shadow для отделения surface от background.
+    --color-card-shadow: 0 1px 0 rgb(255 255 255 / 0.04);
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+    --shadow-md: 0 4px 12px rgb(0 0 0 / 0.45);
+    --shadow-lg: 0 8px 24px rgb(0 0 0 / 0.55);
+
+    --color-overlay: color-mix(in oklch, black 65%, transparent);
+
+    // Materials — solid fills (no backdrop-filter — ADR-009 §2).
+    --material-thin-bg: var(--color-surface);
+    --material-regular-bg: var(--color-surface);
+    --material-thick-bg: var(--color-surface);
+
+    --gradient-primary: linear-gradient(
+      var(--gradient-angle),
+      var(--primitive-color-slate-50) 0%,
+      var(--primitive-color-slate-200) 100%
+    );
+    --gradient-accent: linear-gradient(
+      var(--gradient-angle),
+      var(--primitive-color-sky-300) 0%,
+      var(--primitive-color-sky-600) 100%
+    );
+    --gradient-sunset: linear-gradient(
+      var(--gradient-angle),
+      var(--primitive-color-sky-400) 0%,
+      var(--primitive-color-slate-950) 100%
+    );
+
+    // ── Media «paper» (dark theme) — deep-ink canvas + white text scale;
+    // mirrors the light-theme block. The on-image layer (base :root) stays
+    // white in both themes for content sitting over photos/video.
+    --media-bg: #0a0f16; // primary dark section canvas
+    --media-bg-deep: #0a0a0a; // deepest (video letterbox, fallbacks)
+    --media-bg-elevated: #0c1620; // slightly lifted (reviews/gradient tops)
+
+    --on-media: #ffffff; // primary text on paper
+    --on-media-strong: rgb(255 255 255 / 0.92);
+    --on-media-muted: rgb(255 255 255 / 0.7); // body / secondary
+    --on-media-subtle: rgb(255 255 255 / 0.5); // captions / meta
+    --on-media-faint: rgb(255 255 255 / 0.4);
+
+    --media-hairline: rgb(255 255 255 / 0.12); // dividers on dark
+    --media-hairline-strong: rgb(255 255 255 / 0.3);
+
+    --media-glass-bg: rgb(255 255 255 / 0.06); // glass tiles/cards
+    --media-glass-bg-hover: rgb(255 255 255 / 0.12);
+    --media-glass-border: rgb(255 255 255 / 0.18);
+
+    --on-media-accent: color-mix(in srgb, #6a9bff 92%, white); // bright royal blue on dark media
+  }
+} // close @layer tokens
+
+// ── Brand themes — Istok (master) + ELIS (sub) ──────────────────────────────
+// Источник: _shared/refs/istok/visual-identity.md (2026-06-01, на основе скринов
+// реального istokmebel.by).
+//
+//   .light-theme        — текущий нейтральный (sky/slate) дефолт (paper-режим).
+//   .istok-theme        — master-бренд (дефолт <html>): тёмный navy header/footer,
+//                         белое тело, коралловый акцент.
+//   .elis-theme         — суббренд (раздел /krovatki через PageShell brand="elis"):
+//                         тёплая палитра — крем + берёза + персик/мята/blush.
+//
+// Перебивают slot'ы из .light-theme, не трогают primitive-уровень.
+@layer brand-themes {
+  :where(.istok-theme) {
+    color-scheme: light;
+
+    // Источник палитры — детали кресла /model-m31 на istokmebel.by (это «эталонная»
+    // стилизация, остальные страницы — артефакт тильдовских дефолтов и не источник).
+    // Probed 2026-06-01 — see visual-identity.md.
+
+    --color-background: #ffffff;
+    --color-surface: #ffffff;
+    --color-surface-alt: #f7f7f7;        // светло-серый фон секций
+    --color-surface-deep: #131313;        // «Другие модели» внизу — dark section
+    --color-foreground: #000000;
+    --color-foreground-muted: #595959;    // характеристики, eyebrow
+    --color-foreground-subtle: color-mix(in oklch, var(--color-foreground) 45%, transparent);
+
+    --color-primary: #000000;
+    --color-primary-hover: #1a1a1a;
+    --color-primary-active: #2a2a2a;
+    --color-primary-soft: #f7f7f7;
+    --color-on-primary: #ffffff;
+
+    // Royal Blue (HTML #4169E1) — idle CTA / accent.
+    // Hover/active переходят в Royal Blue Traditional (#002366) — глубокая navy.
+    // (заказчик утвердил пару 2026-06-01)
+    --color-accent: #4169e1;
+    --color-accent-hover: #002366;
+    --color-accent-active: #001a4d;
+    --color-accent-soft: #ecefffaa;       // мягкий blue-ish overlay для accent-soft фонов
+    --color-accent-text: #002366;         // inline ссылки на белом ≈ 13:1
+    --color-on-accent: #ffffff;
+
+    // Deep navy alias (тот же #002366) — для underline-декора / second-accent.
+    --color-accent-deep: #002366;
+
+    --color-border: #e8e8e8;
+    --color-border-hairline: #e8e8e8;
+    --color-border-strong: #c8c8c8;
+    --color-ring: var(--color-accent);
+
+    // Bar surface — пуристый чёрный header/footer (не navy).
+    --color-bar-surface: #000000;
+    --color-bar-foreground: #ffffff;
+    --color-bar-foreground-muted: rgb(255 255 255 / 0.7);
+    --color-bar-hairline: rgb(255 255 255 / 0.12);
+  }
+
+  :where(.elis-theme) {
+    color-scheme: light;
+
+    --color-background: #fffcf7;       // тёплый ivory
+    --color-surface: #ffffff;
+    --color-surface-alt: #f5efe6;      // крем (фон секций)
+    --color-foreground: #3a2818;       // тёплый тёмно-коричневый
+    --color-foreground-muted: #7b6552;
+    --color-foreground-subtle: color-mix(in oklch, var(--color-foreground) 45%, transparent);
+
+    --color-primary: #3a2818;
+    --color-primary-hover: #2a1c10;
+    --color-primary-active: #1a1108;
+    --color-primary-soft: #f5efe6;
+    --color-on-primary: #fffcf7;
+
+    --color-accent: #e8a87c;           // тёплый персик/охра
+    --color-accent-hover: #d59868;
+    --color-accent-active: #b8825a;
+    --color-accent-soft: #fbf1e8;
+    --color-accent-text: #a06d3f;      // ≥4.5:1 на ivory
+    --color-on-accent: #ffffff;
+
+    --color-border: #e8dfd0;
+    --color-border-hairline: #e8dfd0;
+    --color-border-strong: #c8baa3;
+    --color-ring: var(--color-accent);
+
+    // Дополнительные mood-акценты для деталей (использовать sparingly):
+    //   sage, dusty-blue, blush. Не для CTA — только для иллюстраций/тегов.
+    --color-mood-sage: #9dc4a8;
+    --color-mood-dusty-blue: #6fa8c4;
+    --color-mood-blush: #e8b4b8;
+
+    // Bar surface — ELIS header может быть светлее master'а (мягче в детском
+    // регистре). На MVP оставляем тоже тёмным для консистентности — переключим
+    // если заказчик в созвоне попросит.
+    --color-bar-surface: #3a2818;
+    --color-bar-foreground: #fffcf7;
+    --color-bar-foreground-muted: rgb(255 252 247 / 0.7);
+    --color-bar-hairline: rgb(255 252 247 / 0.12);
+  }
+}

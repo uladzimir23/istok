@@ -1,0 +1,16 @@
+.wrap {
+  padding-block: var(--space-2xl);
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-lg);
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.empty {
+  padding-block: var(--space-3xl);
+  text-align: center;
+  color: var(--color-foreground-muted);
+  font-size: var(--text-lg);
+}

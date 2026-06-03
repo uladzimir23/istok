@@ -1,0 +1,30 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  flex: 0 0 auto;
+}
+
+.wordmark .wordmarkSvg {
+  display: block;
+  inline-size: auto;
+  block-size: 0.75rem;
+  color: currentColor;
+}
+
+.sm.wordmark .wordmarkSvg { block-size: 0.6rem; }
+.md.wordmark .wordmarkSvg { block-size: 0.75rem; }
+.lg.wordmark .wordmarkSvg { block-size: 1.2rem; }
+
+// ELIS fallback (textovaya)
+.elis .word {
+  font-weight: var(--primitive-weight-semibold);
+  letter-spacing: 0.02em;
+  font-family: var(--font-accent, inherit);
+  white-space: nowrap;
+}
+
+.sm.elis .word { font-size: var(--text-sm); }
+.md.elis .word { font-size: var(--text-base); }
+.lg.elis .word { font-size: var(--text-2xl); }
