@@ -102,7 +102,7 @@ export function FAQ() {
         <div className={styles.list}>
           {FAQS.map((qa, i) => (
             <Reveal key={qa.q} delay={i * 80}>
-              <details className={styles.item}>
+              <details className={styles.item} name="faq-istok">
                 <summary className={styles.summary}>
                   <span className={styles.num} aria-hidden="true">
                     {String(i + 1).padStart(2, "0")}
