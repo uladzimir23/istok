@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Reveal } from "@/shared/ui/Reveal";
 import { ArrowIcon } from "@/shared/ui/ArrowIcon";
+import { asset } from "@/shared/lib/assetPath";
 import styles from "./CategoriesBoard.module.scss";
 
 interface Card {
@@ -80,7 +81,7 @@ export function CategoriesBoard() {
             <Link href={c.href} className={`${styles.card} ${styles[`text-${c.text}`]}`}>
               <div className={styles.photoFrame} aria-hidden="true">
                 <Image
-                  src={c.photo}
+                  src={asset(c.photo)}
                   alt=""
                   fill
                   sizes="(max-width: 720px) 100vw, 50vw"

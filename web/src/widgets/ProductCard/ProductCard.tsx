@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/entities/product";
+import { asset } from "@/shared/lib/assetPath";
 import styles from "./ProductCard.module.scss";
 
 interface Props {
@@ -13,7 +14,7 @@ export function ProductCard({ product, href }: Props) {
     <Link href={href} className={styles.card}>
       <div className={styles.imageBox}>
         <Image
-          src={product.hero.src}
+          src={asset(product.hero.src)}
           alt={product.hero.alt}
           fill
           sizes="(max-width: 600px) 100vw, 33vw"

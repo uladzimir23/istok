@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/entities/product";
+import { asset } from "@/shared/lib/assetPath";
 import styles from "./ProductDetail.module.scss";
 
 interface Props {
@@ -28,7 +29,7 @@ export function ProductDetail({
         <div className={styles.gallery}>
           <div className={styles.heroImage}>
             <Image
-              src={product.hero.src}
+              src={asset(product.hero.src)}
               alt={product.hero.alt}
               fill
               sizes="(max-width: 960px) 100vw, 60vw"
@@ -41,7 +42,7 @@ export function ProductDetail({
               {product.gallery.slice(0, 6).map((media, i) => (
                 <div key={`${media.src}-${i}`} className={styles.thumb}>
                   <Image
-                    src={media.src}
+                    src={asset(media.src)}
                     alt={media.alt}
                     fill
                     sizes="120px"

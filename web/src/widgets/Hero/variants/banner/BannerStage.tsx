@@ -1,3 +1,4 @@
+import { asset } from "@/shared/lib/assetPath";
 import styles from "./BannerStage.module.scss";
 
 interface Props {
@@ -25,18 +26,18 @@ export function BannerStage({
           loop
           playsInline
           preload="metadata"
-          poster="/videos/hero/theater-poster.jpg"
+          poster={asset("/videos/hero/theater-poster.jpg")}
         >
           <source
-            src="/videos/hero/theater-mobile.mp4"
+            src={asset("/videos/hero/theater-mobile.mp4")}
             media="(max-width: 720px)"
             type="video/mp4"
           />
-          <source src="/videos/hero/theater-desktop.mp4" type="video/mp4" />
+          <source src={asset("/videos/hero/theater-desktop.mp4")} type="video/mp4" />
         </video>
       ) : (
         // eslint-disable-next-line @next/next/no-img-element
-        <img className={styles.media} src="/videos/hero/theater-poster.jpg" alt="" />
+        <img className={styles.media} src={asset("/videos/hero/theater-poster.jpg")} alt="" />
       )}
       {scrim !== "none" && (
         <div className={`${styles.scrim} ${styles[`scrim-${scrim}`]}`} aria-hidden="true" />

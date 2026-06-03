@@ -14,6 +14,9 @@ const nextConfig: NextConfig = {
   ...(isPages && {
     basePath: `/${REPO}`,
     assetPrefix: `/${REPO}/`,
+    // Прокидываем basePath в client-runtime — нужен для shared/lib/assetPath.ts,
+    // т.к. next/image со static export + unoptimized=true НЕ префиксит src.
+    env: { NEXT_PUBLIC_BASE_PATH: `/${REPO}` },
   }),
 
   // ВАЖНО: явный turbopack.root, иначе Next inferит cluster-level

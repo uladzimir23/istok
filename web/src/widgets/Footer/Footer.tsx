@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowIcon } from "@/shared/ui/ArrowIcon";
 import { SITE } from "@/shared/lib/seo";
+import { asset } from "@/shared/lib/assetPath";
 import styles from "./Footer.module.scss";
 
 const CATALOG = [
@@ -26,7 +27,7 @@ export function Footer() {
     <footer className={styles.footer} aria-labelledby="footer-h2">
       <div className={styles.head}>
         <Image
-          src="/brand/mark-light-on-dark.svg"
+          src={asset("/brand/mark-light-on-dark.svg")}
           alt=""
           width={48}
           height={48}

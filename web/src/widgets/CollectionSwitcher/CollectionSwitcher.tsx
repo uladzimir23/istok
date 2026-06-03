@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowIcon } from "@/shared/ui/ArrowIcon";
+import { asset } from "@/shared/lib/assetPath";
 import styles from "./CollectionSwitcher.module.scss";
 
 export interface CollectionItem {
@@ -128,7 +129,7 @@ export function CollectionSwitcher(props: Props) {
             // eslint-disable-next-line @next/next/no-img-element
             <img
               key={prevHero}
-              src={prevHero}
+              src={asset(prevHero)}
               alt=""
               className={styles.ambientImg}
               loading="lazy"
@@ -138,7 +139,7 @@ export function CollectionSwitcher(props: Props) {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             key={active.hero}
-            src={active.hero}
+            src={asset(active.hero)}
             alt=""
             className={styles.ambientImgActive}
             loading="lazy"
@@ -247,7 +248,7 @@ export function CollectionSwitcher(props: Props) {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             key={`glass-${active.slug}`}
-            src={active.hero}
+            src={asset(active.hero)}
             alt=""
             aria-hidden="true"
             className={styles.mediaGlass}
@@ -256,7 +257,7 @@ export function CollectionSwitcher(props: Props) {
           />
           <Image
             key={active.slug}
-            src={active.hero}
+            src={asset(active.hero)}
             alt={active.name}
             fill
             sizes="(max-width: 960px) 100vw, 50vw"

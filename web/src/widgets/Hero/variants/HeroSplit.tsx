@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { asset } from "@/shared/lib/assetPath";
 import styles from "./HeroSplit.module.scss";
 
 export function HeroSplit() {
@@ -46,7 +47,7 @@ export function HeroSplit() {
 
         <figure className={styles.figure} aria-hidden="true">
           <Image
-            src="/images/kresla/m3-1/01.png"
+            src={asset("/images/kresla/m3-1/01.png")}
             alt=""
             width={900}
             height={1100}

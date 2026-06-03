@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { asset } from "@/shared/lib/assetPath";
 import styles from "./HeroBranded.module.scss";
 
 export function HeroBranded() {
@@ -8,7 +9,7 @@ export function HeroBranded() {
       {/* Гигантская блёклая силуэтная форма позади контента */}
       <div className={styles.silhouette} aria-hidden="true">
         <Image
-          src="/brand/silhouette.svg"
+          src={asset("/brand/silhouette.svg")}
           alt=""
           fill
           priority
@@ -18,7 +19,7 @@ export function HeroBranded() {
 
       {/* Маленький знак-монограмм слева как «акцент-марка» */}
       <Image
-        src="/brand/mark-dark-on-light.svg"
+        src={asset("/brand/mark-dark-on-light.svg")}
         alt=""
         width={72}
         height={72}

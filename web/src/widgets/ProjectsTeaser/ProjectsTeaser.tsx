@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Reveal } from "@/shared/ui/Reveal";
 import { ArrowIcon } from "@/shared/ui/ArrowIcon";
+import { asset } from "@/shared/lib/assetPath";
 import styles from "./ProjectsTeaser.module.scss";
 
 interface Project {
@@ -146,7 +147,7 @@ export function ProjectsTeaser() {
           <li key={p.num} className={styles.item}>
             <div className={styles.photoFrame} aria-hidden="true">
               <Image
-                src={p.photo}
+                src={asset(p.photo)}
                 alt=""
                 fill
                 sizes="(max-width: 720px) 85vw, 33vw"
