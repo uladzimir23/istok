@@ -10,6 +10,11 @@ supersedes: ADR-001
 # ADR-005 — Content-as-Code Phase 1 No Backend
 
 > Supersedes [[ADR-001 PocketBase as Backend]] до начала имплементации.
+>
+> **Уточнение от 2026-06-26 ([[ADR-008 GitHub Pages Static Export Hosting]]):** часть про
+> обработку заявок ниже устарела. При `output: "export"` серверного маршрута `/api/lead`
+> нет — заявки уходят на внешний endpoint через `NEXT_PUBLIC_LEAD_ENDPOINT` (Telegram +
+> email вне сайта). Решение content-as-code / no-backend в остальном в силе.
 
 ## Контекст
 

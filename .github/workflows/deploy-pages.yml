@@ -35,6 +35,12 @@ jobs:
       - name: Install deps
         run: bun install --frozen-lockfile
 
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: Validate content (Zod)
+        run: bun run validate:content
+
       - name: Build static export
         env:
           GITHUB_PAGES: "true"

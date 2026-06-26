@@ -8,13 +8,19 @@
 
 - **Phase 0 — SDD-каркас (init) — готово.** `CLAUDE.md`, `.claude/` (skills + agents),
   `docs/` по Johnny Decimal, бриф и аудит as-is занесены, первый коммит сделан.
-- **Phase 1 ADR-каркас — готово (proposed).** Зафиксированы ADR-001..007:
-  Next.js 15, SCSS modules, бренд-архитектура (один сайт, два бренда), content-as-code
-  (PocketBase отложен в Phase 2 по триггерам), self-host Docker на VPS, плоская структура.
-- **Phase 1 имплементация — стартует.** Создание `web/` (Next.js 15), `content/` со
-  схемами и сидингом каталога Элис из PDF, базовая дизайн-система с темами Исток/ELIS,
-  CI deploy-pipeline, провижионинг VPS, cutover DNS со старого Tilda.
-- **Tilda продолжает работать на `istokmebel.by`.** Не трогаем до готовности нового сайта.
+- **Phase 1 ADR-каркас — готово.** ADR-001..008: Next.js (App Router), SCSS modules,
+  бренд-архитектура (один сайт, два бренда), content-as-code (PocketBase отложен в Phase 2
+  по триггерам), плоская структура. Hosting пересмотрен: ADR-006 (Docker VPS) → superseded
+  ADR-008 (GitHub Pages static export).
+- **Phase 1 имплементация — выполнена (2026-06-26).** Собран рабочий сайт: `web/`
+  (Next.js 16, App Router, TS strict, FSD-lite), все категории (кресла, кроватки,
+  корпусная → комоды/столы/стеллажи/шкафы) + карточки товаров (SSG), дизайн-система
+  Исток/ELIS, ~18 виджетов, 26 MDX-товаров с Zod-валидацией, SEO. `bun run build` проходит,
+  деплой на GitHub Pages через `.github/workflows/deploy-pages.yml`.
+- **Открытые пункты:** реальный приёмник заявок (`NEXT_PUBLIC_LEAD_ENDPOINT`: Telegram +
+  Resend — сейчас заглушка), наполнение портфолио `content/projects/`, цены «Элис» от
+  клиента, DNS-cutover `istokmebel.by` → кастомный домен в Pages.
+- **Tilda продолжает работать на `istokmebel.by`.** Не трогаем до DNS-cutover.
 
 ## Видение
 
@@ -74,14 +80,14 @@
 
 | Слой | Решение | Источник |
 | --- | --- | --- |
-| Frontend | **Next.js 15** (App Router, TypeScript strict, FSD-lite) | [[ADR-002]] |
+| Frontend | **Next.js 16** (App Router, TypeScript strict, FSD-lite) | [[ADR-002]] |
 | Стили | **SCSS modules + cascade layers + token-система** (паттерн moreminsk) | [[ADR-004]] |
 | Контент Phase 1 | **Content-as-code** — MDX/TS в `content/` + Zod-валидация на билде | [[ADR-005]] |
-| Backend Phase 1 | **Нет.** Заявки → API route → Telegram + email (Resend) | [[ADR-005]] |
+| Backend Phase 1 | **Нет.** Заявки → внешний endpoint `NEXT_PUBLIC_LEAD_ENDPOINT` → Telegram + email (Resend) | [[ADR-005]], [[ADR-008]] |
 | Backend Phase 2 | **PocketBase** при наступлении trigger-условий (см. ADR-005) | [[ADR-001]] (superseded), [[ADR-005]] |
 | Бренд-архитектура | Один сайт `istokmebel.by`, ELIS — раздел `/krovatki` со своей темой | [[ADR-003]] |
-| Хостинг | **Self-hosted Docker на VPS** (паттерн comforthotel ADR-024) | [[ADR-006]] |
-| Структура репо | Плоская (`web/` + `content/` + `nginx/`), без монорепо | [[ADR-007]] |
+| Хостинг | **GitHub Pages** (static export `output: "export"`) | [[ADR-008]] (supersedes [[ADR-006]]) |
+| Структура репо | Плоская (`web/` + `content/`), без монорепо | [[ADR-007]] |
 | Аналитика | **Яндекс.Метрика + GA4** + пиксели | базис, отдельный ADR |
 | Формы | **react-hook-form + zod**, submit через `Promise.allSettled` | паттерн comforthotel ADR-014 |
 | AI-пайплайн | Gemini + Krea (формализуем как playbook позже, отдельный ADR Phase 2+) | отложено |
@@ -108,34 +114,31 @@ istok/
 │   ├── 90 - Ideas & Backlog/
 │   ├── 95 - Attachments/
 │   └── 97 - Reports/
-├── web/                             # Next.js 15 application (ADR-002, ADR-007)
+├── web/                             # Next.js 16 application (ADR-002, ADR-007)
 │   ├── src/{app,widgets,features,entities,shared}/   # FSD-lite
+│   │   └── entities/product/{schema.ts,loader.ts}    # Zod-схема + MDX-loader (ADR-005)
+│   ├── scripts/validate-content.ts  # CLI-валидатор контента (bun run validate:content)
 │   ├── public/
 │   ├── package.json
-│   ├── next.config.ts
+│   ├── next.config.ts               # output: "export" + basePath на GH Pages (ADR-008)
 │   └── tsconfig.json
-├── content/                         # MDX/TS контент-as-code (ADR-005)
-│   ├── products/{chairs,cabinets,cribs}/
-│   ├── projects/                    # портфолио госзаказа
-│   ├── categories.ts
-│   └── schema.ts                    # Zod-схемы
-├── nginx/                           # nginx config (ADR-006)
-├── .github/workflows/               # CI: deploy-prod.yml
+├── content/                         # MDX контент-as-code (ADR-005)
+│   ├── products/{chairs,cabinets,cribs}/    # 26 MDX-товаров
+│   └── projects/                    # портфолио госзаказа (пока пусто)
+├── .github/workflows/               # CI: deploy-pages.yml (build → GitHub Pages, ADR-008)
 ├── .claude/
 │   ├── settings.local.json
 │   ├── agents/                      # docs-sync, adr-drafter
 │   └── skills/
 ├── .vault-private/                  # НЕ в git
-├── scripts/                         # check-secrets.sh, deploy-helpers
-├── docker-compose.yml               # web + nginx
-├── Dockerfile                       # multi-stage для web
 ├── CLAUDE.md
 ├── README.md
 └── .gitignore
 ```
 
-В Phase 2 при активации PocketBase (по триггерам [[ADR-005]]) добавляется `pocketbase/`
-как отдельный сервис в `docker-compose.yml` без перехода в монорепо.
+В Phase 2 при активации PocketBase (по триггерам [[ADR-005]]) возвращаемся к
+контейнерному стеку (новый ADR, `output` → `"standalone"`): добавляются `pocketbase/`,
+`nginx/`, `docker-compose.yml` — без перехода в монорепо.
 
 ## Ветки
 
@@ -156,8 +159,9 @@ istok/
 - `docs/10 - Brief & Requirements/Бриф проекта.md` — бренд-архитектура, направления,
   каталог Элис, клиентские реалии.
 - `docs/20 - Audit/Сайт as-is.md` — что есть на Tilda, что отсутствует.
-- `docs/40 - Architecture/42 - ADR/` — ADR-001 (superseded), ADR-002..007 (proposed):
-  Next.js 15, бренд-архитектура, SCSS modules, content-as-code, self-host Docker, плоский репо.
+- `docs/40 - Architecture/42 - ADR/` — ADR-001 (superseded ADR-005), ADR-002..005, 007
+  (proposed), ADR-006 (superseded ADR-008), ADR-008 (GitHub Pages): Next.js, бренд-
+  архитектура, SCSS modules, content-as-code, static export на GH Pages, плоский репо.
 
 ## Workflow
 
@@ -167,7 +171,7 @@ istok/
 - **ADR** — все значимые решения через sub-агент `adr-drafter` или вручную по шаблону
   `docs/80 - Templates/adr.md`.
 - **Memory** — фактический контекст для следующих сессий — в
-  `~/.claude/projects/-Users-vladimirmazyrec-Documents-istok/memory/`.
+  `~/.claude/projects/-Users-vladimirmazyrec-Projects-zavody-rb-istok/memory/`.
 - **Коммиты** — Conventional Commits (`feat:`, `fix:`, `chore:`, `docs:`, `refactor:`,
   `content:` для контента, `chore(brand):` для брендинга). Подробности — в
   `.claude/skills/git-workflow.md`.

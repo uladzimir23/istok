@@ -1,0 +1,6 @@
+- [Project Istok overview](project_istok_overview.md) — мебельная фабрика «Исток», миграция с Tilda; путь `~/Projects/zavody-rb/istok`; стек: Next.js 16 + SCSS modules + content-as-code (Zod); сайт собран (все категории+карточки); PocketBase отложен в Phase 2; slug ELIS = `/krovatki`.
+- [Istok in zavody-rb cluster](project_istok_in_cluster.md) — istok часть кластера zavody-rb (B2B-витрины РБ-производств, с 2026-06 в `~/Projects/zavody-rb/`); донор-шаблон для RASING/BARSA/alto; межпроектные решения — в `_shared/`.
+- [Static Pages pivot](project_istok_static_pages_pivot.md) — istok хостится на GitHub Pages (static export), не Docker VPS; ADR-006 superseded ADR-008 (2026-06-26); заявки через NEXT_PUBLIC_LEAD_ENDPOINT.
+- [SDD init pattern](feedback_sdd_init_pattern.md) — любой новый проект пользователя начинается с SDD-каркаса (CLAUDE.md + Johnny Decimal docs + .claude/skills+agents) ДО кода.
+- [Reference projects](reference_user_projects.md) — карта проектов в ~/Documents: откуда копировать SDD-каркас, скиллы, fundamenты.
+- [Defer infra complexity](feedback_defer_infra_complexity.md) — пользователь не добавляет инфраструктурные слои «на вырост»; сложность — только по бизнес-триггеру. Закреплено через ADR-005 (istok, 2026-05-01).

@@ -39,6 +39,9 @@ web-legacy/
 # Next.js export output
 web/out/
 
+# TypeScript incremental build cache
+*.tsbuildinfo
+
 # PocketBase data (когда появится)
 pb_data/
 pocketbase

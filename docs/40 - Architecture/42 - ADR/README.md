@@ -17,14 +17,15 @@ order: 42
 - После реализации статус: `proposed` → `accepted`. Если решение пересмотрели — старый
   становится `superseded`, новый ссылается на него.
 
-## Список (на момент init — пусто)
+## Список (актуально на 2026-06-26)
 
-Запланированные:
-- ADR-001 — PocketBase as backend (decision принято в чате 2026-05-01).
-- ADR-002 — Next.js 15 + App Router as frontend.
-- ADR-003 — «Элис» как раздел внутри istokmebel.by, не отдельный сайт.
-- ADR-004 — Hosting (self-host Docker на VPS vs Vercel).
-- ADR-005 — UI стек (Tailwind+shadcn vs SCSS modules).
-- ADR-006 — Image pipeline (Cloudflare R2 vs Bunny + next/image).
-- ADR-007 — Аналитика (Метрика + GA4 + цели).
-- ADR-008 — AI-рендер пайплайн (Gemini/Krea пресеты).
+| ADR | Название | Статус | Дата |
+|---|---|---|---|
+| ADR-001 | PocketBase as Backend | superseded by ADR-005 | 2026-05-01 |
+| ADR-002 | Next.js 16 as Frontend | proposed | 2026-05-01 |
+| ADR-003 | Brand Architecture: One Site Two Brands | proposed | 2026-05-01 |
+| ADR-004 | SCSS Modules as Style Layer | proposed | 2026-05-01 |
+| ADR-005 | Content-as-Code Phase 1 No Backend | proposed | 2026-05-01 |
+| ADR-006 | Self-hosted Docker VPS Hosting | superseded by ADR-008 | 2026-05-01 |
+| ADR-007 | Flat Repo Structure No Monorepo | proposed | 2026-05-01 |
+| ADR-008 | GitHub Pages Static Export Hosting | proposed | 2026-06-26 |

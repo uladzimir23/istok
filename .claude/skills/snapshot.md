@@ -59,7 +59,7 @@ docs/70 - Meetings & Logs/snapshots/<session-slug>/
 ```bash
 SLUG="2026-05-01 03-30 SDD init"
 SNAP="docs/70 - Meetings & Logs/snapshots/$SLUG"
-MEMDIR="$HOME/.claude/projects/-Users-vladimirmazyrec-Documents-istok/memory"
+MEMDIR="$HOME/.claude/projects/-Users-vladimirmazyrec-Projects-zavody-rb-istok/memory"
 
 mkdir -p "$SNAP"
 cp -R "docs/00 - Indexes/" "$SNAP/00 - Indexes"

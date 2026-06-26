@@ -2,11 +2,18 @@
 title: ADR-006 — Self-hosted Docker VPS Hosting
 description: Продакшен `istokmebel.by` размещается на собственном VPS через Docker Compose (Next.js + nginx + Let's Encrypt) по паттерну comforthotel ADR-024.
 order: 6
-status: proposed
+status: superseded
 date: 2026-05-01
+superseded-by: ADR-008
 ---
 
 # ADR-006 — Self-hosted Docker VPS Hosting
+
+> **Superseded by [[ADR-008 GitHub Pages Static Export Hosting]] (2026-06-26).**
+> Этот VPS-стек так и не имплементировался. В Phase 1 проект — статическая витрина без
+> бэкенда (ADR-005), поэтому деплой переведён на static export → GitHub Pages.
+> Документ сохранён как контекст: к контейнерному стеку вернёмся при активации
+> PocketBase в Phase 2 (trigger-условия ADR-005).
 
 ## Контекст
 
