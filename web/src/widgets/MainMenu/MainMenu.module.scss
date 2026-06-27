@@ -2,7 +2,7 @@
 // Простые акценты: левая accent-stripe + цвет label + chevron-translateX.
 // Без word-flip (нет двойных span'ов), без wave-mask, без conic-ring.
 
-@use "@/shared/design-system/mixins" as *;
+@use "shared/design-system/mixins" as *;
 
 // ── Burger / cross ──────────────────────────────────────────────────────
 .burger {

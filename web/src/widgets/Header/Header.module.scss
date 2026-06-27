@@ -2,7 +2,7 @@
 // после scroll. Никаких wave-underline / conic-ring / sailing-yacht — наши
 // акценты собраны вокруг: тонкая прямая accent-полоса + corner-arrow icon.
 
-@use "@/shared/design-system/mixins" as *;
+@use "shared/design-system/mixins" as *;
 
 .header {
   position: fixed;

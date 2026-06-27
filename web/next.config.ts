@@ -10,6 +10,12 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   images: { unoptimized: true },
 
+  // DS вынесен в корень репо (shared/design-system) — общий для web/ и admin/.
+  // loadPaths = корень, поэтому `@use "shared/design-system/..."` резолвится.
+  sassOptions: {
+    loadPaths: [path.resolve(__dirname, "..")],
+  },
+
   // ВАЖНО: явный turbopack.root, иначе Next inferit cluster-level
   // ~/Projects/zavody-rb/bun.lock как root → watch scope = весь кластер
   // (включая rasing/barsa/_shared + их node_modules) → штормовой поток
