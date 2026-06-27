@@ -1,26 +1,65 @@
 @use "shared/design-system/mixins" as *;
 
 .page {
-  padding-block: var(--space-2xl) var(--space-section);
+  padding-block: var(--space-xl) var(--space-section);
 }
 
-.breadcrumbs {
+.back {
+  display: inline-block;
   font-size: var(--text-sm);
   color: var(--color-foreground-muted);
+  text-decoration: none;
 
-  a {
-    color: inherit;
-    text-decoration: none;
+  &:hover {
+    color: var(--color-foreground);
   }
+}
+
+// Editorial-масштхед: рубрика + крупное имя во всю ширину.
+.masthead {
+  padding-block: var(--space-lg) var(--space-xl);
+  margin-block-end: var(--space-xl);
+  border-block-end: 1px solid var(--color-foreground);
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: var(--primitive-tracking-wide);
+  font-size: var(--text-xs);
+  font-weight: var(--primitive-weight-semibold);
+  color: var(--color-accent-text);
+  margin: 0 0 var(--space-md);
+}
+
+.name {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: var(--text-5xl);
+  font-weight: var(--primitive-weight-bold);
+  line-height: var(--primitive-leading-none);
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+
+  @include respond-to("lg") {
+    font-size: var(--text-6xl);
+  }
+}
+
+.summary {
+  margin: var(--space-md) 0 0;
+  max-inline-size: 52ch;
+  font-size: var(--text-lg);
+  color: var(--color-foreground-muted);
+  line-height: var(--primitive-leading-relaxed);
 }
 
 .layout {
   display: grid;
   gap: var(--space-2xl);
-  margin-block-start: var(--space-xl);
 
   @include respond-to("lg") {
-    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    align-items: start;
   }
 }
 
@@ -34,7 +73,6 @@
 .thumb {
   position: relative;
   background: var(--color-surface-alt);
-  border-radius: var(--radius-md);
   overflow: hidden;
 }
 
@@ -44,60 +82,49 @@
 
 .thumbs {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: var(--space-sm);
 }
 
 .thumb {
   aspect-ratio: var(--ratio-square);
+  cursor: pointer;
+  transition: opacity var(--duration-base) var(--ease-out);
+
+  &:hover {
+    opacity: 0.82;
+  }
 }
 
 .image {
   object-fit: cover;
 }
 
+// Информационный рельс — липкий на десктопе.
 .info {
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
+
+  @include respond-to("lg") {
+    position: sticky;
+    inset-block-start: var(--space-xl);
+  }
 }
 
-.eyebrow {
-  text-transform: uppercase;
-  letter-spacing: var(--primitive-tracking-wide);
-  font-size: var(--text-xs);
-  font-weight: var(--primitive-weight-semibold);
-  color: var(--color-accent-text);
-  margin: 0;
-}
-
-.name {
-  margin: 0;
-  font-size: var(--text-4xl);
-  font-weight: var(--primitive-weight-bold);
-  line-height: var(--primitive-leading-tight);
-}
-
-.summary {
-  margin: 0;
-  font-size: var(--text-lg);
-  color: var(--color-foreground-muted);
-  line-height: var(--primitive-leading-relaxed);
-}
-
-.price {
+.priceRow {
   display: flex;
   gap: var(--space-md);
   align-items: baseline;
 }
 
 .priceValue {
-  font-size: var(--text-2xl);
+  font-size: var(--text-3xl);
   font-weight: var(--primitive-weight-bold);
 }
 
 .priceOnRequest {
-  font-size: var(--text-lg);
+  font-size: var(--text-xl);
   color: var(--color-foreground-muted);
 }
 
@@ -113,43 +140,48 @@
   text-decoration: none;
   border-radius: var(--btn-radius, 0);
 
-  &:hover { background: var(--color-accent-hover); }
+  &:hover {
+    background: var(--color-accent-hover);
+  }
 }
 
+// Фактшит: секции с hairline-разделителем сверху.
 .spec {
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
-}
-
-// Graceful empty-state, когда реальных характеристик ещё нет (плейсхолдеры
-// из Tilda скрыты). Мягкая подсказка вместо пустоты / «1×1×1 мм».
-.specNote {
-  margin: 0;
-  padding: var(--space-md);
-  border: 1px solid var(--color-border-hairline);
-  border-radius: var(--radius-md);
-  background: var(--color-surface-alt);
-  color: var(--color-foreground-muted);
-  font-size: var(--text-sm);
-  line-height: var(--primitive-leading-relaxed);
+  padding-block-start: var(--space-lg);
+  border-block-start: 1px solid var(--color-border-hairline);
 }
 
 .specTitle {
   margin: 0;
-  font-size: var(--text-base);
+  font-size: var(--text-xs);
   text-transform: uppercase;
   letter-spacing: var(--primitive-tracking-wide);
   color: var(--color-foreground-muted);
   font-weight: var(--primitive-weight-semibold);
 }
 
+.specNote {
+  margin: 0;
+  padding: var(--space-md);
+  border: 1px solid var(--color-border-hairline);
+  background: var(--color-surface-alt);
+  color: var(--color-foreground-muted);
+  font-size: var(--text-sm);
+  line-height: var(--primitive-leading-relaxed);
+}
+
 .list {
   margin: 0;
   padding-inline-start: var(--space-md);
   color: var(--color-foreground);
+  font-size: var(--text-sm);
 
-  li { margin-block-end: var(--space-xs); }
+  li {
+    margin-block-end: var(--space-xs);
+  }
 }
 
 .sizesTable {
@@ -157,14 +189,60 @@
   border-collapse: collapse;
   font-size: var(--text-sm);
 
-  th, td {
+  th,
+  td {
     text-align: start;
-    padding: var(--space-sm);
+    padding: var(--space-sm) var(--space-sm) var(--space-sm) 0;
     border-block-end: 1px solid var(--color-border-hairline);
   }
 
   th {
     color: var(--color-foreground-muted);
     font-weight: var(--primitive-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--primitive-tracking-wide);
+    font-size: var(--text-xs);
+  }
+}
+
+// Лента «Ещё из коллекции».
+.related {
+  margin-block-start: var(--space-section);
+}
+
+.relatedHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding-block-end: var(--space-md);
+  margin-block-end: var(--space-xl);
+  border-block-end: 1px solid var(--color-foreground);
+}
+
+.kicker {
+  font-size: var(--text-sm);
+  font-weight: var(--primitive-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--primitive-tracking-wide);
+}
+
+.relatedAll {
+  font-size: var(--text-sm);
+  color: var(--color-foreground-muted);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--color-foreground);
+  }
+}
+
+.relatedGrid {
+  display: grid;
+  gap: var(--space-2xl) var(--space-xl);
+  grid-template-columns: 1fr;
+
+  @include respond-to("sm") {
+    grid-template-columns: repeat(3, 1fr);
   }
 }

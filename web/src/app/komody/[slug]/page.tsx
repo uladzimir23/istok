@@ -25,6 +25,9 @@ export default async function KomodPage({
   const { slug } = await params;
   const product = getCabinetBySubAndSlug("komody", slug);
   if (!product) notFound();
+  const related = getCabinetsBySub("komody")
+    .filter((p) => p.slug !== product.slug)
+    .map((p) => ({ product: p, href: `/komody/${p.slug}/` }));
   return (
     <PageShell crumbs={[{ label: "Корпусная", href: "/korpusnaya/" }, { label: "Комоды", href: "/komody/" }, { label: product.name }]}>
       <ProductDetail
@@ -32,6 +35,7 @@ export default async function KomodPage({
         categoryHref="/komody/"
         categoryLabel="Все комоды"
         eyebrow="Корпусная мебель"
+        related={related}
       />
     </PageShell>
   );

@@ -25,6 +25,9 @@ export default async function ShkafPage({
   const { slug } = await params;
   const product = getCabinetBySubAndSlug("shkafy", slug);
   if (!product) notFound();
+  const related = getCabinetsBySub("shkafy")
+    .filter((p) => p.slug !== product.slug)
+    .map((p) => ({ product: p, href: `/shkafy/${p.slug}/` }));
   return (
     <PageShell crumbs={[{ label: "Корпусная", href: "/korpusnaya/" }, { label: "Шкафы", href: "/shkafy/" }, { label: product.name }]}>
       <ProductDetail
@@ -32,6 +35,7 @@ export default async function ShkafPage({
         categoryHref="/shkafy/"
         categoryLabel="Все шкафы"
         eyebrow="Корпусная мебель"
+        related={related}
       />
     </PageShell>
   );

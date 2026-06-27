@@ -1,14 +1,22 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/entities/product";
+import { ProductCard } from "@/widgets/ProductCard";
 import { asset } from "@/shared/lib/assetPath";
 import styles from "./ProductDetail.module.scss";
+
+interface RelatedItem {
+  product: Product;
+  href: string;
+}
 
 interface Props {
   product: Product;
   categoryHref: string;
   categoryLabel: string;
   eyebrow?: string;
+  /** Соседи по коллекции — лента «Ещё из коллекции» внизу. */
+  related?: RelatedItem[];
 }
 
 export function ProductDetail({
@@ -16,6 +24,7 @@ export function ProductDetail({
   categoryHref,
   categoryLabel,
   eyebrow,
+  related = [],
 }: Props) {
   // Плейсхолдер-размеры из Tilda-экспорта (1×1×1 мм) — пока клиент не прислал
   // реальные габариты, такие размеры не показываем (см. TODO в content/products).
@@ -31,9 +40,17 @@ export function ProductDetail({
     product.options.length > 0;
 
   return (
-    <div className={styles.page}>
-      <div className={`container ${styles.breadcrumbs}`}>
-        <Link href={categoryHref}>← {categoryLabel}</Link>
+    <article className={styles.page}>
+      {/* Editorial-масштхед: рубрика + крупное имя во всю ширину. */}
+      <div className="container">
+        <Link href={categoryHref} className={styles.back}>
+          ← {categoryLabel}
+        </Link>
+        <header className={styles.masthead}>
+          {eyebrow && <p className={styles.eyebrow}>{eyebrow}</p>}
+          <h1 className={styles.name}>{product.name}</h1>
+          <p className={styles.summary}>{product.summary}</p>
+        </header>
       </div>
 
       <div className={`container ${styles.layout}`}>
@@ -56,7 +73,7 @@ export function ProductDetail({
                     src={asset(media.src)}
                     alt={media.alt}
                     fill
-                    sizes="120px"
+                    sizes="160px"
                     className={styles.image}
                   />
                 </div>
@@ -66,11 +83,7 @@ export function ProductDetail({
         </div>
 
         <aside className={styles.info}>
-          {eyebrow && <p className={styles.eyebrow}>{eyebrow}</p>}
-          <h1 className={styles.name}>{product.name}</h1>
-          <p className={styles.summary}>{product.summary}</p>
-
-          <div className={styles.price}>
+          <div className={styles.priceRow}>
             {product.priceByn ? (
               <span className={styles.priceValue}>от {product.priceByn} BYN</span>
             ) : (
@@ -145,7 +158,28 @@ export function ProductDetail({
           )}
         </aside>
       </div>
-    </div>
+
+      {related.length > 0 && (
+        <div className={`container ${styles.related}`}>
+          <header className={styles.relatedHead}>
+            <span className={styles.kicker}>Ещё из коллекции</span>
+            <Link href={categoryHref} className={styles.relatedAll}>
+              Все модели →
+            </Link>
+          </header>
+          <div className={styles.relatedGrid}>
+            {related.slice(0, 3).map((r, i) => (
+              <ProductCard
+                key={r.product.slug}
+                product={r.product}
+                href={r.href}
+                index={i}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+    </article>
   );
 }
 

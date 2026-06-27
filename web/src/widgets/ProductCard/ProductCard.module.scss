@@ -1,58 +1,109 @@
+@use "shared/design-system/mixins" as *;
+
+// Лукбук-карточка: крупное фото без рамок, подпись капсом с номером.
 .card {
   display: flex;
   flex-direction: column;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border-hairline);
-  border-radius: var(--radius-md);
-  overflow: hidden;
   text-decoration: none;
   color: inherit;
-  transition: transform var(--duration-base) var(--ease-out),
-    box-shadow var(--duration-base) var(--ease-out);
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-  }
 }
 
 .imageBox {
   position: relative;
   aspect-ratio: var(--ratio-landscape);
   background: var(--color-surface-alt);
+  overflow: hidden;
+}
+
+.wide .imageBox {
+  aspect-ratio: var(--ratio-cinema);
 }
 
 .image {
   object-fit: cover;
+  transition: transform var(--duration-slow) var(--ease-out);
 }
 
-.body {
+.card:hover .image {
+  transform: scale(1.04);
+}
+
+// Editorial-CTA: всплывает в углу фото на hover.
+.cta {
+  position: absolute;
+  inset-inline-start: var(--space-md);
+  inset-block-end: var(--space-md);
+  padding: 0.45rem 0.85rem;
+  background: var(--color-foreground);
+  color: var(--color-surface);
+  font-size: var(--text-xs);
+  font-weight: var(--primitive-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--primitive-tracking-wide);
+  opacity: 0;
+  transform: translateY(0.5rem);
+  transition:
+    opacity var(--duration-base) var(--ease-out),
+    transform var(--duration-base) var(--ease-out);
+
+  @media (hover: none) {
+    display: none;
+  }
+}
+
+.card:hover .cta {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.caption {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
-  padding: var(--space-md);
+  gap: 0.15rem;
+  padding-block-start: var(--space-md);
+}
+
+.title {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+  margin: 0;
+}
+
+.num {
+  font-size: var(--text-sm);
+  font-weight: var(--primitive-weight-semibold);
+  color: var(--color-foreground-muted);
+  font-variant-numeric: tabular-nums;
 }
 
 .name {
-  margin: 0;
-  font-size: var(--text-lg);
-  font-weight: var(--primitive-weight-semibold);
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: var(--primitive-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  line-height: var(--primitive-leading-tight);
 }
 
-.summary {
+.wide .name {
+  font-size: var(--text-3xl);
+}
+
+.meta {
   margin: 0;
   font-size: var(--text-sm);
   color: var(--color-foreground-muted);
   line-height: var(--primitive-leading-snug);
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
 .price {
-  margin: var(--space-xs) 0 0;
-  font-weight: var(--primitive-weight-semibold);
-  color: var(--color-accent-text);
+  margin: 0.2rem 0 0;
   font-size: var(--text-sm);
+  font-weight: var(--primitive-weight-medium);
+  color: var(--color-foreground);
 }

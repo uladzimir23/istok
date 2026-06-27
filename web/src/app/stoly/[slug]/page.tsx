@@ -25,6 +25,9 @@ export default async function StolPage({
   const { slug } = await params;
   const product = getCabinetBySubAndSlug("stoly", slug);
   if (!product) notFound();
+  const related = getCabinetsBySub("stoly")
+    .filter((p) => p.slug !== product.slug)
+    .map((p) => ({ product: p, href: `/stoly/${p.slug}/` }));
   return (
     <PageShell crumbs={[{ label: "Корпусная", href: "/korpusnaya/" }, { label: "Столы", href: "/stoly/" }, { label: product.name }]}>
       <ProductDetail
@@ -32,6 +35,7 @@ export default async function StolPage({
         categoryHref="/stoly/"
         categoryLabel="Все столы"
         eyebrow="Корпусная мебель"
+        related={related}
       />
     </PageShell>
   );

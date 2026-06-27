@@ -31,6 +31,9 @@ export default async function KrovatkaPage({
   const { slug } = await params;
   const product = getProductBySlug("cribs", slug);
   if (!product) notFound();
+  const related = getProductsByCategory("cribs")
+    .filter((p) => p.slug !== product.slug)
+    .map((p) => ({ product: p, href: `/krovatki/${p.slug}/` }));
   return (
     <PageShell brand="elis" crumbs={[{ label: "Кроватки ELIS", href: "/krovatki/" }, { label: product.name }]}>
       <ProductDetail
@@ -38,6 +41,7 @@ export default async function KrovatkaPage({
         categoryHref="/krovatki/"
         categoryLabel="Все кроватки ELIS"
         eyebrow="ELIS Kids Beds"
+        related={related}
       />
     </PageShell>
   );

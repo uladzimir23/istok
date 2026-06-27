@@ -25,6 +25,9 @@ export default async function KresloPage({
   const { slug } = await params;
   const product = getProductBySlug("chairs", slug);
   if (!product) notFound();
+  const related = getProductsByCategory("chairs")
+    .filter((p) => p.slug !== product.slug)
+    .map((p) => ({ product: p, href: `/kresla/${p.slug}/` }));
   return (
     <PageShell
       crumbs={[{ label: "Кресла", href: "/kresla/" }, { label: product.name }]}
@@ -34,6 +37,7 @@ export default async function KresloPage({
         categoryHref="/kresla/"
         categoryLabel="Все кресла"
         eyebrow="B2B / Госзаказ"
+        related={related}
       />
     </PageShell>
   );

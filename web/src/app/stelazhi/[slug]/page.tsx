@@ -25,6 +25,9 @@ export default async function StelazhPage({
   const { slug } = await params;
   const product = getCabinetBySubAndSlug("stelazhi", slug);
   if (!product) notFound();
+  const related = getCabinetsBySub("stelazhi")
+    .filter((p) => p.slug !== product.slug)
+    .map((p) => ({ product: p, href: `/stelazhi/${p.slug}/` }));
   return (
     <PageShell crumbs={[{ label: "Корпусная", href: "/korpusnaya/" }, { label: "Стеллажи", href: "/stelazhi/" }, { label: product.name }]}>
       <ProductDetail
@@ -32,6 +35,7 @@ export default async function StelazhPage({
         categoryHref="/stelazhi/"
         categoryLabel="Все стеллажи"
         eyebrow="Корпусная мебель"
+        related={related}
       />
     </PageShell>
   );

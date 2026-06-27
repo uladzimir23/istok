@@ -1,11 +1,41 @@
+@use "shared/design-system/mixins" as *;
+
 .wrap {
-  padding-block: var(--space-2xl);
+  padding-block: var(--space-2xl) var(--space-section);
+}
+
+// Лукбук-масштхед: надрубрика слева, счётчик справа, hairline-линия.
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding-block-end: var(--space-md);
+  margin-block-end: var(--space-xl);
+  border-block-end: 1px solid var(--color-foreground);
+}
+
+.kicker {
+  font-size: var(--text-sm);
+  font-weight: var(--primitive-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--primitive-tracking-wide);
+}
+
+.count {
+  font-size: var(--text-sm);
+  color: var(--color-foreground-muted);
+  font-variant-numeric: tabular-nums;
 }
 
 .grid {
   display: grid;
-  gap: var(--space-lg);
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-2xl) var(--space-xl);
+  grid-template-columns: 1fr;
+
+  @include respond-to("sm") {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .empty {
