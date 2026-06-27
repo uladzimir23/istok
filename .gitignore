@@ -44,7 +44,6 @@ web/out/
 
 # PocketBase data (когда появится)
 pb_data/
-pocketbase
 
 # Raw input (большие исходники клиента, не для git)
 # Перенести в docs/95 - Attachments/ под латинскими именами, когда дойдут руки
