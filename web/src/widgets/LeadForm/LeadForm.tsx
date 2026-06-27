@@ -32,7 +32,6 @@ export function LeadForm({ productSlug, source = "contacts" }: Props) {
       if (!endpoint) {
         // Phase 1 placeholder: no external endpoint configured yet.
         // Log payload so dev/show-mode сможет показать, что данные собраны.
-        // eslint-disable-next-line no-console
         console.info("[lead placeholder]", data);
         await new Promise((r) => setTimeout(r, 600));
       } else {

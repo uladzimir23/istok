@@ -62,6 +62,19 @@ type Props = FlatProps | GroupedProps;
  *   сверху + chips items активной группы. Полезно для корпусной мебели
  *   (КОМОДЫ / СТОЛЫ / СТЕЛЛАЖИ / ШКАФЫ).
  */
+// Стартовая группа + slug: первый item с defaultSlug, иначе первый в первой
+// группе. Чистая функция уровня модуля — вызывается из ленивых useState.
+function resolveInitial(groups: CollectionGroup[], defaultSlug?: string) {
+  if (defaultSlug) {
+    for (const g of groups) {
+      const it = g.items.find((i) => i.slug === defaultSlug);
+      if (it) return { groupKey: g.key, slug: it.slug };
+    }
+  }
+  const firstGroup = groups[0];
+  return { groupKey: firstGroup.key, slug: firstGroup.items[0]?.slug ?? "" };
+}
+
 export function CollectionSwitcher(props: Props) {
   const {
     eyebrow,
@@ -80,20 +93,14 @@ export function CollectionSwitcher(props: Props) {
 
   const isGrouped = groups.length > 1 || groups[0]?.key !== "__all";
 
-  // Начальная активная группа + item.
-  const initial = useMemo(() => {
-    if (defaultSlug) {
-      for (const g of groups) {
-        const it = g.items.find((i) => i.slug === defaultSlug);
-        if (it) return { groupKey: g.key, slug: it.slug };
-      }
-    }
-    const firstGroup = groups[0];
-    return { groupKey: firstGroup.key, slug: firstGroup.items[0]?.slug ?? "" };
-  }, [groups, defaultSlug]);
-
-  const [activeGroup, setActiveGroup] = useState(initial.groupKey);
-  const [activeSlug, setActiveSlug] = useState(initial.slug);
+  // Начальная активная группа + item — через ленивые инициализаторы useState
+  // (вычисляется один раз на mount; см. чистую resolveInitial ниже).
+  const [activeGroup, setActiveGroup] = useState(
+    () => resolveInitial(groups, defaultSlug).groupKey,
+  );
+  const [activeSlug, setActiveSlug] = useState(
+    () => resolveInitial(groups, defaultSlug).slug,
+  );
 
   const currentGroup = groups.find((g) => g.key === activeGroup) ?? groups[0];
   const active =
