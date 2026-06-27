@@ -1,0 +1,24 @@
+@use "shared/design-system/index" as *;
+
+:root {
+  // Admin грузит Manrope через @fontsource (импорт в main.tsx); прокидываем имя
+  // семейства в токен (в web это делает next/font). DS-токены берут отсюда.
+  --font-manrope: "Manrope Variable";
+}
+
+body {
+  margin: 0;
+  min-block-size: 100dvh;
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--primitive-leading-normal);
+  color: var(--color-foreground);
+  background: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
