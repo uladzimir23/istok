@@ -22,16 +22,19 @@ export function Reveal({
   className,
 }: Props) {
   const ref = useRef<HTMLDivElement | null>(null);
-  // Без IntersectionObserver (SSR / старые среды) — сразу видимо, через ленивый
-  // инициализатор (без синхронного setState в эффекте).
-  const [visible, setVisible] = useState(
-    () => typeof IntersectionObserver === "undefined",
-  );
+  // Initial false на сервере И клиенте — hydration-safe (раньше ленивый init по
+  // typeof IntersectionObserver расходился server/client).
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (typeof IntersectionObserver === "undefined") return;
+    // Без IntersectionObserver (старые среды) — показываем сразу, но через rAF
+    // (не синхронный setState в эффекте), после гидрации.
+    if (typeof IntersectionObserver === "undefined") {
+      const id = requestAnimationFrame(() => setVisible(true));
+      return () => cancelAnimationFrame(id);
+    }
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries) {

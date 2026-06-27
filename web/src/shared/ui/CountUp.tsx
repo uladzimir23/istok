@@ -15,18 +15,21 @@ interface Props {
 }
 
 export function CountUp({ to, duration = 1200, prefix = "", suffix = "", format = true }: Props) {
-  // Без IntersectionObserver (SSR / старые среды) — сразу финальное значение
-  // через ленивый инициализатор (без синхронного setState в эффекте).
-  const [value, setValue] = useState(() =>
-    typeof IntersectionObserver === "undefined" ? to : 0,
-  );
+  // Initial 0 на сервере И клиенте — hydration-safe (раньше ленивый init по
+  // typeof IntersectionObserver расходился server/client).
+  const [value, setValue] = useState(0);
   const ref = useRef<HTMLSpanElement | null>(null);
   const startedRef = useRef(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (typeof IntersectionObserver === "undefined") return;
+    // Без IntersectionObserver (старые среды) — сразу финал, но через rAF
+    // (не синхронный setState в эффекте), после гидрации.
+    if (typeof IntersectionObserver === "undefined") {
+      const id = requestAnimationFrame(() => setValue(to));
+      return () => cancelAnimationFrame(id);
+    }
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries) {
