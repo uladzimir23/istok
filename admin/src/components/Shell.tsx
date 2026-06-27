@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Link, NavLink } from "react-router-dom";
 import clsx from "clsx";
 import { pb } from "../lib/pb";
+import { PublishButton } from "./PublishButton";
 import styles from "./Shell.module.scss";
 
 export function Shell({
@@ -33,6 +34,7 @@ export function Shell({
           </NavLink>
         </nav>
         <div className={styles.right}>
+          <PublishButton />
           <span className={styles.user}>{pb.authStore.record?.email}</span>
           <button type="button" className={styles.logout} onClick={onLogout}>
             Выйти

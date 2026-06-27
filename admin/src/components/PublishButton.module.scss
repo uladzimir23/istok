@@ -1,0 +1,20 @@
+.btn {
+  padding: 0.4rem 0.9rem;
+  font-size: var(--text-sm);
+  font-weight: var(--primitive-weight-semibold);
+  color: var(--color-on-accent);
+  background: var(--color-accent);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s var(--ease-out);
+
+  &:hover:not(:disabled) {
+    background: var(--color-accent-hover);
+  }
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}

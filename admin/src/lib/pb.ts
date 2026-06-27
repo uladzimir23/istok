@@ -6,10 +6,14 @@ export const pb = new PocketBase(
 );
 pb.autoCancellation(false);
 
-// MVP: логин суперюзером (admin@istok.local). В проде — отдельная auth-коллекция
-// «editors» с ограниченными правами (ADR-011, follow-up).
+// Логин: сначала как редактор фабрики (коллекция editors, огранич. права),
+// затем как суперюзер (мы) — fallback (ADR-011).
 export async function login(email: string, password: string) {
-  return pb.collection("_superusers").authWithPassword(email, password);
+  try {
+    return await pb.collection("editors").authWithPassword(email, password);
+  } catch {
+    return await pb.collection("_superusers").authWithPassword(email, password);
+  }
 }
 
 export function logout() {
