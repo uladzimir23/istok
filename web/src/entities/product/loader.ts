@@ -1,14 +1,27 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import matter from "gray-matter";
+import { USE_PB } from "@/shared/lib/pocketbase";
 import { Product, type Product as ProductT, type ProductCategory } from "./schema";
 
 const PRODUCTS_DIR = path.resolve(process.cwd(), "..", "content", "products");
+const PB_SNAPSHOT = path.resolve(process.cwd(), ".pb", "products.json");
 
 let cache: ProductT[] | null = null;
 
 function loadAll(): ProductT[] {
   if (cache) return cache;
+
+  // Phase 2 (ADR-010): при USE_PB читаем prebuild-снапшот PB вместо MDX.
+  if (USE_PB) {
+    const arr = JSON.parse(fs.readFileSync(PB_SNAPSHOT, "utf8")) as unknown[];
+    cache = arr
+      .map((d) => Product.parse(d))
+      .filter((p) => p.published)
+      .sort((a, b) => a.name.localeCompare(b.name, "ru"));
+    return cache;
+  }
+
   const products: ProductT[] = [];
 
   function walk(dir: string) {

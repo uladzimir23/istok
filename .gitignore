@@ -55,3 +55,10 @@ pocketbase
 # Tilda export — 165 МБ статики, источник для контент-парсера
 # Живёт локально, индексируется в docs/20 - Audit/Tilda export inventory.md
 /tilda-old/
+
+# PocketBase (Phase 2) — бинарь не коммитим (pb_data уже игнорится)
+/pocketbase/pocketbase
+/pocketbase/pb.zip
+
+# PB-снапшот для билда (генерируется prebuild)
+web/.pb/
