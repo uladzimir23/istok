@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
+import clsx from "clsx";
 import { pb } from "../lib/pb";
 import styles from "./Shell.module.scss";
 
@@ -16,6 +17,21 @@ export function Shell({
         <Link to="/" className={styles.brand}>
           ИСТОК<span className={styles.dot}>·</span>админка
         </Link>
+        <nav className={styles.nav}>
+          <NavLink
+            to="/"
+            end
+            className={({ isActive }) => clsx(styles.navLink, isActive && styles.navActive)}
+          >
+            Товары
+          </NavLink>
+          <NavLink
+            to="/projects"
+            className={({ isActive }) => clsx(styles.navLink, isActive && styles.navActive)}
+          >
+            Проекты
+          </NavLink>
+        </nav>
         <div className={styles.right}>
           <span className={styles.user}>{pb.authStore.record?.email}</span>
           <button type="button" className={styles.logout} onClick={onLogout}>

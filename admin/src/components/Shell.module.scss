@@ -30,6 +30,33 @@
   margin-inline: 0.3em;
 }
 
+.nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-inline-start: var(--space-xl);
+  margin-inline-end: auto;
+}
+
+.navLink {
+  color: var(--color-bar-foreground-muted);
+  text-decoration: none;
+  font-size: var(--text-sm);
+  font-weight: var(--primitive-weight-medium);
+  padding: 0.35rem 0;
+  border-block-end: 2px solid transparent;
+  transition: color 0.2s var(--ease-out);
+
+  &:hover {
+    color: var(--color-bar-foreground);
+  }
+}
+
+.navActive {
+  color: var(--color-bar-foreground);
+  border-block-end-color: var(--color-accent);
+}
+
 .right {
   display: flex;
   align-items: center;

@@ -31,3 +31,28 @@ export const ProductEdit = z.object({
   options: z.array(z.string()),
 });
 export type ProductEditValues = z.infer<typeof ProductEdit>;
+
+// ── Проекты портфолио ─────────────────────────────────────────────────────
+export interface ProjectRecord {
+  id: string;
+  slug: string;
+  order: number;
+  objectType: string;
+  city: string;
+  year: number;
+  delivered: string;
+  summary: string;
+  published: boolean;
+  hero: { src: string; alt: string };
+}
+
+export const ProjectEdit = z.object({
+  objectType: z.string().min(1, "Укажите тип объекта"),
+  city: z.string().min(1, "Укажите город"),
+  year: z.number().int().gte(2000).lte(2100),
+  delivered: z.string().min(1, "Укажите, что поставлено"),
+  summary: z.string().max(400, "Не длиннее 400 символов"),
+  order: z.number().int().positive(),
+  published: z.boolean(),
+});
+export type ProjectEditValues = z.infer<typeof ProjectEdit>;
