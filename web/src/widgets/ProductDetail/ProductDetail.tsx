@@ -17,7 +17,18 @@ export function ProductDetail({
   categoryLabel,
   eyebrow,
 }: Props) {
-  const hasBed = product.sizes.some((s) => s.bedDimensions);
+  // Плейсхолдер-размеры из Tilda-экспорта (1×1×1 мм) — пока клиент не прислал
+  // реальные габариты, такие размеры не показываем (см. TODO в content/products).
+  const isPlaceholderSize = (s: Product["sizes"][number]) =>
+    s.totalDimensions.length <= 1 &&
+    s.totalDimensions.width <= 1 &&
+    s.totalDimensions.height <= 1;
+  const realSizes = product.sizes.filter((s) => !isPlaceholderSize(s));
+  const hasBed = realSizes.some((s) => s.bedDimensions);
+  const hasSpecs =
+    realSizes.length > 0 ||
+    product.materials.length > 0 ||
+    product.options.length > 0;
 
   return (
     <div className={styles.page}>
@@ -71,7 +82,7 @@ export function ProductDetail({
             Запросить «{product.name}»
           </Link>
 
-          {product.sizes.length > 0 && (
+          {realSizes.length > 0 && (
             <section className={styles.spec}>
               <h2 className={styles.specTitle}>Размеры</h2>
               <table className={styles.sizesTable}>
@@ -83,7 +94,7 @@ export function ProductDetail({
                   </tr>
                 </thead>
                 <tbody>
-                  {product.sizes.map((s) => (
+                  {realSizes.map((s) => (
                     <tr key={s.slug}>
                       <td>{s.slug}</td>
                       {hasBed && (
@@ -124,6 +135,13 @@ export function ProductDetail({
                 ))}
               </ul>
             </section>
+          )}
+
+          {!hasSpecs && (
+            <p className={styles.specNote}>
+              Характеристики уточняются. Пришлите запрос — менеджер вышлет
+              габариты, материалы и цену по этой модели.
+            </p>
           )}
         </aside>
       </div>
