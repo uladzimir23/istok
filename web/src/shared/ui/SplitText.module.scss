@@ -1,0 +1,17 @@
+.word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  // Запас под выносные элементы (р, у, д), чтобы маска не срезала.
+  padding-block-end: 0.12em;
+  margin-block-end: -0.12em;
+}
+
+.inner {
+  display: inline-block;
+  will-change: transform;
+}
+
+.accent {
+  color: var(--color-accent);
+}

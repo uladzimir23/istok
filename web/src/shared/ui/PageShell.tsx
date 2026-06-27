@@ -1,6 +1,8 @@
 import { Footer } from "@/widgets/Footer";
 import { Header } from "@/widgets/Header";
 import { BrandTicker } from "@/widgets/BrandTicker";
+import { ScrollProgress } from "@/shared/ui/ScrollProgress";
+import { GridLines } from "@/shared/ui/GridLines";
 import type { Brand } from "@/entities/product";
 import styles from "./PageShell.module.scss";
 
@@ -14,6 +16,8 @@ export function PageShell({ children, brand = "istok" }: Props) {
   const tickerText = brand === "elis" ? "ELIS · KIDS BEDS" : "ИСТОК · МЕБЕЛЬ";
   return (
     <div data-brand={brand} className={`${themeClass} ${styles.shell}`}>
+      <GridLines count={8} />
+      <ScrollProgress />
       <Header brand={brand} />
       <main id="main-content">{children}</main>
       <Footer />

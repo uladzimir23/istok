@@ -1,3 +1,4 @@
+import { SplitText } from "@/shared/ui/SplitText";
 import styles from "./PageHero.module.scss";
 
 interface Props {
@@ -11,7 +12,10 @@ export function PageHero({ eyebrow, title, description }: Props) {
     <section className={styles.hero}>
       <div className="container">
         {eyebrow && <p className={styles.eyebrow}>{eyebrow}</p>}
-        <h1 className={styles.title}>{title}</h1>
+        <h1 className={styles.title}>
+          {/* Above-the-fold → immediate рил по словам из маски. */}
+          <SplitText text={title} immediate />
+        </h1>
         {description && <p className={styles.description}>{description}</p>}
       </div>
     </section>

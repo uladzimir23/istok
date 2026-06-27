@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowIcon } from "@/shared/ui/ArrowIcon";
+import { ScrollFillText } from "@/shared/ui/ScrollFillText";
 import { asset } from "@/shared/lib/assetPath";
 import styles from "./CollectionSwitcher.module.scss";
 
@@ -163,7 +164,9 @@ export function CollectionSwitcher(props: Props) {
               {eyebrow}
             </p>
           )}
-          <h2 className={styles.title}>{title}</h2>
+          <h2 className={styles.title}>
+            <ScrollFillText text={title} />
+          </h2>
         </div>
         {catalogHref && (
           <Link href={catalogHref} className={styles.catalogLink}>

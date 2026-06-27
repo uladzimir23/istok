@@ -1,0 +1,16 @@
+.grid {
+  position: fixed;
+  inset: 0;
+  // Над контентом (фиксированный, positioned z>auto), но под хедером/тикером.
+  z-index: 1;
+  pointer-events: none;
+
+  & > span {
+    position: absolute;
+    inset-block: 0;
+    inline-size: 1px;
+    background: var(--color-foreground);
+    // Едва заметно — текстура, не сетка.
+    opacity: 0.05;
+  }
+}

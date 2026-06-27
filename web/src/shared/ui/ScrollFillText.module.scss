@@ -1,0 +1,8 @@
+.wrap {
+  // Наследует размер/жирность/цвет от заголовка-родителя (h2 и т.п.).
+}
+
+.word {
+  display: inline-block;
+  white-space: nowrap;
+}
