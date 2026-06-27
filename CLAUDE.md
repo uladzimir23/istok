@@ -21,6 +21,11 @@
   поддомен `new.istokmebel.by` (порт 3007). Обвязка в репо: `Dockerfile`, `infra/nginx/`,
   `infra/docker-compose.yml`, `.github/workflows/deploy.yml`. Карта сервера — внешний волт
   `~/Desktop/sync-agency-server/`. Открыто: DNS, `DEPLOY_SSH_KEY`, серверные шаги.
+- **Phase 2 открыта (2026-06-27) — PocketBase ([[ADR-010]]).** Сработал триггер №1 из
+  ADR-005 (редактор фабрики без git): активируем БД + админку. Модель — **static export
+  + rebuild-webhook** (хостинг ADR-009 не меняется): PB на том же сервере, loader'ы читают
+  PB на билде, правка в админке → `repository_dispatch` → пересборка статики. Имплементация —
+  после выката статики на сервер, на ветке. Донор паттерна — `flex-glass` (skill `pocketbase.md`).
 - **Открытые пункты:** реальный приёмник заявок (`NEXT_PUBLIC_LEAD_ENDPOINT`: Telegram +
   Resend — сейчас заглушка), наполнение портфолио `content/projects/`, цены «Элис» от
   клиента, финальный DNS-cutover apex `istokmebel.by` с Tilda на сервер.

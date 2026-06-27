@@ -11,6 +11,10 @@ supersedes: ADR-001
 
 > Supersedes [[ADR-001 PocketBase as Backend]] до начала имплементации.
 >
+> **Триггер наступил (2026-06-27):** trigger-условие №1 ниже («второй редактор на
+> стороне фабрики без git») активировано — Phase 2 запущена в
+> [[ADR-010 PocketBase Activation Phase 2 Static Rebuild]] (модель static + rebuild).
+>
 > **Уточнение от 2026-06-26 ([[ADR-008 GitHub Pages Static Export Hosting]]):** часть про
 > обработку заявок ниже устарела. При `output: "export"` серверного маршрута `/api/lead`
 > нет — заявки уходят на внешний endpoint через `NEXT_PUBLIC_LEAD_ENDPOINT` (Telegram +
