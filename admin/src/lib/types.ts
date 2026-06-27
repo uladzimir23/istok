@@ -1,5 +1,12 @@
 import { z } from "zod";
 
+export type Color = { name: string; hex: string };
+export type Size = {
+  slug: string;
+  bedDimensions?: { length: number; width: number };
+  totalDimensions: { length: number; width: number; height: number };
+};
+
 // PB-запись товара (поля, которые показываем/трогаем в MVP).
 export interface ProductRecord {
   id: string;
@@ -12,7 +19,8 @@ export interface ProductRecord {
   published: boolean;
   materials: string[];
   options: string[];
-  colors: { name: string; hex: string }[];
+  colors: Color[];
+  sizes: Size[];
   hero: { src: string; alt: string };
 }
 

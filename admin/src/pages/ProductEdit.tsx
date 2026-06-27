@@ -6,11 +6,15 @@ import { pb } from "../lib/pb";
 import { removeRecord } from "../lib/crud";
 import { productUrl } from "../lib/site";
 import { useUnsavedGuard } from "../hooks/useUnsavedGuard";
+import { SizesEditor } from "../components/SizesEditor";
+import { ColorsEditor } from "../components/ColorsEditor";
 import {
   CATEGORY_LABEL,
   ProductEdit as Schema,
   type ProductEditValues,
   type ProductRecord,
+  type Size,
+  type Color,
 } from "../lib/types";
 import styles from "./ProductEdit.module.scss";
 
@@ -26,6 +30,8 @@ export function ProductEdit() {
   const [rec, setRec] = useState<ProductRecord | null>(null);
   const [matText, setMatText] = useState("");
   const [optText, setOptText] = useState("");
+  const [sizes, setSizes] = useState<Size[]>([]);
+  const [colors, setColors] = useState<Color[]>([]);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
 
@@ -33,10 +39,12 @@ export function ProductEdit() {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors, isSubmitting, isDirty },
   } = useForm<ProductEditValues>({ resolver: zodResolver(Schema) });
 
   useUnsavedGuard(isDirty);
+  const category = watch("category");
 
   useEffect(() => {
     if (!id) return;
@@ -46,6 +54,8 @@ export function ProductEdit() {
         setRec(r);
         setMatText((r.materials ?? []).join("\n"));
         setOptText((r.options ?? []).join("\n"));
+        setSizes(r.sizes ?? []);
+        setColors(r.colors ?? []);
         reset({
           name: r.name,
           category: r.category,
@@ -75,6 +85,8 @@ export function ProductEdit() {
         published: v.published,
         materials: lines(matText),
         options: lines(optText),
+        sizes,
+        colors,
       });
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
@@ -173,8 +185,18 @@ export function ProductEdit() {
         </label>
       </div>
 
+      <div className={styles.field}>
+        Размеры
+        <SizesEditor value={sizes} onChange={setSizes} withBed={category === "cribs"} />
+      </div>
+
+      <div className={styles.field}>
+        Цвета
+        <ColorsEditor value={colors} onChange={setColors} />
+      </div>
+
       <p className={styles.note}>
-        Размеры и фото редактируются позже (фото — пути в каталоге сайта).
+        Фото редактируется позже (путь в каталоге сайта).
       </p>
 
       {error && <p className={styles.error}>{error}</p>}
