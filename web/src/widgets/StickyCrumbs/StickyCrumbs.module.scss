@@ -32,7 +32,8 @@
   flex-wrap: nowrap;
   gap: var(--space-sm);
   margin: 0;
-  padding: 0.5rem clamp(1.25rem, 5vw, 5rem);
+  // Левый паддинг в линию с Header .bar (тот же clamp).
+  padding: 0.5rem clamp(1.25rem, 1vw, 5rem);
   list-style: none;
   font-size: var(--text-xs);
   letter-spacing: 0.04em;
