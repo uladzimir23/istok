@@ -18,6 +18,7 @@ import {
   type CabinetSubCategory,
 } from "@/entities/product";
 import type { Product } from "@/entities/product";
+import { getAllProjects } from "@/entities/project";
 
 const CHAIR_LABELS: Record<string, string> = {
   m1: "М1", m2: "М2", m3: "М3", "m3-1": "М3-1", "m3-g": "М3-Г", "pm-1": "ПМ-1",
@@ -125,7 +126,7 @@ export default function Home() {
         catalogLabel="Вся корпусная"
         withAmbient
       />
-      <ProjectsTeaser />
+      <ProjectsTeaser projects={getAllProjects()} />
       <Certificates />
       <CollectionSwitcher
         eyebrow="ELIS Kids Beds"

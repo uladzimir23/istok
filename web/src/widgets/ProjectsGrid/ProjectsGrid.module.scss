@@ -1,0 +1,92 @@
+@use "@/shared/design-system/mixins" as *;
+
+.wrap {
+  padding-block: var(--space-section);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-xl);
+
+  @include respond-to("sm") {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @include respond-to("lg") {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.photoFrame {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-alt);
+}
+
+.photo {
+  object-fit: cover;
+  transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card:hover .photo {
+  transform: scale(1.04);
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.topRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: var(--text-sm);
+  color: var(--color-foreground-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.num {
+  letter-spacing: 0.08em;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  line-height: var(--primitive-leading-snug);
+  color: var(--color-foreground);
+}
+
+.city {
+  font-weight: 500;
+  color: var(--color-foreground);
+}
+
+.delivered {
+  font-size: var(--text-sm);
+  color: var(--color-foreground-muted);
+}
+
+.empty {
+  padding-block: var(--space-3xl);
+  text-align: center;
+  color: var(--color-foreground-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .photo {
+    transition: none;
+  }
+  .card:hover .photo {
+    transform: none;
+  }
+}

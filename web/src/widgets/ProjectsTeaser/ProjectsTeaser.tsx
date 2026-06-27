@@ -6,34 +6,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Reveal } from "@/shared/ui/Reveal";
 import { ArrowIcon } from "@/shared/ui/ArrowIcon";
 import { asset } from "@/shared/lib/assetPath";
+import type { Project } from "@/entities/project";
 import styles from "./ProjectsTeaser.module.scss";
 
-interface Project {
-  num: string;
-  objectType: string;
-  city: string;
-  year: number;
-  delivered: string;
-  photo: string;
-  href?: string;
+interface Props {
+  projects: Project[];
 }
 
-const PROJECTS: Project[] = [
-  { num: "01", objectType: "Дом культуры", city: "Минск", year: 2024,
-    delivered: "Кресла М3-1 синие", photo: "/images/projects/01.jpg" },
-  { num: "02", objectType: "Концертный зал", city: "Гомель", year: 2024,
-    delivered: "Разноцветная посадка", photo: "/images/projects/02.jpg" },
-  { num: "03", objectType: "ВУЗ-аудитория", city: "Брест", year: 2023,
-    delivered: "Кресла М3 многоцветные", photo: "/images/projects/03.jpg" },
-  { num: "04", objectType: "Дом культуры", city: "Витебск", year: 2023,
-    delivered: "Цветовое зонирование", photo: "/images/projects/04.jpg" },
-  { num: "05", objectType: "Концертный зал", city: "Могилёв", year: 2023,
-    delivered: "Бордовые М3 — премиум", photo: "/images/projects/05.jpg" },
-  { num: "06", objectType: "Театральный зал", city: "Гродно", year: 2022,
-    delivered: "Бежевые кресла с дерев. боковинами", photo: "/images/projects/06.jpg" },
-];
-
-export function ProjectsTeaser() {
+export function ProjectsTeaser({ projects }: Props) {
   const trackRef = useRef<HTMLOListElement | null>(null);
   const [page, setPage] = useState(0);
   const [pageCount, setPageCount] = useState(1);
@@ -48,8 +28,8 @@ export function ProjectsTeaser() {
     const cardW = card.getBoundingClientRect().width;
     const trackW = track.clientWidth;
     const perPage = Math.max(1, Math.round(trackW / cardW));
-    setPageCount(Math.max(1, Math.ceil(PROJECTS.length / perPage)));
-  }, []);
+    setPageCount(Math.max(1, Math.ceil(projects.length / perPage)));
+  }, [projects.length]);
 
   useEffect(() => {
     measure();
@@ -143,11 +123,11 @@ export function ProjectsTeaser() {
         aria-label="Карусель проектов"
         onKeyDown={onKey}
       >
-        {PROJECTS.map((p) => (
-          <li key={p.num} className={styles.item}>
+        {projects.map((p) => (
+          <li key={p.slug} className={styles.item}>
             <div className={styles.photoFrame} aria-hidden="true">
               <Image
-                src={asset(p.photo)}
+                src={asset(p.hero.src)}
                 alt=""
                 fill
                 sizes="(max-width: 720px) 85vw, 33vw"
@@ -157,7 +137,7 @@ export function ProjectsTeaser() {
             </div>
 
             <div className={styles.topRow}>
-              <span className={styles.itemNum}>{p.num}</span>
+              <span className={styles.itemNum}>{String(p.order).padStart(2, "0")}</span>
               <span className={styles.divider} aria-hidden="true" />
               <span className={styles.itemYear}>{p.year}</span>
             </div>
