@@ -1,0 +1,81 @@
+.bar {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-start: var(--crumbs-top, 4.5rem);
+  // Под хедером (z выше), над контентом, под фуллскрин-меню (300).
+  z-index: 150;
+
+  // Стекло на основе токена темы (адаптируется istok/elis).
+  background: color-mix(in oklch, var(--color-surface) 78%, transparent);
+  backdrop-filter: blur(0.875rem);
+  border-block-end: 1px solid var(--color-border-hairline);
+
+  // Скрыта над хедером — схлопнута по высоте + opacity.
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    max-height 0.4s var(--ease-out),
+    opacity 0.4s var(--ease-out);
+}
+
+.visible {
+  max-height: 3rem;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: var(--space-sm);
+  margin: 0;
+  padding: 0.5rem clamp(1.25rem, 5vw, 5rem);
+  list-style: none;
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  overflow: hidden;
+  min-inline-size: 0;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-shrink: 0;
+  min-inline-size: 0;
+}
+
+// Последний (current) ужимается с троеточием — родительские крошки полные.
+.item:last-child {
+  flex-shrink: 1;
+  overflow: hidden;
+}
+
+.link {
+  color: var(--color-foreground-muted);
+  text-decoration: none;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: color 0.2s var(--ease-out);
+
+  &:hover {
+    color: var(--color-accent);
+  }
+}
+
+.sep {
+  color: var(--color-border-strong);
+  flex-shrink: 0;
+}
+
+.current {
+  color: var(--color-foreground);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-inline-size: 0;
+}

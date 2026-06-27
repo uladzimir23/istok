@@ -26,7 +26,9 @@ export default async function KresloPage({
   const product = getProductBySlug("chairs", slug);
   if (!product) notFound();
   return (
-    <PageShell>
+    <PageShell
+      crumbs={[{ label: "Кресла", href: "/kresla/" }, { label: product.name }]}
+    >
       <ProductDetail
         product={product}
         categoryHref="/kresla/"

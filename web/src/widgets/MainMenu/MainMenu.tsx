@@ -116,13 +116,15 @@ export function MainMenu() {
     closed: reduce
       ? { opacity: 0, transition: { duration: 0.2 } }
       : {
-          clipPath: "circle(0% at calc(100% - 2.75rem) 2.5rem)",
-          transition: { duration: 0.4, ease: EASE },
+          // Прямоугольный wipe от угла бургера (не круглый): схлопнут в
+          // маленький rounded-rect у верхнего правого угла.
+          clipPath: "inset(1.5% 1.5% 92% 88% round 18px)",
+          transition: { duration: 0.42, ease: EASE },
         },
     open: reduce
       ? { opacity: 1, transition: { duration: 0.2 } }
       : {
-          clipPath: "circle(150% at calc(100% - 2.75rem) 2.5rem)",
+          clipPath: "inset(0% 0% 0% 0% round 0px)",
           transition: { duration: 0.55, ease: EASE },
         },
   };
