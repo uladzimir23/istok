@@ -15,7 +15,7 @@ export default function StolyPage() {
   const cat = getCategory(SLUG)!;
   const products = getCabinetsBySub("stoly");
   return (
-    <PageShell>
+    <PageShell crumbs={[{ label: "Корпусная", href: "/korpusnaya/" }, { label: "Столы" }]}>
       <PageHero eyebrow={cat.eyebrow} title={cat.title} description={cat.description} />
       <CategoryListing products={products} baseHref={`/${SLUG}/`} />
     </PageShell>

@@ -32,7 +32,7 @@ export default async function KrovatkaPage({
   const product = getProductBySlug("cribs", slug);
   if (!product) notFound();
   return (
-    <PageShell brand="elis">
+    <PageShell brand="elis" crumbs={[{ label: "Кроватки ELIS", href: "/krovatki/" }, { label: product.name }]}>
       <ProductDetail
         product={product}
         categoryHref="/krovatki/"

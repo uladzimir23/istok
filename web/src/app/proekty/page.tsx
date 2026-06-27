@@ -13,7 +13,7 @@ export const metadata = {
 export default function ProektyPage() {
   const projects = getAllProjects();
   return (
-    <PageShell>
+    <PageShell crumbs={[{ label: "Проекты" }]}>
       <PageHero
         eyebrow="Портфолио"
         title="Реализованные проекты"

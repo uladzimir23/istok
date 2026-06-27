@@ -9,7 +9,7 @@ export const metadata = {
 
 export default function AboutPage() {
   return (
-    <PageShell>
+    <PageShell crumbs={[{ label: "О фабрике" }]}>
       <PageHero
         eyebrow="О компании"
         title="«Исток-мебель» — производство в Березино"

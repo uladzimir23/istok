@@ -26,7 +26,7 @@ export default async function ShkafPage({
   const product = getCabinetBySubAndSlug("shkafy", slug);
   if (!product) notFound();
   return (
-    <PageShell>
+    <PageShell crumbs={[{ label: "Корпусная", href: "/korpusnaya/" }, { label: "Шкафы", href: "/shkafy/" }, { label: product.name }]}>
       <ProductDetail
         product={product}
         categoryHref="/shkafy/"

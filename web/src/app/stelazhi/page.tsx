@@ -15,7 +15,7 @@ export default function StelazhiPage() {
   const cat = getCategory(SLUG)!;
   const products = getCabinetsBySub("stelazhi");
   return (
-    <PageShell>
+    <PageShell crumbs={[{ label: "Корпусная", href: "/korpusnaya/" }, { label: "Стеллажи" }]}>
       <PageHero eyebrow={cat.eyebrow} title={cat.title} description={cat.description} />
       <CategoryListing products={products} baseHref={`/${SLUG}/`} />
     </PageShell>

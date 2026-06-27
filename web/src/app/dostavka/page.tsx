@@ -9,7 +9,7 @@ export const metadata = {
 
 export default function DostavkaPage() {
   return (
-    <PageShell>
+    <PageShell crumbs={[{ label: "Доставка и оплата" }]}>
       <PageHero
         eyebrow="Логистика"
         title="Доставка и оплата"

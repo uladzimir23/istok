@@ -15,7 +15,7 @@ export default function KomodyPage() {
   const cat = getCategory(SLUG)!;
   const products = getCabinetsBySub("komody");
   return (
-    <PageShell>
+    <PageShell crumbs={[{ label: "Корпусная", href: "/korpusnaya/" }, { label: "Комоды" }]}>
       <PageHero eyebrow={cat.eyebrow} title={cat.title} description={cat.description} />
       <CategoryListing products={products} baseHref={`/${SLUG}/`} />
     </PageShell>

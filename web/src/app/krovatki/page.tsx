@@ -16,7 +16,7 @@ export default function KrovatkiPage() {
   const cat = getCategory(SLUG)!;
   const products = getProductsByCategory("cribs");
   return (
-    <PageShell brand="elis">
+    <PageShell brand="elis" crumbs={[{ label: "Кроватки ELIS" }]}>
       <PageHero eyebrow={cat.eyebrow} title={cat.title} description={cat.description} />
       <CategoryListing products={products} baseHref={`/${SLUG}/`} />
     </PageShell>

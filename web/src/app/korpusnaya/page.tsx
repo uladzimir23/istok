@@ -12,7 +12,7 @@ export const metadata = {
 export default function KorpusnayaPage() {
   const subCats = CATEGORIES.filter((c) => c.source.type === "cabinet-sub");
   return (
-    <PageShell>
+    <PageShell crumbs={[{ label: "Корпусная" }]}>
       <PageHero
         eyebrow="Корпусная мебель"
         title="Комоды, столы, стеллажи, шкафы"

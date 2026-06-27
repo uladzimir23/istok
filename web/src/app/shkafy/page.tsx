@@ -15,7 +15,7 @@ export default function ShkafyPage() {
   const cat = getCategory(SLUG)!;
   const products = getCabinetsBySub("shkafy");
   return (
-    <PageShell>
+    <PageShell crumbs={[{ label: "Корпусная", href: "/korpusnaya/" }, { label: "Шкафы" }]}>
       <PageHero eyebrow={cat.eyebrow} title={cat.title} description={cat.description} />
       <CategoryListing products={products} baseHref={`/${SLUG}/`} />
     </PageShell>

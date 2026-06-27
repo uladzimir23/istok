@@ -26,7 +26,7 @@ export default async function StelazhPage({
   const product = getCabinetBySubAndSlug("stelazhi", slug);
   if (!product) notFound();
   return (
-    <PageShell>
+    <PageShell crumbs={[{ label: "Корпусная", href: "/korpusnaya/" }, { label: "Стеллажи", href: "/stelazhi/" }, { label: product.name }]}>
       <ProductDetail
         product={product}
         categoryHref="/stelazhi/"

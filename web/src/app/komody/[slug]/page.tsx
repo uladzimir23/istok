@@ -26,7 +26,7 @@ export default async function KomodPage({
   const product = getCabinetBySubAndSlug("komody", slug);
   if (!product) notFound();
   return (
-    <PageShell>
+    <PageShell crumbs={[{ label: "Корпусная", href: "/korpusnaya/" }, { label: "Комоды", href: "/komody/" }, { label: product.name }]}>
       <ProductDetail
         product={product}
         categoryHref="/komody/"

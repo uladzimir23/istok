@@ -11,7 +11,7 @@ export const metadata = {
 
 export default function ContactsPage() {
   return (
-    <PageShell>
+    <PageShell crumbs={[{ label: "Контакты" }]}>
       <PageHero
         eyebrow="Контакты"
         title="Связаться с фабрикой"

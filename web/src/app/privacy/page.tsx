@@ -9,7 +9,7 @@ export const metadata = {
 
 export default function PrivacyPage() {
   return (
-    <PageShell>
+    <PageShell crumbs={[{ label: "Политика конфиденциальности" }]}>
       <PageHero
         eyebrow="Юридическое"
         title="Политика конфиденциальности"

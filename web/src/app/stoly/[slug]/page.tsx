@@ -26,7 +26,7 @@ export default async function StolPage({
   const product = getCabinetBySubAndSlug("stoly", slug);
   if (!product) notFound();
   return (
-    <PageShell>
+    <PageShell crumbs={[{ label: "Корпусная", href: "/korpusnaya/" }, { label: "Столы", href: "/stoly/" }, { label: product.name }]}>
       <ProductDetail
         product={product}
         categoryHref="/stoly/"
