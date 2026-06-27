@@ -7,6 +7,7 @@ import { Products } from "./pages/Products";
 import { ProductEdit } from "./pages/ProductEdit";
 import { Projects } from "./pages/Projects";
 import { ProjectEdit } from "./pages/ProjectEdit";
+import { Leads } from "./pages/Leads";
 
 export function App() {
   const [authed, setAuthed] = useState(pb.authStore.isValid);
@@ -25,6 +26,7 @@ export function App() {
           <Route path="/products/:id" element={<ProductEdit />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/:id" element={<ProjectEdit />} />
+          <Route path="/leads" element={<Leads />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Shell>

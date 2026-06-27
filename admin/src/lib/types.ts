@@ -58,6 +58,19 @@ export interface ProjectRecord {
   hero: { src: string; alt: string };
 }
 
+// ── Заявки (инбокс, ADR-011 #10) ──────────────────────────────────────────
+export interface LeadRecord {
+  id: string;
+  name: string;
+  phone: string;
+  email: string;
+  message: string;
+  source: string;
+  productSlug: string;
+  status: "new" | "progress" | "done" | "";
+  created: string;
+}
+
 export const ProjectEdit = z.object({
   objectType: z.string().min(1, "Укажите тип объекта"),
   city: z.string().min(1, "Укажите город"),

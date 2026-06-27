@@ -32,6 +32,12 @@ export function Shell({
           >
             Проекты
           </NavLink>
+          <NavLink
+            to="/leads"
+            className={({ isActive }) => clsx(styles.navLink, isActive && styles.navActive)}
+          >
+            Заявки
+          </NavLink>
         </nav>
         <div className={styles.right}>
           <PublishButton />

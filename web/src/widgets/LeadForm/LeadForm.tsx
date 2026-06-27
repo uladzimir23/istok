@@ -28,7 +28,18 @@ export function LeadForm({ productSlug, source = "contacts" }: Props) {
   const onSubmit = handleSubmit(async (data) => {
     setStatus("submitting");
     const endpoint = process.env.NEXT_PUBLIC_LEAD_ENDPOINT;
+    const pbUrl = process.env.NEXT_PUBLIC_PB_URL;
     try {
+      // PocketBase-инбокс (ADR-011 #10): заявка попадает в админку фабрики.
+      if (pbUrl && !data.honey) {
+        const { honey, ...lead } = data;
+        void honey;
+        await fetch(`${pbUrl}/api/collections/leads/records`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...lead, status: "new" }),
+        }).catch(() => {});
+      }
       if (!endpoint) {
         // Phase 1 placeholder: no external endpoint configured yet.
         // Log payload so dev/show-mode сможет показать, что данные собраны.
