@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { pb } from "../lib/pb";
 import { removeRecord } from "../lib/crud";
+import { projectsUrl } from "../lib/site";
+import { useUnsavedGuard } from "../hooks/useUnsavedGuard";
 import {
   ProjectEdit as Schema,
   type ProjectEditValues,
@@ -22,8 +24,10 @@ export function ProjectEdit() {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
   } = useForm<ProjectEditValues>({ resolver: zodResolver(Schema) });
+
+  useUnsavedGuard(isDirty);
 
   useEffect(() => {
     if (!id) return;
@@ -64,7 +68,12 @@ export function ProjectEdit() {
         <Link to="/projects" className={styles.back}>
           ← Все проекты
         </Link>
-        <span className={styles.badge}>{rec.slug}</span>
+        <span className={styles.headRight}>
+          <a className={styles.preview} href={projectsUrl} target="_blank" rel="noreferrer">
+            Открыть на сайте ↗
+          </a>
+          <span className={styles.badge}>{rec.slug}</span>
+        </span>
       </div>
 
       <label className={styles.field}>

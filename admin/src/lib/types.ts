@@ -13,6 +13,7 @@ export interface ProductRecord {
   materials: string[];
   options: string[];
   colors: { name: string; hex: string }[];
+  hero: { src: string; alt: string };
 }
 
 export const CATEGORY_LABEL: Record<ProductRecord["category"], string> = {

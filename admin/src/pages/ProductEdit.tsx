@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { pb } from "../lib/pb";
 import { removeRecord } from "../lib/crud";
+import { productUrl } from "../lib/site";
+import { useUnsavedGuard } from "../hooks/useUnsavedGuard";
 import {
   CATEGORY_LABEL,
   ProductEdit as Schema,
@@ -31,8 +33,10 @@ export function ProductEdit() {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
   } = useForm<ProductEditValues>({ resolver: zodResolver(Schema) });
+
+  useUnsavedGuard(isDirty);
 
   useEffect(() => {
     if (!id) return;
@@ -85,8 +89,18 @@ export function ProductEdit() {
         <Link to="/" className={styles.back}>
           ← Все товары
         </Link>
-        <span className={styles.badge}>
-          {CATEGORY_LABEL[rec.category]} · {rec.slug}
+        <span className={styles.headRight}>
+          {(() => {
+            const url = productUrl(rec.category, rec.slug, rec.hero?.src ?? "");
+            return url ? (
+              <a className={styles.preview} href={url} target="_blank" rel="noreferrer">
+                Открыть на сайте ↗
+              </a>
+            ) : null;
+          })()}
+          <span className={styles.badge}>
+            {CATEGORY_LABEL[rec.category]} · {rec.slug}
+          </span>
         </span>
       </div>
 

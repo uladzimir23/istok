@@ -22,6 +22,24 @@
   font-weight: var(--primitive-weight-medium);
 }
 
+.headRight {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.preview {
+  font-size: var(--text-sm);
+  font-weight: var(--primitive-weight-medium);
+  color: var(--color-accent-text);
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 .badge {
   font-size: var(--text-xs);
   text-transform: uppercase;

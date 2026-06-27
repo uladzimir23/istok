@@ -40,6 +40,45 @@
   font-weight: var(--primitive-weight-medium);
 }
 
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md);
+  margin-block-end: var(--space-xl);
+}
+
+.search,
+.select {
+  padding: 0.55rem 0.8rem;
+  font: inherit;
+  font-size: var(--text-sm);
+  color: var(--color-input-foreground);
+  background: var(--color-input-background);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-md);
+  outline: none;
+
+  &:focus {
+    border-color: var(--color-input-border-focus);
+  }
+}
+
+.search {
+  flex: 1 1 14rem;
+  min-inline-size: 0;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: var(--text-sm);
+  color: var(--color-foreground-muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
 .group {
   margin-block-end: var(--space-2xl);
 }
