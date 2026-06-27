@@ -16,7 +16,7 @@ export function PageShell({ children, brand = "istok" }: Props) {
   const tickerText = brand === "elis" ? "ELIS · KIDS BEDS" : "ИСТОК · МЕБЕЛЬ";
   return (
     <div data-brand={brand} className={`${themeClass} ${styles.shell}`}>
-      <GridLines count={8} />
+      <GridLines count={12} />
       <ScrollProgress />
       <Header brand={brand} />
       <main id="main-content">{children}</main>
