@@ -8,6 +8,7 @@ import { productUrl } from "../lib/site";
 import { useUnsavedGuard } from "../hooks/useUnsavedGuard";
 import { SizesEditor } from "../components/SizesEditor";
 import { ColorsEditor } from "../components/ColorsEditor";
+import { PhotoUploader } from "../components/PhotoUploader";
 import {
   CATEGORY_LABEL,
   ProductEdit as Schema,
@@ -186,6 +187,11 @@ export function ProductEdit() {
       </div>
 
       <div className={styles.field}>
+        Фото
+        <PhotoUploader productId={rec.id} initial={rec.photos ?? []} />
+      </div>
+
+      <div className={styles.field}>
         Размеры
         <SizesEditor value={sizes} onChange={setSizes} withBed={category === "cribs"} />
       </div>
@@ -196,7 +202,7 @@ export function ProductEdit() {
       </div>
 
       <p className={styles.note}>
-        Фото редактируется позже (путь в каталоге сайта).
+        Изменения появятся на сайте после нажатия «Опубликовать» (пересборка).
       </p>
 
       {error && <p className={styles.error}>{error}</p>}

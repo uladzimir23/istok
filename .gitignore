@@ -61,3 +61,6 @@ pb_data/
 
 # PB-снапшот для билда (генерируется prebuild)
 web/.pb/
+
+# PB-фото (скачиваются export-ом на билд)
+web/public/images/pb/

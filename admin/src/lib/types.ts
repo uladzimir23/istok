@@ -22,6 +22,7 @@ export interface ProductRecord {
   colors: Color[];
   sizes: Size[];
   hero: { src: string; alt: string };
+  photos: string[]; // PB file-имена (ADR-011 #4)
 }
 
 export const CATEGORY_LABEL: Record<ProductRecord["category"], string> = {
