@@ -60,13 +60,19 @@ order: 0
 | ADR-008 | GitHub Pages Static Export Hosting | superseded by ADR-009 |
 | ADR-009 | Hetzner Agency Server Hosting | proposed (реализуется) |
 | ADR-010 | PocketBase Activation (Phase 2, static+rebuild) | proposed |
+| ADR-011 | Custom Admin SPA over PocketBase | proposed |
 
 > Хостинг-цепочка: ADR-006 → ADR-008 → **ADR-009** (актуальный). ADR-009 → `accepted`
 > после первого успешного деплоя на `new.istokmebel.by`.
 >
 > **Phase 2 открыта:** ADR-010 активирует PocketBase (БД + админка) по триггеру №1
-> из ADR-005 («редактор фабрики без git»). Модель — static export + rebuild-webhook
+> из ADR-005 («редактор фабрики без git»). ADR-011 — кастомная SPA-админка поверх PB
+> для нетехнического редактора фабрики. Модель — static export + rebuild-webhook
 > (хостинг ADR-009 не меняется). Имплементация — после выката статики на сервер.
+
+### ADR-номера в работе
+
+- `ADR-011` — Custom Admin SPA over PocketBase (proposed)
 
 ## Текущий приоритет
 
