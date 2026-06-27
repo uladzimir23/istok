@@ -2,13 +2,19 @@
 title: ADR-008 — GitHub Pages Static Export Hosting
 description: Хостинг istokmebel.by переведён с Self-hosted Docker VPS (ADR-006) на статический экспорт Next.js, деплоящийся на GitHub Pages через GitHub Actions.
 order: 8
-status: proposed
+status: superseded
 date: 2026-06-26
 supersedes: ADR-006
+superseded-by: ADR-009
 ---
 
 # ADR-008 — GitHub Pages Static Export Hosting
 
+> **Superseded by [[ADR-009 Hetzner Agency Server Hosting]] (2026-06-26).**
+> GH Pages проработал недолго: появился общий сервер агентства SYNC с готовым
+> каноном деплоя, и istok переехал туда (`new.istokmebel.by`, GHCR + compose).
+> `deploy-pages.yml` и GH-Pages basePath удалены. Документ сохранён как контекст.
+>
 > Reconciliation ADR: решение уже реализовано в коде. Этот документ приводит
 > документацию в соответствие с фактическим состоянием репо.
 >

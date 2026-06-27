@@ -28,4 +28,5 @@ order: 42
 | ADR-005 | Content-as-Code Phase 1 No Backend | proposed | 2026-05-01 |
 | ADR-006 | Self-hosted Docker VPS Hosting | superseded by ADR-008 | 2026-05-01 |
 | ADR-007 | Flat Repo Structure No Monorepo | proposed | 2026-05-01 |
-| ADR-008 | GitHub Pages Static Export Hosting | proposed | 2026-06-26 |
+| ADR-008 | GitHub Pages Static Export Hosting | superseded by ADR-009 | 2026-06-26 |
+| ADR-009 | Hetzner Agency Server Hosting | proposed | 2026-06-26 |

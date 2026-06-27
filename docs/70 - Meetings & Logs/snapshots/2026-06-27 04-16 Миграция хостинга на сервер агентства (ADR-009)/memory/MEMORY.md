@@ -1,0 +1,7 @@
+- [Project Istok overview](project_istok_overview.md) — мебельная фабрика «Исток», миграция с Tilda; путь `~/Projects/zavody-rb/istok`; стек: Next.js 16 + SCSS modules + content-as-code (Zod); сайт собран (все категории+карточки); PocketBase отложен в Phase 2; slug ELIS = `/krovatki`.
+- [Istok in zavody-rb cluster](project_istok_in_cluster.md) — istok часть кластера zavody-rb (B2B-витрины РБ-производств, с 2026-06 в `~/Projects/zavody-rb/`); донор-шаблон для RASING/BARSA/alto; межпроектные решения — в `_shared/`.
+- [Hosting pivot chain](project_istok_static_pages_pivot.md) — хостинг istok: VPS→GH Pages→**сервер агентства SYNC** (ADR-009, Hetzner 89.169.54.11, new.istokmebel.by, порт 3007); static export в nginx:alpine; карта сервера в волте ~/Desktop/sync-agency-server.
+- [SDD init pattern](feedback_sdd_init_pattern.md) — любой новый проект пользователя начинается с SDD-каркаса (CLAUDE.md + Johnny Decimal docs + .claude/skills+agents) ДО кода.
+- [Reference projects](reference_user_projects.md) — карта проектов в ~/Documents: откуда копировать SDD-каркас, скиллы, fundamenты.
+- [Defer infra complexity](feedback_defer_infra_complexity.md) — пользователь не добавляет инфраструктурные слои «на вырост»; сложность — только по бизнес-триггеру. Закреплено через ADR-005 (istok, 2026-05-01).
+- [sync-agency-server](reference_sync_agency_server.md) — общий Hetzner-сервер агентства (89.169.54.11), канон деплоя GHCR+compose, docs-волт ~/Desktop/sync-agency-server; istok деплоится сюда (порт 3007).

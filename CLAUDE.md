@@ -8,18 +8,22 @@
 
 - **Phase 0 — SDD-каркас (init) — готово.** `CLAUDE.md`, `.claude/` (skills + agents),
   `docs/` по Johnny Decimal, бриф и аудит as-is занесены, первый коммит сделан.
-- **Phase 1 ADR-каркас — готово.** ADR-001..008: Next.js (App Router), SCSS modules,
+- **Phase 1 ADR-каркас — готово.** ADR-001..009: Next.js (App Router), SCSS modules,
   бренд-архитектура (один сайт, два бренда), content-as-code (PocketBase отложен в Phase 2
-  по триггерам), плоская структура. Hosting пересмотрен: ADR-006 (Docker VPS) → superseded
-  ADR-008 (GitHub Pages static export).
+  по триггерам), плоская структура. Hosting-цепочка: ADR-006 (Docker VPS) → ADR-008
+  (GitHub Pages) → **ADR-009 (сервер агентства SYNC, Hetzner)** — актуальное.
 - **Phase 1 имплементация — выполнена (2026-06-26).** Собран рабочий сайт: `web/`
   (Next.js 16, App Router, TS strict, FSD-lite), все категории (кресла, кроватки,
   корпусная → комоды/столы/стеллажи/шкафы) + карточки товаров (SSG), дизайн-система
-  Исток/ELIS, ~18 виджетов, 26 MDX-товаров с Zod-валидацией, SEO. `bun run build` проходит,
-  деплой на GitHub Pages через `.github/workflows/deploy-pages.yml`.
+  Исток/ELIS, ~18 виджетов, 26 MDX-товаров с Zod-валидацией, SEO. `bun run build` проходит.
+- **Хостинг мигрирует на сервер агентства (ADR-009).** Static export раздаётся
+  `nginx:alpine` в Docker-образе; деплой `push → GHCR → ssh → compose` на `89.169.54.11`,
+  поддомен `new.istokmebel.by` (порт 3007). Обвязка в репо: `Dockerfile`, `infra/nginx/`,
+  `infra/docker-compose.yml`, `.github/workflows/deploy.yml`. Карта сервера — внешний волт
+  `~/Desktop/sync-agency-server/`. Открыто: DNS, `DEPLOY_SSH_KEY`, серверные шаги.
 - **Открытые пункты:** реальный приёмник заявок (`NEXT_PUBLIC_LEAD_ENDPOINT`: Telegram +
   Resend — сейчас заглушка), наполнение портфолио `content/projects/`, цены «Элис» от
-  клиента, DNS-cutover `istokmebel.by` → кастомный домен в Pages.
+  клиента, финальный DNS-cutover apex `istokmebel.by` с Tilda на сервер.
 - **Tilda продолжает работать на `istokmebel.by`.** Не трогаем до DNS-cutover.
 
 ## Видение
@@ -86,7 +90,7 @@
 | Backend Phase 1 | **Нет.** Заявки → внешний endpoint `NEXT_PUBLIC_LEAD_ENDPOINT` → Telegram + email (Resend) | [[ADR-005]], [[ADR-008]] |
 | Backend Phase 2 | **PocketBase** при наступлении trigger-условий (см. ADR-005) | [[ADR-001]] (superseded), [[ADR-005]] |
 | Бренд-архитектура | Один сайт `istokmebel.by`, ELIS — раздел `/krovatki` со своей темой | [[ADR-003]] |
-| Хостинг | **GitHub Pages** (static export `output: "export"`) | [[ADR-008]] (supersedes [[ADR-006]]) |
+| Хостинг | **Сервер агентства SYNC** (Hetzner, GHCR + compose, `nginx:alpine` раздаёт static export); `new.istokmebel.by` | [[ADR-009]] (supersedes [[ADR-008]], [[ADR-006]]) |
 | Структура репо | Плоская (`web/` + `content/`), без монорепо | [[ADR-007]] |
 | Аналитика | **Яндекс.Метрика + GA4** + пиксели | базис, отдельный ADR |
 | Формы | **react-hook-form + zod**, submit через `Promise.allSettled` | паттерн comforthotel ADR-014 |
@@ -120,12 +124,18 @@ istok/
 │   ├── scripts/validate-content.ts  # CLI-валидатор контента (bun run validate:content)
 │   ├── public/
 │   ├── package.json
-│   ├── next.config.ts               # output: "export" + basePath на GH Pages (ADR-008)
+│   ├── next.config.ts               # output: "export" (без basePath — поддомен, ADR-009)
 │   └── tsconfig.json
 ├── content/                         # MDX контент-as-code (ADR-005)
 │   ├── products/{chairs,cabinets,cribs}/    # 26 MDX-товаров
 │   └── projects/                    # портфолио госзаказа (пока пусто)
-├── .github/workflows/               # CI: deploy-pages.yml (build → GitHub Pages, ADR-008)
+├── infra/                           # IaC деплоя на сервер агентства (ADR-009)
+│   ├── nginx/container.conf         #   nginx внутри образа (раздача static export)
+│   ├── nginx/new.istokmebel.by.conf #   host-vhost (→ 127.0.0.1:3007)
+│   └── docker-compose.yml           #   источник для /opt/istok/ на сервере
+├── Dockerfile                       # multi-stage: bun deps → node build → nginx:alpine
+├── .dockerignore
+├── .github/workflows/               # CI: deploy.yml (build → GHCR → ssh deploy, ADR-009)
 ├── .claude/
 │   ├── settings.local.json
 │   ├── agents/                      # docs-sync, adr-drafter
@@ -136,9 +146,9 @@ istok/
 └── .gitignore
 ```
 
-В Phase 2 при активации PocketBase (по триггерам [[ADR-005]]) возвращаемся к
-контейнерному стеку (новый ADR, `output` → `"standalone"`): добавляются `pocketbase/`,
-`nginx/`, `docker-compose.yml` — без перехода в монорепо.
+В Phase 2 при активации PocketBase (по триггерам [[ADR-005]]) `output` меняется на
+`"standalone"`, Dockerfile/compose обновляются под Node-runtime, добавляется `pocketbase/`
+сервис в тот же `/opt/istok/docker-compose.yml` — без перехода в монорепо.
 
 ## Ветки
 
@@ -160,8 +170,9 @@ istok/
   каталог Элис, клиентские реалии.
 - `docs/20 - Audit/Сайт as-is.md` — что есть на Tilda, что отсутствует.
 - `docs/40 - Architecture/42 - ADR/` — ADR-001 (superseded ADR-005), ADR-002..005, 007
-  (proposed), ADR-006 (superseded ADR-008), ADR-008 (GitHub Pages): Next.js, бренд-
-  архитектура, SCSS modules, content-as-code, static export на GH Pages, плоский репо.
+  (proposed); хостинг-цепочка ADR-006 → ADR-008 → **ADR-009** (сервер агентства SYNC,
+  актуальный; 006/008 superseded): Next.js, бренд-архитектура, SCSS modules,
+  content-as-code, static export на сервере агентства, плоский репо.
 
 ## Workflow
 

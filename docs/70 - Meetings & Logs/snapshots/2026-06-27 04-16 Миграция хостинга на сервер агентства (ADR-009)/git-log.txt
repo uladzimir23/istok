@@ -1,0 +1,16 @@
+df5895f ci: запинить GitHub Actions к commit-SHA
+dcf7a43 ci: обновить GitHub Actions на Node 24 версии
+44043ad docs: сверка документации с кодом — пивот хостинга на GitHub Pages
+09a1c35 feat(faq): плавная анимация раскрытия высоты ответа
+506d73a feat(faq): эксклюзивный accordion — только один вопрос открыт за раз
+e113413 fix(web): assetPath helper для GH Pages — все /images, /videos, /brand префиксятся basePath
+bfa2274 feat(web): Phase 1 импл — главная + 12 секций + 4 каталог-документа + GH Pages
+85c4d80 feat(sandbox): ControlsPanel + 3 новых свитчера (container/header/cta) — 10 осей
+ab43d59 feat(sandbox): полноценный лендинг + Hero/Card layout switchers
+353136a feat(sandbox): vite+react+scss песочница с 5-осевым switcher-пультом
+07a62ca docs(design-system): создание секции 55 + Tilda reference + brand sync
+dbd3583 feat(content,seed): seed Tilda → 26 валидных MDX + Zod-валидатор
+e1a3f8e feat(web,content): scaffold Next.js 16 + content-as-code skeleton
+5fcd753 docs(audit,brand): Tilda export audit + URL map + visual languages + scss skill
+9805607 docs(adr): принятие ADR-001..007 — стек Phase 1 + sync индексов
+a401dbf chore(init): SDD scaffold (Claude skills+agents, Johnny Decimal docs, brief, audit)

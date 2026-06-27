@@ -1,0 +1,26 @@
+# Источник истины для /opt/istok/docker-compose.yml на сервере 89.169.54.11.
+# Копировать на сервер (репо не деплоит compose — его кладут вручную при
+# первом подъёме, далее CI делает только `compose pull && up -d`).
+#
+# Порт 3007 — следующий свободный после clariva-old (3006). Зафиксирован в
+# sync-agency-server/docs/00 - Indexes/Dashboard.md ДО деплоя.
+# Раздача статики (nginx:alpine) — runtime-секретов нет.
+
+services:
+  istok:
+    image: ghcr.io/uladzimir23/istok:latest
+    container_name: istok
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3007:80"   # host-nginx проксирует new.istokmebel.by сюда
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

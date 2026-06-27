@@ -1,0 +1,38 @@
+# Build-context hygiene: в образ нужны только web/ + content/ + infra/nginx/.
+# Корень репо тяжёлый (docs-волт, песочница, сырьё клиента) — режем агрессивно,
+# чтобы tar build-контекста был лёгким и dev-мусор не утёк в образ.
+
+# Зависимости и build-выводы (ставятся/генерятся внутри образа)
+**/node_modules
+web/.next
+web/out
+.next
+out
+
+# VCS / CI / редакторы / приватка
+.git
+.github
+.claude
+.claude-code
+.vault-private
+
+# Docs-волт, песочница, корневые скрипты — не нужны для сборки сайта
+docs
+sandbox
+/scripts
+
+# Сырые исходники клиента (большие; и так в .gitignore). Якорим к корню,
+# чтобы не зацепить web/public/** и content/**.
+/Мебель
+/Фотографии кроваток 2
+/Компания Исток - Вектор.svg
+/tilda-old
+
+# env / логи / ОС-мусор
+**/.env
+**/.env.*
+*.log
+.DS_Store
+
+README.md
+CLAUDE.md

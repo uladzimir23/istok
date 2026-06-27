@@ -6,9 +6,13 @@
  * получают префикс автоматически, а наши `/images/...`, `/videos/...`,
  * `/brand/...` — нет. На GitHub Pages под `/istok/` они 404.
  *
- * Решение: единый хелпер, читает `NEXT_PUBLIC_BASE_PATH` (выставляется
- * билдом в .github/workflows/deploy-pages.yml) и префиксит абсолютные
- * пути. Внешние URL и data:/blob: пропускаются как есть.
+ * Решение: единый хелпер, читает `NEXT_PUBLIC_BASE_PATH` и префиксит
+ * абсолютные пути. Внешние URL и data:/blob: пропускаются как есть.
+ *
+ * Текущий хостинг (ADR-009, new.istokmebel.by на сервере агентства) — без
+ * subpath, поэтому `NEXT_PUBLIC_BASE_PATH` не выставляется и `asset()`
+ * становится no-op. Хелпер оставлен как guard на случай возврата basePath.
+ * Прежде использовался для GitHub Pages `/istok/` (ADR-008, superseded).
  */
 const BASE = (process.env.NEXT_PUBLIC_BASE_PATH ?? "").replace(/\/$/, "");
 
