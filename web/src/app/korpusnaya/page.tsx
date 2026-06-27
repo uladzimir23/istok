@@ -40,7 +40,7 @@ export default function KorpusnayaPage() {
   return (
     <PageShell crumbs={[{ label: "Корпусная" }]}>
       <PageHero
-        image="/images/categories/korpusnaya-catalog.jpg"
+        image="/images/categories/korpusnaya-hero.webp"
         eyebrow="Корпусная мебель"
         title="Комоды, столы, стеллажи, шкафы"
         description="Производство в Березино. Под индивидуальные размеры."
