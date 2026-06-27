@@ -17,7 +17,7 @@ export default function KreslaPage() {
   const products = getProductsByCategory("chairs");
   return (
     <PageShell crumbs={[{ label: "Кресла" }]}>
-      <PageHero eyebrow={cat.eyebrow} title={cat.title} description={cat.description} />
+      <PageHero image="/images/categories/chairs.jpg" eyebrow={cat.eyebrow} title={cat.title} description={cat.description} />
       <CategoryListing products={products} baseHref={`/${SLUG}/`} />
     </PageShell>
   );

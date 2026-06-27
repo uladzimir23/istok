@@ -1,7 +1,42 @@
 .hero {
-  padding-block: var(--space-3xl) var(--space-2xl);
+  position: relative;
+  min-block-size: 100dvh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
   background: var(--color-surface);
   border-block-end: 1px solid var(--color-border-hairline);
+}
+
+// ── Фон-фото на всю высоту + скрим под текст ──────────────────────────────
+.bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.bgImg {
+  object-fit: cover;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  // Затемнение слева (под левый текст) → прозрачно справа; + лёгкий низ.
+  background:
+    linear-gradient(
+      90deg,
+      rgba(15, 12, 10, 0.55) 0%,
+      rgba(15, 12, 10, 0.28) 38%,
+      rgba(15, 12, 10, 0) 72%
+    ),
+    linear-gradient(rgba(15, 12, 10, 0) 55%, rgba(15, 12, 10, 0.32) 100%);
+}
+
+.inner {
+  position: relative;
+  z-index: 2;
+  inline-size: 100%;
 }
 
 .eyebrow {
@@ -19,6 +54,7 @@
   line-height: var(--primitive-leading-tight);
   letter-spacing: var(--primitive-tracking-tight);
   margin: 0;
+  text-wrap: balance;
 }
 
 .description {
@@ -27,4 +63,17 @@
   font-size: var(--text-lg);
   color: var(--color-foreground-muted);
   line-height: var(--primitive-leading-relaxed);
+}
+
+// ── Поверх фото — светлый текст ───────────────────────────────────────────
+.hasImage {
+  .eyebrow {
+    color: var(--on-image-strong);
+  }
+  .title {
+    color: var(--on-image);
+  }
+  .description {
+    color: var(--on-image-muted);
+  }
 }

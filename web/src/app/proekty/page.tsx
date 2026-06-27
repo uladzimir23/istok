@@ -14,7 +14,7 @@ export default function ProektyPage() {
   const projects = getAllProjects();
   return (
     <PageShell crumbs={[{ label: "Проекты" }]}>
-      <PageHero
+      <PageHero image="/images/categories/projects.jpg"
         eyebrow="Портфолио"
         title="Реализованные проекты"
         description="За 18 лет мы оснастили театры, концертные залы и ВУЗ-аудитории по всей Беларуси. Ниже — выборка поставок зрительских кресел."

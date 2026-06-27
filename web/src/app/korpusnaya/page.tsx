@@ -13,7 +13,7 @@ export default function KorpusnayaPage() {
   const subCats = CATEGORIES.filter((c) => c.source.type === "cabinet-sub");
   return (
     <PageShell crumbs={[{ label: "Корпусная" }]}>
-      <PageHero
+      <PageHero image="/images/categories/korpusnaya-catalog.jpg"
         eyebrow="Корпусная мебель"
         title="Комоды, столы, стеллажи, шкафы"
         description="Производство в Березино. Под индивидуальные размеры."
