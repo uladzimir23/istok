@@ -1,3 +1,5 @@
+@use "@/shared/design-system/mixins" as *;
+
 .section {
   background: var(--color-surface-alt);
   padding-block: var(--space-section);
@@ -13,7 +15,7 @@
   align-items: end;
   padding-inline: var(--space-xl);
 
-  @media (min-width: 720px) {
+  @include respond-to("md") {
     grid-template-columns: minmax(0, 1.6fr) auto;
     gap: var(--space-2xl);
   }
@@ -118,11 +120,11 @@
     outline-offset: 4px;
   }
 
-  @media (min-width: 720px) {
+  @include respond-to("md") {
     grid-auto-columns: calc((100% - var(--space-xl) * 2 - var(--space-md) * 1) / 2);
   }
 
-  @media (min-width: 1100px) {
+  @include respond-to("lg") {
     grid-auto-columns: calc((100% - var(--space-xl) * 2 - var(--space-md) * 2) / 3);
   }
 }
@@ -136,7 +138,7 @@
   gap: var(--space-md);
   padding: var(--space-xl);
   min-block-size: 24rem;
-  color: #fff;
+  color: var(--on-image);
   text-decoration: none;
   overflow: hidden;
   isolation: isolate;
@@ -236,7 +238,7 @@
 
 .itemDelivered {
   font-size: var(--text-sm);
-  color: #fff;
+  color: var(--on-image);
   line-height: var(--primitive-leading-snug);
 }
 

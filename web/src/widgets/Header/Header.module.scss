@@ -182,7 +182,7 @@
     background: var(--color-accent-hover);
   }
 
-  @media (max-width: 30rem) {
+  @include respond-below("xs") {
     display: none;
   }
 }

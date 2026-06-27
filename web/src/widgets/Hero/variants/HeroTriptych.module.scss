@@ -1,3 +1,5 @@
+@use "@/shared/design-system/mixins" as *;
+
 .hero {
   background: var(--color-surface);
   padding-block: var(--space-3xl) var(--space-section);
@@ -46,7 +48,7 @@
   background: var(--color-border-hairline);
   border-block: 1px solid var(--color-border-hairline);
 
-  @media (min-width: 720px) {
+  @include respond-to("md") {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }

@@ -1,3 +1,5 @@
+@use "@/shared/design-system/mixins" as *;
+
 .section {
   background: var(--color-surface);
   border-block: 1px solid var(--color-foreground);
@@ -9,7 +11,7 @@
   padding: 0;
   display: grid;
 
-  @media (min-width: 720px) {
+  @include respond-to("md") {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
@@ -26,7 +28,7 @@
   position: relative;
   transition: background 280ms var(--ease-out);
 
-  @media (min-width: 720px) {
+  @include respond-to("md") {
     border-block-end: 0;
     border-inline-end: 1px solid var(--color-border-hairline);
 

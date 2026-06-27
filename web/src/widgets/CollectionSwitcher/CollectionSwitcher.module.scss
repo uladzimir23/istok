@@ -1,3 +1,5 @@
+@use "@/shared/design-system/mixins" as *;
+
 .section {
   background: var(--color-surface);
   padding-block: var(--space-section);
@@ -76,7 +78,7 @@
   align-items: end;
   padding-inline: var(--space-xl);
 
-  @media (min-width: 720px) {
+  @include respond-to("md") {
     grid-template-columns: minmax(0, 1.6fr) auto;
     gap: var(--space-xl);
   }
@@ -311,7 +313,7 @@
   padding-inline: var(--space-xl);
   align-items: stretch;
 
-  @media (min-width: 960px) {
+  @include respond-to("lg") {
     grid-template-columns: minmax(420px, 1fr) minmax(0, 1fr);
     gap: var(--space-3xl);
   }

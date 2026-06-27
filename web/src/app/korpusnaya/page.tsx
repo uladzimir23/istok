@@ -2,6 +2,7 @@ import Link from "next/link";
 import { PageShell } from "@/shared/ui/PageShell";
 import { PageHero } from "@/shared/ui/PageHero";
 import { CATEGORIES } from "@/entities/category";
+import styles from "./korpusnaya.module.scss";
 
 export const metadata = {
   title: "Корпусная мебель",
@@ -17,25 +18,13 @@ export default function KorpusnayaPage() {
         title="Комоды, столы, стеллажи, шкафы"
         description="Производство в Березино. Под индивидуальные размеры."
       />
-      <div className="container" style={{ padding: "var(--space-2xl) 0" }}>
-        <ul style={{ display: "grid", gap: "var(--space-md)", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", listStyle: "none", padding: 0 }}>
+      <div className={`container ${styles.wrap}`}>
+        <ul className={styles.grid}>
           {subCats.map((c) => (
             <li key={c.slug}>
-              <Link
-                href={`/${c.slug}/`}
-                style={{
-                  display: "block",
-                  padding: "var(--space-lg)",
-                  border: "1px solid var(--color-border-hairline)",
-                  borderRadius: "var(--radius-md)",
-                  textDecoration: "none",
-                  color: "inherit",
-                }}
-              >
-                <h2 style={{ margin: 0, fontSize: "var(--text-xl)" }}>{c.title}</h2>
-                <p style={{ margin: "var(--space-xs) 0 0", color: "var(--color-foreground-muted)" }}>
-                  {c.description}
-                </p>
+              <Link href={`/${c.slug}/`} className={styles.card}>
+                <h2 className={styles.cardTitle}>{c.title}</h2>
+                <p className={styles.cardDesc}>{c.description}</p>
               </Link>
             </li>
           ))}

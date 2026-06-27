@@ -2,6 +2,7 @@ import { PageShell } from "@/shared/ui/PageShell";
 import { PageHero } from "@/shared/ui/PageHero";
 import { LeadForm } from "@/widgets/LeadForm";
 import { SITE } from "@/shared/lib/seo";
+import styles from "./contacts.module.scss";
 
 export const metadata = {
   title: "Контакты",
@@ -16,15 +17,7 @@ export default function ContactsPage() {
         title="Связаться с фабрикой"
         description="Напишите менеджеру или позвоните — ответим в рабочее время."
       />
-      <div
-        className="container"
-        style={{
-          padding: "var(--space-2xl) 0",
-          display: "grid",
-          gap: "var(--space-2xl)",
-          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-        }}
-      >
+      <div className={`container ${styles.grid}`}>
         <section>
           <h2>Адрес производства</h2>
           <p>

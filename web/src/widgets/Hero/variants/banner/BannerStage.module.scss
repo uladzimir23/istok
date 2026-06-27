@@ -1,10 +1,14 @@
+@use "@/shared/design-system/mixins" as *;
+
 .stage {
   position: relative;
   inline-size: 100%;
+  // Намеренный истинно-чёрный media-stage (letterbox за фото/видео) — фикс,
+  // не темизируется. surface-deep (#131313) сюда не подходит — нужен чистый #000.
   background: #000;
   overflow: hidden;
   isolation: isolate;
-  color: #fff;
+  color: var(--on-image);
 }
 
 .ratio-fullscreen {
@@ -26,7 +30,7 @@
   aspect-ratio: 5 / 7;
   min-block-size: 600px;
 
-  @media (min-width: 720px) {
+  @include respond-to("md") {
     aspect-ratio: 5 / 3;
     min-block-size: 520px;
   }

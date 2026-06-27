@@ -1,5 +1,6 @@
 import { PageShell } from "@/shared/ui/PageShell";
 import { PageHero } from "@/shared/ui/PageHero";
+import { Prose } from "@/shared/ui/Prose";
 
 export const metadata = {
   title: "Доставка и оплата",
@@ -14,15 +15,7 @@ export default function DostavkaPage() {
         title="Доставка и оплата"
         description="Возим по всей Беларуси и в страны СНГ. Сборка / монтаж по согласованию."
       />
-      <article
-        className="container"
-        style={{
-          padding: "var(--space-2xl) 0",
-          maxInlineSize: "65ch",
-          fontSize: "var(--text-lg)",
-          lineHeight: "var(--primitive-leading-relaxed)",
-        }}
-      >
+      <Prose>
         <h2>Доставка</h2>
         <ul>
           <li>По Минску и области — нашим транспортом, 1–3 дня после готовности.</li>
@@ -43,7 +36,7 @@ export default function DostavkaPage() {
           Для крупной корпусной мебели и партий зрительских кресел сборка / монтаж
           включены в стоимость или согласовываются отдельно. Уточняйте у менеджера.
         </p>
-      </article>
+      </Prose>
     </PageShell>
   );
 }

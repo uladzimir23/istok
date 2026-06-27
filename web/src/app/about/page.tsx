@@ -1,5 +1,6 @@
 import { PageShell } from "@/shared/ui/PageShell";
 import { PageHero } from "@/shared/ui/PageHero";
+import { Prose } from "@/shared/ui/Prose";
 
 export const metadata = {
   title: "О фабрике",
@@ -14,16 +15,7 @@ export default function AboutPage() {
         title="«Исток-мебель» — производство в Березино"
         description="Работаем с 2008 года. Основные направления — театральные и зрительские кресла для B2B / госзаказа, корпусная мебель, детские кроватки ELIS."
       />
-      <article
-        className="container"
-        style={{
-          padding: "var(--space-2xl) 0",
-          maxInlineSize: "65ch",
-          fontSize: "var(--text-lg)",
-          color: "var(--color-foreground)",
-          lineHeight: "var(--primitive-leading-relaxed)",
-        }}
-      >
+      <Prose>
         <h2>Направления</h2>
         <p>
           Театральные и зрительские кресла поставляются в дома культуры, концертные
@@ -45,7 +37,7 @@ export default function AboutPage() {
           оборудованием. Все материалы — белорусские и российские поставщики,
           сертифицированы по ГОСТ.
         </p>
-      </article>
+      </Prose>
     </PageShell>
   );
 }

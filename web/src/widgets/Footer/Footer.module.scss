@@ -1,3 +1,5 @@
+@use "@/shared/design-system/mixins" as *;
+
 // Footer — финальная секция страниц, dark-tone (тот же что был у DarkContacts).
 // Структура: header (brand-mark + big title + CTA) → 5-колоночный grid
 // (Часы / Связь / Адрес / Каталог / Компания) → bottom-bar (legal + URL).
@@ -22,7 +24,7 @@
   padding-block-end: var(--space-lg);
   border-block-end: 1px solid rgb(255 255 255 / 0.15);
 
-  @media (min-width: 720px) {
+  @include respond-to("md") {
     grid-template-columns: auto 1fr auto;
     gap: var(--space-xl);
   }
@@ -53,7 +55,7 @@
   padding-inline: 1.5rem;
   border: 1px solid rgb(255 255 255 / 0.45);
   background: transparent;
-  color: #fff;
+  color: var(--color-bar-foreground);
   text-decoration: none;
   font-weight: var(--primitive-weight-semibold);
   font-size: var(--text-sm);
@@ -103,16 +105,16 @@
   gap: var(--space-2xl);
   grid-template-columns: minmax(0, 1fr);
 
-  @media (min-width: 560px) {
+  @include respond-to("sm") {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-xl);
   }
 
-  @media (min-width: 960px) {
+  @include respond-to("lg") {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  @media (min-width: 1200px) {
+  @include respond-to("xl") {
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 }
@@ -146,7 +148,7 @@
   }
 
   strong {
-    color: #fff;
+    color: var(--color-bar-foreground);
     font-weight: var(--primitive-weight-semibold);
   }
 }

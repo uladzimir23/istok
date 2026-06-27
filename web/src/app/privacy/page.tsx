@@ -1,5 +1,6 @@
 import { PageShell } from "@/shared/ui/PageShell";
 import { PageHero } from "@/shared/ui/PageHero";
+import { Prose } from "@/shared/ui/Prose";
 
 export const metadata = {
   title: "Политика конфиденциальности",
@@ -13,15 +14,7 @@ export default function PrivacyPage() {
         eyebrow="Юридическое"
         title="Политика конфиденциальности"
       />
-      <article
-        className="container"
-        style={{
-          padding: "var(--space-2xl) 0",
-          maxInlineSize: "65ch",
-          fontSize: "var(--text-base)",
-          lineHeight: "var(--primitive-leading-relaxed)",
-        }}
-      >
+      <Prose size="base">
         <p>
           Настоящая Политика конфиденциальности определяет порядок обработки и
           защиты персональных данных физических лиц, оставляющих заявки через сайт
@@ -52,7 +45,7 @@ export default function PrivacyPage() {
         <p>
           По вопросам обработки персональных данных — istok-mebel@mail.ru.
         </p>
-      </article>
+      </Prose>
     </PageShell>
   );
 }

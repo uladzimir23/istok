@@ -1,3 +1,5 @@
+@use "@/shared/design-system/mixins" as *;
+
 // FAQ — native <details>/<summary> accordion. Layout 2 column desktop
 // (sticky head слева, список справа), 1 column mobile. Плюс-минус icon
 // сделан CSS-only через 2 bar'а (horizontal + vertical, vertical scaleY=0
@@ -13,7 +15,7 @@
   display: grid;
   gap: var(--space-2xl);
 
-  @media (min-width: 960px) {
+  @include respond-to("lg") {
     grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr);
     gap: clamp(2rem, 6vw, 5rem);
     align-items: start;
@@ -27,7 +29,7 @@
   gap: var(--space-md);
   max-inline-size: 42ch;
 
-  @media (min-width: 960px) {
+  @include respond-to("lg") {
     position: sticky;
     inset-block-start: calc(var(--landing-header-h, 4.5rem) + var(--space-lg));
   }

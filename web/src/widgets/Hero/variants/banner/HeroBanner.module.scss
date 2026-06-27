@@ -16,7 +16,7 @@
   transform: translateY(0.5rem);
   animation: wordmarkIn 900ms 200ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
   display: block;
-  color: #fff;
+  color: var(--on-image);
 }
 
 .wordmark {
@@ -76,6 +76,9 @@
   gap: 0.55rem;
   block-size: 2.75rem;
   padding-inline: 1.25rem;
+  // Фикс-контраст «бумажная» CTA-кнопка поверх media-баннера (master-бренд,
+  // не рендерится под elis-темой). Токена paper-surface для media нет —
+  // оставляем чистый бело-чёрный паттерн намеренно.
   background: #fff;
   color: #000;
   text-decoration: none;

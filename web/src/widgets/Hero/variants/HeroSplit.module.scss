@@ -1,3 +1,5 @@
+@use "@/shared/design-system/mixins" as *;
+
 .hero {
   background: var(--color-surface);
   padding-block: var(--space-3xl) 0;
@@ -9,7 +11,7 @@
   align-items: end;
   min-block-size: 78dvh;
 
-  @media (min-width: 960px) {
+  @include respond-to("lg") {
     grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
     gap: var(--space-4xl);
     align-items: stretch;
