@@ -1,0 +1,48 @@
+.wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-block-start: var(--space-sm);
+}
+
+.prompt {
+  flex: 1 1 16rem;
+  min-width: 0;
+  padding: 0.5rem 0.7rem;
+  font: inherit;
+  font-size: var(--text-sm);
+  color: var(--color-input-foreground);
+  background: var(--color-input-background);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-md);
+
+  &:disabled {
+    opacity: 0.6;
+  }
+}
+
+.btn {
+  flex-shrink: 0;
+  padding: 0.5rem 0.9rem;
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: var(--primitive-weight-medium);
+  color: var(--color-accent-foreground);
+  background: var(--color-accent);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+}
+
+.soon {
+  font-size: var(--text-xs);
+  color: var(--color-foreground-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}

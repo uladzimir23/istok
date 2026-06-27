@@ -9,6 +9,7 @@ import { useUnsavedGuard } from "../hooks/useUnsavedGuard";
 import { SizesEditor } from "../components/SizesEditor";
 import { ColorsEditor } from "../components/ColorsEditor";
 import { PhotoUploader } from "../components/PhotoUploader";
+import { AiRenderButton } from "../components/AiRenderButton";
 import {
   CATEGORY_LABEL,
   ProductEdit as Schema,
@@ -189,6 +190,7 @@ export function ProductEdit() {
       <div className={styles.field}>
         Фото
         <PhotoUploader productId={rec.id} initial={rec.photos ?? []} />
+        <AiRenderButton productId={rec.id} name={rec.name} />
       </div>
 
       <div className={styles.field}>
