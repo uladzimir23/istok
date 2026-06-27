@@ -24,6 +24,8 @@ export const CATEGORY_LABEL: Record<ProductRecord["category"], string> = {
 // Редактируемый в MVP сабсет (фото/размеры — позже). Валидация формы.
 export const ProductEdit = z.object({
   name: z.string().min(1, "Укажите название"),
+  category: z.enum(["chairs", "cabinets", "cribs"]),
+  brand: z.enum(["istok", "elis"]),
   summary: z.string().max(220, "Не длиннее 220 символов"),
   priceByn: z.number().int().min(0, "Не меньше 0"),
   published: z.boolean(),

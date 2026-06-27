@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { pb } from "../lib/pb";
+import { removeRecord } from "../lib/crud";
 import {
   CATEGORY_LABEL,
   ProductEdit as Schema,
@@ -19,6 +20,7 @@ const lines = (s: string) =>
 
 export function ProductEdit() {
   const { id } = useParams();
+  const nav = useNavigate();
   const [rec, setRec] = useState<ProductRecord | null>(null);
   const [matText, setMatText] = useState("");
   const [optText, setOptText] = useState("");
@@ -42,6 +44,8 @@ export function ProductEdit() {
         setOptText((r.options ?? []).join("\n"));
         reset({
           name: r.name,
+          category: r.category,
+          brand: r.brand,
           summary: r.summary ?? "",
           priceByn: r.priceByn ?? 0,
           published: r.published,
@@ -60,6 +64,8 @@ export function ProductEdit() {
     try {
       await pb.collection("products").update(rec.id, {
         name: v.name,
+        category: v.category,
+        brand: v.brand,
         summary: v.summary,
         priceByn: v.priceByn,
         published: v.published,
@@ -89,6 +95,24 @@ export function ProductEdit() {
         <input className={styles.input} {...register("name")} />
         {errors.name && <span className={styles.err}>{errors.name.message}</span>}
       </label>
+
+      <div className={styles.row2}>
+        <label className={styles.field}>
+          Категория
+          <select className={styles.input} {...register("category")}>
+            <option value="chairs">Кресла</option>
+            <option value="cabinets">Корпусная</option>
+            <option value="cribs">Кроватки</option>
+          </select>
+        </label>
+        <label className={styles.field}>
+          Бренд
+          <select className={styles.input} {...register("brand")}>
+            <option value="istok">Исток</option>
+            <option value="elis">ELIS</option>
+          </select>
+        </label>
+      </div>
 
       <label className={styles.field}>
         Краткое описание
@@ -146,6 +170,17 @@ export function ProductEdit() {
           {isSubmitting ? "Сохранение…" : "Сохранить"}
         </button>
         {saved && <span className={styles.ok}>✓ Сохранено</span>}
+        <button
+          type="button"
+          className={styles.delete}
+          onClick={async () => {
+            if (!confirm(`Удалить «${rec.name}»? Это необратимо.`)) return;
+            await removeRecord("products", rec.id);
+            nav("/");
+          }}
+        >
+          Удалить
+        </button>
       </div>
     </form>
   );

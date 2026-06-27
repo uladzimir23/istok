@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { pb } from "../lib/pb";
+import { createDraftProject } from "../lib/crud";
 import type { ProjectRecord } from "../lib/types";
 import styles from "./Products.module.scss";
 
 export function Projects() {
+  const nav = useNavigate();
   const [items, setItems] = useState<ProjectRecord[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -15,13 +17,23 @@ export function Projects() {
       .finally(() => setLoading(false));
   }, []);
 
+  async function onNew() {
+    const id = await createDraftProject();
+    nav(`/projects/${id}`);
+  }
+
   if (loading) return <p className={styles.muted}>Загрузка…</p>;
 
   return (
     <div>
-      <h1 className={styles.h1}>
-        Проекты <span className={styles.count}>{items.length}</span>
-      </h1>
+      <div className={styles.topbar}>
+        <h1 className={styles.h1}>
+          Проекты <span className={styles.count}>{items.length}</span>
+        </h1>
+        <button type="button" className={styles.new} onClick={onNew}>
+          + Новый проект
+        </button>
+      </div>
 
       <ul className={styles.list}>
         {items.map((p) => (

@@ -135,3 +135,23 @@
   font-weight: var(--primitive-weight-semibold);
   font-size: var(--text-sm);
 }
+
+.delete {
+  margin-inline-start: auto;
+  padding: 0.65rem 1.1rem;
+  font-size: var(--text-sm);
+  color: var(--color-destructive);
+  background: transparent;
+  border: 1px solid var(--color-destructive);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition:
+    background-color 0.2s var(--ease-out),
+    color 0.2s var(--ease-out);
+
+  &:hover {
+    background: var(--color-destructive);
+    color: #fff;
+  }
+}
+

@@ -2,11 +2,36 @@
   color: var(--color-foreground-muted);
 }
 
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-block-end: var(--space-xl);
+}
+
 .h1 {
-  margin: 0 0 var(--space-xl);
+  margin: 0;
   font-family: var(--font-heading);
   font-size: var(--text-3xl);
   font-weight: var(--primitive-weight-bold);
+}
+
+.new {
+  padding: 0.6rem 1.1rem;
+  font-size: var(--text-sm);
+  font-weight: var(--primitive-weight-semibold);
+  color: var(--color-on-accent);
+  background: var(--color-accent);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s var(--ease-out);
+
+  &:hover {
+    background: var(--color-accent-hover);
+  }
 }
 
 .count {

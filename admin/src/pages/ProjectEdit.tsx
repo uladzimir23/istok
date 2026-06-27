@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { pb } from "../lib/pb";
+import { removeRecord } from "../lib/crud";
 import {
   ProjectEdit as Schema,
   type ProjectEditValues,
@@ -12,6 +13,7 @@ import styles from "./ProductEdit.module.scss";
 
 export function ProjectEdit() {
   const { id } = useParams();
+  const nav = useNavigate();
   const [rec, setRec] = useState<ProjectRecord | null>(null);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
@@ -128,6 +130,17 @@ export function ProjectEdit() {
           {isSubmitting ? "Сохранение…" : "Сохранить"}
         </button>
         {saved && <span className={styles.ok}>✓ Сохранено</span>}
+        <button
+          type="button"
+          className={styles.delete}
+          onClick={async () => {
+            if (!confirm(`Удалить проект «${rec.objectType} — ${rec.city}»? Это необратимо.`)) return;
+            await removeRecord("projects", rec.id);
+            nav("/projects");
+          }}
+        >
+          Удалить
+        </button>
       </div>
     </form>
   );

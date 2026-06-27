@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { pb } from "../lib/pb";
+import { createDraftProduct } from "../lib/crud";
 import { CATEGORY_LABEL, type ProductRecord } from "../lib/types";
 import styles from "./Products.module.scss";
 
 const ORDER: ProductRecord["category"][] = ["chairs", "cabinets", "cribs"];
 
 export function Products() {
+  const nav = useNavigate();
   const [items, setItems] = useState<ProductRecord[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -17,6 +19,11 @@ export function Products() {
       .finally(() => setLoading(false));
   }, []);
 
+  async function onNew() {
+    const id = await createDraftProduct();
+    nav(`/products/${id}`);
+  }
+
   if (loading) return <p className={styles.muted}>Загрузка…</p>;
 
   const groups = ORDER.map((cat) => ({
@@ -26,9 +33,14 @@ export function Products() {
 
   return (
     <div>
-      <h1 className={styles.h1}>
-        Товары <span className={styles.count}>{items.length}</span>
-      </h1>
+      <div className={styles.topbar}>
+        <h1 className={styles.h1}>
+          Товары <span className={styles.count}>{items.length}</span>
+        </h1>
+        <button type="button" className={styles.new} onClick={onNew}>
+          + Новый товар
+        </button>
+      </div>
 
       {groups.map((g) => (
         <section key={g.cat} className={styles.group}>
