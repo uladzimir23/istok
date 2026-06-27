@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { manrope } from "./fonts";
 import { JsonLd } from "@/shared/ui/JsonLd";
 import { SmoothScroll } from "@/shared/ui/SmoothScroll";
+import { Preloader } from "@/shared/ui/Preloader";
 import { organizationJsonLd } from "@/shared/lib/seo";
 import "./globals.scss";
 
@@ -29,6 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Перейти к контенту
         </a>
         <JsonLd data={organizationJsonLd()} />
+        <Preloader />
         <SmoothScroll />
         {children}
       </body>
