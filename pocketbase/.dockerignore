@@ -1,0 +1,7 @@
+# PB build-контекст = pocketbase/. В образ нужны только pb_migrations.
+# Данные, локальный бинарь и логи — вон из контекста.
+pb_data/
+pocketbase
+pb.zip
+*.log
+.DS_Store

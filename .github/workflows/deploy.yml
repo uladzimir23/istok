@@ -1,9 +1,13 @@
 name: Deploy istok to production
 
-# new.istokmebel.by: docker build → GHCR → ssh deploy на sync-agency сервер
-# (89.169.54.11). Канон агентства (референс moreminsk, см.
-# sync-agency-server/docs/40 - Architecture/Deploy pattern). Заменяет прежний
-# GitHub Pages деплой (ADR-009 supersedes ADR-008).
+# new.istokmebel.by (сайт) + admin.istokmebel.by (админка + PocketBase):
+# docker build → GHCR → ssh deploy на sync-agency сервер (89.169.54.11).
+# Канон агентства (референс moreminsk, см. sync-agency-server/docs/40 -
+# Architecture/Deploy pattern). ADR-009 (хостинг) + ADR-010/011 (PB + админка).
+#
+# Три образа: istok (сайт static), istok-admin (Vite SPA), istok-pb (PocketBase).
+# На сервере /opt/istok/docker-compose.yml поднимает все три; CI пушит образы,
+# deploy делает `compose pull && up -d`.
 
 on:
   push:
@@ -11,6 +15,9 @@ on:
     paths:
       - "web/**"
       - "content/**"
+      - "admin/**"
+      - "shared/**"
+      - "pocketbase/**"
       - "infra/**"
       - "Dockerfile"
       - ".dockerignore"
@@ -24,21 +31,31 @@ concurrency:
 
 env:
   IMAGE: ghcr.io/${{ github.repository_owner }}/istok
+  IMAGE_ADMIN: ghcr.io/${{ github.repository_owner }}/istok-admin
+  IMAGE_PB: ghcr.io/${{ github.repository_owner }}/istok-pb
 
 jobs:
-  # Гейт перед сборкой образа: lint + typecheck + Zod-валидация контента.
+  # Гейт перед сборкой образов: lint + typecheck + Zod-валидация контента (web),
+  # typecheck админки.
   check:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: web
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
-      - run: bun install --frozen-lockfile
-      - run: bun run lint
-      - run: bun run typecheck
-      - run: bun run validate:content
+
+      - name: web — lint + typecheck + validate content
+        working-directory: web
+        run: |
+          bun install --frozen-lockfile
+          bun run lint
+          bun run typecheck
+          bun run validate:content
+
+      - name: admin — typecheck
+        working-directory: admin
+        run: |
+          bun install --frozen-lockfile
+          bun run typecheck
 
   build-and-push:
     needs: check
@@ -56,24 +73,57 @@ jobs:
 
       - uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5 # v4.1.0
 
-      # GHCR login через встроенный GITHUB_TOKEN — образ привязывается к репо.
+      # GHCR login через встроенный GITHUB_TOKEN — образы привязываются к репо.
       - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
+      # ─── Сайт (static export) ───────────────────────────────────────────
+      - name: Build & push site
+        uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
         with:
           context: .
+          file: Dockerfile
           push: true
-          # Два тега: latest для compose pull, sha для rollback.
           tags: |
             ${{ env.IMAGE }}:latest
             ${{ env.IMAGE }}:${{ steps.meta.outputs.sha }}
-          # gha cache — ускоряет повторные сборки за счёт layer-reuse.
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=site
+          cache-to: type=gha,mode=max,scope=site
+
+      # ─── Админка (Vite SPA) ─────────────────────────────────────────────
+      # VITE_* — публичные URL (не секреты). REBUILD/AI пусты → кнопки disabled.
+      - name: Build & push admin
+        uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
+        with:
+          context: .
+          file: admin/Dockerfile
+          push: true
+          build-args: |
+            VITE_PB_URL=https://admin.istokmebel.by
+            VITE_SITE_URL=https://new.istokmebel.by
+            VITE_REBUILD_URL=
+            VITE_AI_GEN_URL=
+          tags: |
+            ${{ env.IMAGE_ADMIN }}:latest
+            ${{ env.IMAGE_ADMIN }}:${{ steps.meta.outputs.sha }}
+          cache-from: type=gha,scope=admin
+          cache-to: type=gha,mode=max,scope=admin
+
+      # ─── PocketBase ─────────────────────────────────────────────────────
+      - name: Build & push pocketbase
+        uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
+        with:
+          context: pocketbase
+          file: pocketbase/Dockerfile
+          push: true
+          tags: |
+            ${{ env.IMAGE_PB }}:latest
+            ${{ env.IMAGE_PB }}:${{ steps.meta.outputs.sha }}
+          cache-from: type=gha,scope=pb
+          cache-to: type=gha,mode=max,scope=pb
 
   deploy:
     needs: build-and-push
@@ -92,7 +142,7 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           envs: GHCR_TOKEN,GHCR_USER
           # GHCR auth по эфемерному GITHUB_TOKEN — на сервере credentials
-          # не хранятся, логин/логаут оборачивает pull.
+          # не хранятся, логин/логаут оборачивает pull всех трёх образов.
           script: |
             set -e
             echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin

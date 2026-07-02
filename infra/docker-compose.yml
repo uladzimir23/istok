@@ -1,10 +1,17 @@
 # Источник истины для /opt/istok/docker-compose.yml на сервере 89.169.54.11.
-# Копировать на сервер (репо не деплоит compose — его кладут вручную при
-# первом подъёме, далее CI делает только `compose pull && up -d`).
+# Копировать на сервер вручную при первом подъёме; далее CI делает только
+# `docker compose pull && up -d`. Раздача статики (nginx:alpine) — runtime-
+# секретов нет; у PocketBase секреты (суперюзер/редактор) заводятся на сервере
+# в pb_data (persistent volume), в образ/репо не попадают.
 #
-# Порт 3007 — следующий свободный после clariva-old (3006). Зафиксирован в
-# sync-agency-server/docs/00 - Indexes/Dashboard.md ДО деплоя.
-# Раздача статики (nginx:alpine) — runtime-секретов нет.
+# Три сервиса (порты зафиксированы в sync-agency-server/docs Dashboard):
+#   istok        сайт (static export)  → 127.0.0.1:3007  new.istokmebel.by
+#   istok-admin  админка (Vite SPA)    → 127.0.0.1:3008  admin.istokmebel.by  /
+#   istok-pb     PocketBase 0.25.9     → 127.0.0.1:8093  admin.istokmebel.by  /api/ /_/
+#
+# Bootstrap PB после первого up (одноразово, значения — на сервере, не в git):
+#   docker exec -it istok-pb /pb/pocketbase superuser upsert <email> <pass>
+#   # затем в дашборде /_/ или скриптом завести запись редактора в коллекции editors.
 
 services:
   istok:
@@ -12,7 +19,7 @@ services:
     container_name: istok
     restart: unless-stopped
     ports:
-      - "127.0.0.1:3007:80"   # host-nginx проксирует new.istokmebel.by сюда
+      - "127.0.0.1:3007:80"   # host-nginx: new.istokmebel.by → сюда
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1/"]
       interval: 30s
@@ -24,3 +31,44 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+
+  istok-admin:
+    image: ghcr.io/uladzimir23/istok-admin:latest
+    container_name: istok-admin
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3008:80"   # host-nginx: admin.istokmebel.by / → сюда
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  istok-pb:
+    image: ghcr.io/uladzimir23/istok-pb:latest
+    container_name: istok-pb
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8093:8090"  # host-nginx: admin.istokmebel.by /api/ /_/ → сюда
+    volumes:
+      - istok_pb_data:/pb/pb_data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8090/api/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  istok_pb_data:
