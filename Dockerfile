@@ -23,6 +23,9 @@ WORKDIR /app/web
 # исключён .dockerignore, так что COPY web/ его не затрёт).
 COPY web/ /app/web/
 COPY content/ /app/content/
+# DS вынесен в корень репо (shared/design-system) — next.config sassOptions
+# loadPaths = /app (корень выше web/). Без него @use "shared/…" не резолвится.
+COPY shared/ /app/shared/
 COPY --from=deps /app/web/node_modules /app/web/node_modules
 ENV NEXT_TELEMETRY_DISABLED=1
 # cwd = /app/web → next.config.ts: output:"export" → /app/web/out.
