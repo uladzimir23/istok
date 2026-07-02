@@ -23,8 +23,10 @@ export function Preloader() {
     const reduced =
       window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
     if (reduced) {
-      setDone(true);
-      return;
+      // Скрываем на следующем кадре (не синхронно в effect — паттерн Reveal),
+      // reduced-motion пропускает анимацию занавеса.
+      const raf = requestAnimationFrame(() => setDone(true));
+      return () => cancelAnimationFrame(raf);
     }
 
     document.documentElement.style.setProperty("overflow", "hidden");
