@@ -5,9 +5,10 @@
 # в pb_data (persistent volume), в образ/репо не попадают.
 #
 # Три сервиса (порты зафиксированы в sync-agency-server/docs Dashboard):
-#   istok        сайт (static export)  → 127.0.0.1:3007  new.istokmebel.by
-#   istok-admin  админка (Vite SPA)    → 127.0.0.1:3008  admin.istokmebel.by  /
+#   istok        сайт (static export)  → 127.0.0.1:3008  new.istokmebel.by
+#   istok-admin  админка (Vite SPA)    → 127.0.0.1:3009  admin.istokmebel.by  /
 #   istok-pb     PocketBase 0.25.9     → 127.0.0.1:8093  admin.istokmebel.by  /api/ /_/
+# (3007 занят другим стеком на боксе — istok сдвинут на 3008/3009.)
 #
 # Bootstrap PB после первого up (одноразово, значения — на сервере, не в git):
 #   docker exec -it istok-pb /pb/pocketbase superuser upsert <email> <pass>
@@ -19,7 +20,7 @@ services:
     container_name: istok
     restart: unless-stopped
     ports:
-      - "127.0.0.1:3007:80"   # host-nginx: new.istokmebel.by → сюда
+      - "127.0.0.1:3008:80"   # host-nginx: new.istokmebel.by → сюда
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1/"]
       interval: 30s
@@ -37,7 +38,7 @@ services:
     container_name: istok-admin
     restart: unless-stopped
     ports:
-      - "127.0.0.1:3008:80"   # host-nginx: admin.istokmebel.by / → сюда
+      - "127.0.0.1:3009:80"   # host-nginx: admin.istokmebel.by / → сюда
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1/"]
       interval: 30s
