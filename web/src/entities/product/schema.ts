@@ -37,6 +37,12 @@ export const MediaItem = z.object({
 });
 export type MediaItem = z.infer<typeof MediaItem>;
 
+export const ProductSection = z.object({
+  title: z.string().min(1),
+  body: z.string().min(1),
+});
+export type ProductSection = z.infer<typeof ProductSection>;
+
 export const Product = z.object({
   slug: z.string().regex(/^[a-z0-9-]+$/),
   category: ProductCategory,
@@ -50,6 +56,7 @@ export const Product = z.object({
     .array(z.object({ name: z.string(), hex: z.string().regex(/^#[0-9A-Fa-f]{6}$/) }))
     .default([]),
   options: z.array(z.string()).default([]),
+  sections: z.array(ProductSection).default([]),
   gallery: z.array(MediaItem).min(1),
   hero: MediaItem,
   priceByn: z.number().int().positive().optional(),

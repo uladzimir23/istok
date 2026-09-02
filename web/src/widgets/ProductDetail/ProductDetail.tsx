@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/entities/product";
 import { ProductCard } from "@/widgets/ProductCard";
+import { ProductSections } from "@/widgets/ProductSections";
 import { asset } from "@/shared/lib/assetPath";
 import styles from "./ProductDetail.module.scss";
 
@@ -158,6 +159,10 @@ export function ProductDetail({
           )}
         </aside>
       </div>
+
+      {product.sections.length > 0 && (
+        <ProductSections sections={product.sections} />
+      )}
 
       {related.length > 0 && (
         <div className={`container ${styles.related}`}>
