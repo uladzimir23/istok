@@ -11,10 +11,10 @@ apps/admin/dist
 out
 
 # PocketBase: данные и локальный бинарь — не нужны ни одному образу
-# (site/admin делят этот контекст; PB-образ собирается из pocketbase/).
-pocketbase/pb_data
-pocketbase/pocketbase
-pocketbase/pb.zip
+# (site/admin делят этот контекст; PB-образ собирается из apps/pocketbase/).
+apps/pocketbase/pb_data
+apps/pocketbase/pocketbase
+apps/pocketbase/pb.zip
 
 # VCS / CI / редакторы / приватка
 .git

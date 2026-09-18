@@ -100,7 +100,7 @@
 | Backend Phase 2 | **PocketBase** при наступлении trigger-условий (см. ADR-005) | [[ADR-001]] (superseded), [[ADR-005]] |
 | Бренд-архитектура | Один сайт `istokmebel.by`, ELIS — раздел `/krovatki` со своей темой | [[ADR-003]] |
 | Хостинг | **Сервер агентства SYNC** (Hetzner, GHCR + compose, `nginx:alpine` раздаёт static export); `new.istokmebel.by` | [[ADR-009]] (supersedes [[ADR-008]], [[ADR-006]]) |
-| Структура репо | Монорепо `apps/{web,admin}` + `packages/design-system` + `content/` (Bun workspaces) | [[ADR-007]] superseded 2026-09-19 |
+| Структура репо | Монорепо `apps/{web,admin,pocketbase}` + `packages/design-system` + `content/` (Bun workspaces web/admin) | [[ADR-007]] superseded 2026-09-19 |
 | Аналитика | **Яндекс.Метрика + GA4** + пиксели | базис, отдельный ADR |
 | Формы | **react-hook-form + zod**, submit через `Promise.allSettled` | паттерн comforthotel ADR-014 |
 | AI-пайплайн | Gemini + Krea (формализуем как playbook позже, отдельный ADR Phase 2+) | отложено |
@@ -118,20 +118,20 @@ istok/
 │   │   ├── next.config.ts           # output:"export", loadPaths="../.."
 │   │   ├── Dockerfile               # multi-stage: bun deps → node build → nginx:alpine
 │   │   └── package.json
-│   └── admin/                       # Vite + React SPA админка (ADR-011)
-│       ├── src/
-│       ├── vite.config.ts           # loadPaths="../.."
-│       ├── Dockerfile
-│       └── package.json
+│   ├── admin/                       # Vite + React SPA админка (ADR-011)
+│   │   ├── src/
+│   │   ├── vite.config.ts           # loadPaths="../.."
+│   │   ├── Dockerfile
+│   │   └── package.json
+│   └── pocketbase/                  # PocketBase бинарь + миграции + hooks (ADR-010)
+│       ├── Dockerfile               # без package.json — из workspaces исключён
+│       ├── pb_data/                 # в git не идёт (persistent volume)
+│       └── pb_migrations/
 ├── packages/
 │   └── design-system/               # SCSS токены/миксины/базы (общий для web + admin)
 ├── content/                         # MDX (Phase 1) — уезжает в PB (Phase 2)
 │   ├── products/{chairs,cabinets,cribs}/    # 26 MDX-товаров
 │   └── projects/                    # портфолио госзаказа
-├── pocketbase/                      # PocketBase бинарь + миграции + hooks (ADR-010)
-│   ├── Dockerfile
-│   ├── pb_data/                     # в git не идёт (persistent volume)
-│   └── pb_migrations/
 ├── infra/                           # IaC деплоя (ADR-009)
 │   ├── nginx/{container,istokmebel.by,new.istokmebel.by}.conf
 │   └── docker-compose.yml           # источник для /opt/istok/ на сервере

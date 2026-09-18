@@ -56,8 +56,8 @@ pb_data/
 /tilda-old/
 
 # PocketBase (Phase 2) — бинарь не коммитим (pb_data уже игнорится)
-/pocketbase/pocketbase
-/pocketbase/pb.zip
+apps/pocketbase/pocketbase
+apps/pocketbase/pb.zip
 
 # PB-снапшот для билда (генерируется prebuild)
 apps/web/.pb/

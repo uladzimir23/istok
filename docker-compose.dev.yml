@@ -13,15 +13,15 @@
 services:
   pb:
     build:
-      context: ./pocketbase
+      context: ./apps/pocketbase
       dockerfile: Dockerfile
     container_name: istok-pb-dev
     restart: unless-stopped
     ports:
       - "127.0.0.1:8090:8090"   # web/admin ходят на http://127.0.0.1:8090
     volumes:
-      - ./pocketbase/pb_data:/pb/pb_data
-      - ./pocketbase/pb_migrations:/pb/pb_migrations
+      - ./apps/pocketbase/pb_data:/pb/pb_data
+      - ./apps/pocketbase/pb_migrations:/pb/pb_migrations
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8090/api/health"]
       interval: 30s
