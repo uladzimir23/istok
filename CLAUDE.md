@@ -12,7 +12,7 @@
   бренд-архитектура (один сайт, два бренда), content-as-code (PocketBase отложен в Phase 2
   по триггерам), плоская структура. Hosting-цепочка: ADR-006 (Docker VPS) → ADR-008
   (GitHub Pages) → **ADR-009 (сервер агентства SYNC, Hetzner)** — актуальное.
-- **Phase 1 имплементация — выполнена (2026-06-26).** Собран рабочий сайт: `web/`
+- **Phase 1 имплементация — выполнена (2026-06-26).** Собран рабочий сайт: `apps/web/`
   (Next.js 16, App Router, TS strict, FSD-lite), все категории (кресла, кроватки,
   корпусная → комоды/столы/стеллажи/шкафы) + карточки товаров (SSG), дизайн-система
   Исток/ELIS, ~18 виджетов, 26 MDX-товаров с Zod-валидацией, SEO. `bun run build` проходит.
@@ -20,7 +20,7 @@
   `nginx:alpine` в Docker-образе; деплой `push → GHCR → ssh → compose` на `89.169.54.11`,
   порт 3008 (3007 занят другим стеком). Host-nginx проксирует apex `istokmebel.by` +
   `www.istokmebel.by` + preview `new.istokmebel.by` → 127.0.0.1:3008. Обвязка в репо:
-  `Dockerfile`, `infra/nginx/{container.conf,istokmebel.by.conf,new.istokmebel.by.conf}`,
+  `apps/{web,admin}/Dockerfile`, `infra/nginx/{container.conf,istokmebel.by.conf,new.istokmebel.by.conf}`,
   `infra/docker-compose.yml`, `.github/workflows/deploy.yml`. Карта сервера — внешний волт
   `~/Desktop/sync-agency-server/`.
 - **DNS-cutover apex завершён (2026-09-18).** `istokmebel.by` и `www.istokmebel.by`
@@ -100,64 +100,51 @@
 | Backend Phase 2 | **PocketBase** при наступлении trigger-условий (см. ADR-005) | [[ADR-001]] (superseded), [[ADR-005]] |
 | Бренд-архитектура | Один сайт `istokmebel.by`, ELIS — раздел `/krovatki` со своей темой | [[ADR-003]] |
 | Хостинг | **Сервер агентства SYNC** (Hetzner, GHCR + compose, `nginx:alpine` раздаёт static export); `new.istokmebel.by` | [[ADR-009]] (supersedes [[ADR-008]], [[ADR-006]]) |
-| Структура репо | Плоская (`web/` + `content/`), без монорепо | [[ADR-007]] |
+| Структура репо | Монорепо `apps/{web,admin}` + `packages/design-system` + `content/` (Bun workspaces) | [[ADR-007]] superseded 2026-09-19 |
 | Аналитика | **Яндекс.Метрика + GA4** + пиксели | базис, отдельный ADR |
 | Формы | **react-hook-form + zod**, submit через `Promise.allSettled` | паттерн comforthotel ADR-014 |
 | AI-пайплайн | Gemini + Krea (формализуем как playbook позже, отдельный ADR Phase 2+) | отложено |
 
 ## Структура репо
 
-Плоская (зафиксировано в [[ADR-007]]). Финальная структура после старта Phase 1:
+Монорепо на Bun workspaces (2026-09-19; ADR-007 superseded):
 
 ```
 istok/
-├── docs/                            # Obsidian vault (Johnny Decimal)
-│   ├── 00 - Indexes/                #   Dashboard, dept-lenses, Архитектура знаний
-│   ├── 10 - Brief & Requirements/   #   Бриф проекта, доступы
-│   ├── 20 - Audit/                  #   Сайт as-is, контент-инвентаризация
-│   ├── 30 - SEO/
-│   ├── 40 - Architecture/42 - ADR/  #   Architecture Decision Records
-│   ├── 45 - Engineering Workflow/   #   Branching, commits, PR, release, server runbook
-│   ├── 50 - Roadmap/                #   Phase planы
-│   ├── 60 - Content/                #   тексты, описания
-│   ├── 65 - Brand/istok|elis/       #   бренд-гайды двух брендов
-│   ├── 67 - SMM/
-│   ├── 70 - Meetings & Logs/        #   session logs + snapshots
-│   ├── 80 - Templates/
-│   ├── 90 - Ideas & Backlog/
-│   ├── 95 - Attachments/
-│   └── 97 - Reports/
-├── web/                             # Next.js 16 application (ADR-002, ADR-007)
-│   ├── src/{app,widgets,features,entities,shared}/   # FSD-lite
-│   │   └── entities/product/{schema.ts,loader.ts}    # Zod-схема + MDX-loader (ADR-005)
-│   ├── scripts/validate-content.ts  # CLI-валидатор контента (bun run validate:content)
-│   ├── public/
-│   ├── package.json
-│   ├── next.config.ts               # output: "export" (без basePath — поддомен, ADR-009)
-│   └── tsconfig.json
-├── content/                         # MDX контент-as-code (ADR-005)
+├── apps/
+│   ├── web/                         # Next.js 16 сайт (ADR-002)
+│   │   ├── src/{app,widgets,features,entities,shared}/   # FSD-lite
+│   │   ├── scripts/{validate-content,pb/*}.ts
+│   │   ├── next.config.ts           # output:"export", loadPaths="../.."
+│   │   ├── Dockerfile               # multi-stage: bun deps → node build → nginx:alpine
+│   │   └── package.json
+│   └── admin/                       # Vite + React SPA админка (ADR-011)
+│       ├── src/
+│       ├── vite.config.ts           # loadPaths="../.."
+│       ├── Dockerfile
+│       └── package.json
+├── packages/
+│   └── design-system/               # SCSS токены/миксины/базы (общий для web + admin)
+├── content/                         # MDX (Phase 1) — уезжает в PB (Phase 2)
 │   ├── products/{chairs,cabinets,cribs}/    # 26 MDX-товаров
-│   └── projects/                    # портфолио госзаказа (пока пусто)
-├── infra/                           # IaC деплоя на сервер агентства (ADR-009)
-│   ├── nginx/container.conf         #   nginx внутри образа (раздача static export)
-│   ├── nginx/new.istokmebel.by.conf #   host-vhost (→ 127.0.0.1:3007)
-│   └── docker-compose.yml           #   источник для /opt/istok/ на сервере
-├── Dockerfile                       # multi-stage: bun deps → node build → nginx:alpine
+│   └── projects/                    # портфолио госзаказа
+├── pocketbase/                      # PocketBase бинарь + миграции + hooks (ADR-010)
+│   ├── Dockerfile
+│   ├── pb_data/                     # в git не идёт (persistent volume)
+│   └── pb_migrations/
+├── infra/                           # IaC деплоя (ADR-009)
+│   ├── nginx/{container,istokmebel.by,new.istokmebel.by}.conf
+│   └── docker-compose.yml           # источник для /opt/istok/ на сервере
+├── docker-compose.dev.yml           # локальный dev-стек (PB рядом с web+admin dev)
+├── docs/                            # Obsidian vault (Johnny Decimal 00–97)
+├── package.json                     # workspaces: apps/*, packages/*
 ├── .dockerignore
-├── .github/workflows/               # CI: deploy.yml (build → GHCR → ssh deploy, ADR-009)
-├── .claude/
-│   ├── settings.local.json
-│   ├── agents/                      # docs-sync, adr-drafter
-│   └── skills/
+├── .github/workflows/deploy.yml     # CI: 3 образа (site+admin+pb) → GHCR → ssh compose
+├── .claude/{agents,skills,settings.local.json}
 ├── .vault-private/                  # НЕ в git
 ├── CLAUDE.md
-├── README.md
-└── .gitignore
+└── README.md
 ```
-
-В Phase 2 при активации PocketBase (по триггерам [[ADR-005]]) `output` меняется на
-`"standalone"`, Dockerfile/compose обновляются под Node-runtime, добавляется `pocketbase/`
-сервис в тот же `/opt/istok/docker-compose.yml` — без перехода в монорепо.
 
 ## Ветки
 

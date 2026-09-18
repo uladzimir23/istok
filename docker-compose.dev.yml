@@ -1,0 +1,30 @@
+# Локальный dev-стек. Поднимает PocketBase рядом с ним, чтобы редактор контента
+# работал как в проде. Сам web/admin запускаются `bun run dev` вне контейнера —
+# hot-reload быстрее на маке, чем в docker-desktop VM.
+#
+# Использование:
+#   docker compose -f docker-compose.dev.yml up -d pb
+#   bun --cwd apps/web dev
+#   bun --cwd apps/admin dev
+#
+# Первый запуск: создать суперюзера в дашборде http://127.0.0.1:8090/_/
+# (или через `docker exec istok-pb-dev /pb/pocketbase superuser upsert <email> <pass>`).
+
+services:
+  pb:
+    build:
+      context: ./pocketbase
+      dockerfile: Dockerfile
+    container_name: istok-pb-dev
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8090:8090"   # web/admin ходят на http://127.0.0.1:8090
+    volumes:
+      - ./pocketbase/pb_data:/pb/pb_data
+      - ./pocketbase/pb_migrations:/pb/pb_migrations
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8090/api/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
