@@ -16,11 +16,16 @@
   (Next.js 16, App Router, TS strict, FSD-lite), все категории (кресла, кроватки,
   корпусная → комоды/столы/стеллажи/шкафы) + карточки товаров (SSG), дизайн-система
   Исток/ELIS, ~18 виджетов, 26 MDX-товаров с Zod-валидацией, SEO. `bun run build` проходит.
-- **Хостинг мигрирует на сервер агентства (ADR-009).** Static export раздаётся
+- **Хостинг живёт на сервере агентства (ADR-009).** Static export раздаётся
   `nginx:alpine` в Docker-образе; деплой `push → GHCR → ssh → compose` на `89.169.54.11`,
-  поддомен `new.istokmebel.by` (порт 3007). Обвязка в репо: `Dockerfile`, `infra/nginx/`,
+  порт 3008 (3007 занят другим стеком). Host-nginx проксирует apex `istokmebel.by` +
+  `www.istokmebel.by` + preview `new.istokmebel.by` → 127.0.0.1:3008. Обвязка в репо:
+  `Dockerfile`, `infra/nginx/{container.conf,istokmebel.by.conf,new.istokmebel.by.conf}`,
   `infra/docker-compose.yml`, `.github/workflows/deploy.yml`. Карта сервера — внешний волт
-  `~/Desktop/sync-agency-server/`. Открыто: DNS, `DEPLOY_SSH_KEY`, серверные шаги.
+  `~/Desktop/sync-agency-server/`.
+- **DNS-cutover apex завершён (2026-09-18).** `istokmebel.by` и `www.istokmebel.by`
+  переведены с Tilda на наш сервер (hoster.by панель, A → 89.169.54.11), SSL Let's Encrypt
+  выпущен, redirect www→apex и http→https настроены. Tilda больше не обслуживает домен.
 - **Phase 2 открыта (2026-06-27) — PocketBase ([[ADR-010]]).** Сработал триггер №1 из
   ADR-005 (редактор фабрики без git): активируем БД + админку. Модель — **static export
   + rebuild-webhook** (хостинг ADR-009 не меняется): PB на том же сервере, loader'ы читают
@@ -28,8 +33,7 @@
   после выката статики на сервер, на ветке. Донор паттерна — `flex-glass` (skill `pocketbase.md`).
 - **Открытые пункты:** реальный приёмник заявок (`NEXT_PUBLIC_LEAD_ENDPOINT`: Telegram +
   Resend — сейчас заглушка), наполнение портфолио `content/projects/`, цены «Элис» от
-  клиента, финальный DNS-cutover apex `istokmebel.by` с Tilda на сервер.
-- **Tilda продолжает работать на `istokmebel.by`.** Не трогаем до DNS-cutover.
+  клиента.
 
 ## Видение
 
