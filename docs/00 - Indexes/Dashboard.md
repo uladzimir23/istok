@@ -99,7 +99,7 @@ order: 0
 
 **Always:**
 - [[Архитектура знаний]] — карта слоёв.
-- `~/Projects/zavody-rb/istok/CLAUDE.md` — видение, стек, redaction.
+- `~/Projects/istok/CLAUDE.md` — видение, стек, redaction.
 
 **Active scope (Phase 1 → cutover):**
 - [[Бриф проекта]] — бренд-архитектура, 3 направления, каталог Элис.

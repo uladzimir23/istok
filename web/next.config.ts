@@ -16,11 +16,8 @@ const nextConfig: NextConfig = {
     loadPaths: [path.resolve(__dirname, "..")],
   },
 
-  // ВАЖНО: явный turbopack.root = КОРЕНЬ istok (web + shared + content), иначе
-  // Next inferit cluster-level ~/Projects/zavody-rb/bun.lock как root → watch
-  // scope = весь кластер (rasing/barsa/_shared + их node_modules) → штормовой
-  // поток fs-events → 400% CPU. Корень istok нужен, чтобы Turbopack видел
-  // вынесенный shared/design-system (он выше web/).
+  // ВАЖНО: явный turbopack.root = корень репо istok (web + shared + content).
+  // Нужен, чтобы Turbopack видел вынесенный shared/design-system (он выше web/).
   turbopack: {
     root: path.resolve(__dirname, ".."),
   },

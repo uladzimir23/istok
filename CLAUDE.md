@@ -191,7 +191,7 @@ istok/
 - **ADR** — все значимые решения через sub-агент `adr-drafter` или вручную по шаблону
   `docs/80 - Templates/adr.md`.
 - **Memory** — фактический контекст для следующих сессий — в
-  `~/.claude/projects/-Users-vladimirmazyrec-Projects-zavody-rb-istok/memory/`.
+  `~/.claude/projects/-Users-vladimirmazyrec-Projects-istok/memory/`.
 - **Коммиты** — Conventional Commits (`feat:`, `fix:`, `chore:`, `docs:`, `refactor:`,
   `content:` для контента, `chore(brand):` для брендинга). Подробности — в
   `.claude/skills/git-workflow.md`.
