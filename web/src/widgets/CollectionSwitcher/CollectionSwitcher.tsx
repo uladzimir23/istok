@@ -265,14 +265,20 @@ export function CollectionSwitcher(props: Props) {
             loading="lazy"
             decoding="async"
           />
-          <Image
-            key={active.slug}
-            src={asset(active.hero)}
-            alt={active.name}
-            fill
-            sizes="(max-width: 960px) 100vw, 50vw"
-            className={styles.photo}
-          />
+          {/* Внутренний padding-frame — не на самом <img>, потому что
+              iOS Safari схлопывает <img fill> с padding+object-fit
+              в 0 (баг наблюдался на iOS 17+). */}
+          <div className={styles.photoFrame}>
+            <Image
+              key={active.slug}
+              src={asset(active.hero)}
+              alt={active.name}
+              fill
+              sizes="(max-width: 960px) 100vw, 50vw"
+              className={styles.photo}
+              priority
+            />
+          </div>
         </div>
       </div>
     </section>

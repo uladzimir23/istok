@@ -458,12 +458,18 @@
   to   { opacity: 0.7; }
 }
 
+// Wrapper даёт "паддинг-фрейм" вокруг <Image fill>, не трогая сам <img>.
+// Причина: iOS Safari ломает <img fill> когда на нём стоит padding +
+// object-fit — картинка рендерится с 0 размером (баг на iOS 17+).
+.photoFrame {
+  position: absolute;
+  inset: var(--space-xl);
+  z-index: 1;
+}
+
 .photo {
   object-fit: contain;
-  padding: var(--space-xl);
   animation: photoIn 600ms cubic-bezier(0.22, 1, 0.36, 1);
-  position: relative;
-  z-index: 1;
 }
 
 @keyframes photoIn {
