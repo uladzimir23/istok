@@ -433,11 +433,21 @@
 
 .media {
   position: relative;
+  // Явный inline-size: iOS Safari не всегда считает высоту от aspect-ratio,
+  // когда grid-элемент растянут через align-items:stretch на одноколоночном
+  // треке — без inline-size:100% на iPhone контейнер схлопывается в 0.
+  inline-size: 100%;
   aspect-ratio: 1;
   background: var(--color-surface-alt);
   overflow: hidden;
   isolation: isolate;
   order: 1;
+
+  // Fallback на мобиле, если aspect-ratio всё-таки не сработает
+  // (страховка от известного iOS Safari бага в grid-контексте).
+  @include respond-below("lg") {
+    min-block-size: 100vw;
+  }
 }
 
 // Frosted-glass: то же фото лёгким blur'ом за основным.
