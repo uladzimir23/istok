@@ -5,39 +5,24 @@
   display: grid;
   place-items: center;
   pointer-events: none;
-  // Замыкаем mix-blend лого только на полосы прелоадера.
-  isolation: isolate;
-  background: var(--color-foreground);
+  background: var(--color-surface);
+  transition: opacity 300ms var(--ease-out);
 }
 
-// Горизонтальные ч/б полосы.
-.stripes {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
+.rootFading {
+  opacity: 0;
 }
 
-.stripe {
-  flex: 1 1 0;
-  will-change: transform, background-color;
-}
-
-// Лого инвертируется относительно полос (чёрное на белом / белое на чёрном).
 .brand {
-  position: relative;
-  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--space-md);
-  color: #fff;
-  mix-blend-mode: difference;
-  will-change: clip-path, opacity;
+  color: var(--color-foreground);
 }
 
 .wordmark {
-  inline-size: min(52vw, 380px);
+  inline-size: min(52vw, 320px);
   block-size: auto;
 }
 
@@ -45,4 +30,5 @@
   font-size: var(--text-xs);
   text-transform: uppercase;
   letter-spacing: 0.34em;
+  color: var(--color-foreground-muted);
 }
