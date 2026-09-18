@@ -1,0 +1,38 @@
+@use "packages/design-system/index" as *;
+
+html {
+  font-family: var(--font-body);
+  color: var(--color-foreground);
+  background: var(--color-background);
+  overflow-x: clip;
+}
+
+body {
+  min-block-size: 100dvh;
+  font-size: var(--text-base);
+  line-height: var(--primitive-leading-normal);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+a {
+  color: inherit;
+}
+
+// lenis smooth-scroll (shared/ui/SmoothScroll.tsx) — рекомендованные классы.
+html.lenis,
+html.lenis body {
+  block-size: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}

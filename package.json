@@ -1,0 +1,17 @@
+{
+  "name": "istok",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "bun --cwd apps/web dev",
+    "dev:web": "bun --cwd apps/web dev",
+    "dev:admin": "bun --cwd apps/admin dev",
+    "build:web": "bun --cwd apps/web run build",
+    "build:admin": "bun --cwd apps/admin run build",
+    "lint": "bun --cwd apps/web run lint",
+    "typecheck": "bun --cwd apps/web run typecheck && bun --cwd apps/admin run typecheck"
+  }
+}

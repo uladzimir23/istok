@@ -37,7 +37,7 @@ coverage/
 web-legacy/
 
 # Next.js export output
-web/out/
+apps/web/out/
 
 # TypeScript incremental build cache
 *.tsbuildinfo
@@ -60,7 +60,7 @@ pb_data/
 /pocketbase/pb.zip
 
 # PB-снапшот для билда (генерируется prebuild)
-web/.pb/
+apps/web/.pb/
 
 # PB-фото (скачиваются export-ом на билд)
-web/public/images/pb/
+apps/web/public/images/pb/

@@ -13,13 +13,12 @@ on:
   push:
     branches: [main]
     paths:
-      - "web/**"
+      - "apps/web/**"
+      - "apps/admin/**"
+      - "packages/**"
       - "content/**"
-      - "admin/**"
-      - "shared/**"
       - "pocketbase/**"
       - "infra/**"
-      - "Dockerfile"
       - ".dockerignore"
       - ".github/workflows/deploy.yml"
   workflow_dispatch:
@@ -44,7 +43,7 @@ jobs:
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
 
       - name: web — lint + typecheck + validate content
-        working-directory: web
+        working-directory: apps/web
         run: |
           bun install --frozen-lockfile
           bun run lint
@@ -52,7 +51,7 @@ jobs:
           bun run validate:content
 
       - name: admin — typecheck
-        working-directory: admin
+        working-directory: apps/admin
         run: |
           bun install --frozen-lockfile
           bun run typecheck
@@ -85,7 +84,7 @@ jobs:
         uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
         with:
           context: .
-          file: Dockerfile
+          file: apps/web/Dockerfile
           push: true
           tags: |
             ${{ env.IMAGE }}:latest
@@ -99,7 +98,7 @@ jobs:
         uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
         with:
           context: .
-          file: admin/Dockerfile
+          file: apps/admin/Dockerfile
           push: true
           build-args: |
             VITE_PB_URL=https://admin.istokmebel.by

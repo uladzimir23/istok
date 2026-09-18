@@ -1,14 +1,14 @@
-# Build-context hygiene: в образ нужны только web/ + content/ + infra/nginx/.
-# Корень репо тяжёлый (docs-волт, песочница, сырьё клиента) — режем агрессивно,
+# Build-context hygiene: в образ нужны apps/{web,admin} + content/ + packages/
+# + infra/nginx/. Корень репо тяжёлый (docs-волт, сырьё клиента) — режем агрессивно,
 # чтобы tar build-контекста был лёгким и dev-мусор не утёк в образ.
 
 # Зависимости и build-выводы (ставятся/генерятся внутри образа)
 **/node_modules
-web/.next
-web/out
+apps/web/.next
+apps/web/out
+apps/admin/dist
 .next
 out
-admin/dist
 
 # PocketBase: данные и локальный бинарь — не нужны ни одному образу
 # (site/admin делят этот контекст; PB-образ собирается из pocketbase/).
