@@ -1,10 +1,17 @@
 ---
 title: ADR-007 — Flat Repo Structure No Monorepo
-description: Репозиторий istok строится как плоская структура с одним Next.js приложением в `web/`, без pnpm workspaces / turbo / nx — потому что второго приложения нет и не предвидится в Phase 1–2.
+description: Репозиторий istok строится как плоская структура с одним Next.js приложением в `web/`, без pnpm workspaces / turbo / nx — потому что второго приложения нет и не предвидится в Phase 1–2. Superseded 2026-09-19 через [[ADR-012]] — появились admin (ADR-011) + PB (ADR-010), переход на монорепо оправдан.
 order: 7
-status: proposed
+status: superseded
+supersededBy: ADR-012
 date: 2026-05-01
+supersededDate: 2026-09-19
 ---
+
+> **Superseded 2026-09-19** — гипотеза «второе приложение не появится» не выдержала:
+> ADR-010 (PocketBase Phase 2) + ADR-011 (custom admin SPA) реализованы, сейчас три
+> деплой-таргета (web + admin + pb) с общим `packages/design-system`. Перешли на
+> монорепо `apps/*` + `packages/*` на Bun workspaces (см. [[ADR-012]]).
 
 # ADR-007 — Flat Repo Structure No Monorepo
 
